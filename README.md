@@ -2,12 +2,12 @@
 
 [![Kurikulum Merdeka](https://img.shields.io/badge/Kurikulum-Merdeka%20Fase%20D-10b981?style=for-the-badge&logo=googlescholar)](https://kemdikbud.go.id)
 [![Platform](https://img.shields.io/badge/Platform-Web%20%7C%20PWA%20Mobile%20%26%20Desktop-059669?style=for-the-badge&logo=pwa)](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps)
-[![Simulasi](https://img.shields.io/badge/Simulasi-PhET%20%26%20Amrita%20OLabs%20Embedded-0284c7?style=for-the-badge)](https://phet.colorado.edu)
-[![Hosting](https://img.shields.io/badge/Deploy-Hostinger%20Web%20Hosting%20%26%20Docker-d97706?style=for-the-badge&logo=docker)](https://hostinger.co.id)
+[![Simulasi](https://img.shields.io/badge/Simulasi-PhET%20%26%20Amrita%20OLabs%20Dual--Mode-0284c7?style=for-the-badge)](https://phet.colorado.edu)
+[![Hosting](https://img.shields.io/badge/Deploy-Web%20Hosting%20%7C%20cPanel%20%7C%20Docker-d97706?style=for-the-badge&logo=docker)](https://github.com/salman-mustapa/projects-01)
 
 Media Pembelajaran Interaktif IPA SMP/MTs Berbasis Web Modern & Progressive Web App (PWA). Dirancang khusus untuk pembelajaran materi **Pengukuran, Besaran, dan Satuan Pokok SI** sesuai Capaian Pembelajaran (CP) Fase D Kurikulum Merdeka dengan model *Discovery Learning*.
 
-Aplikasi ini menggabungkan simulasi laboratorium nyata (**PhET Pendulum Lab & Amrita OLabs**), video praktikum terarah, bahan ajar interaktif, naskah modul ajar resmi, serta evaluasi kuis penalaran tingkat tinggi (HOTS) dengan umpan balik instan dan sertifikat kelulusan siswa.
+Aplikasi ini menggabungkan simulasi laboratorium nyata (**PhET Interactive Simulations & Amrita OLabs**), video praktikum terarah, bahan ajar interaktif, naskah modul ajar resmi (11 halaman), lembar LKPD digital terintegrasi, serta evaluasi kuis penalaran tingkat tinggi (HOTS) dengan umpan balik instan dan sertifikat kelulusan siswa.
 
 ---
 
@@ -15,155 +15,176 @@ Aplikasi ini menggabungkan simulasi laboratorium nyata (**PhET Pendulum Lab & Am
 
 ```mermaid
 flowchart TD
-    A[Halaman Pembuka Tunggal / Grand Cover] -->|Input Nama & Kelas / Profil Tersimpan| B[Dashboard Ruang Belajar]
+    A[Halaman Pembuka / Cover Bersih Bebas Scroll] -->|Klik Tombol 3D Mulai Petualangan| B[Modal Identitas Peserta Didik]
+    B -->|Simpan Identitas & Confetti| C[Dashboard Ruang Belajar Sains]
     
-    B --> C[1. Bahan Ajar\n16 Slide Canva Interaktif]
-    B --> D[2. Lab Virtual Interaktif\nPhET & OLabs Embedded]
-    B --> E[3. Kuis HOTS\n10 Soal Acak + Umpan Balik Instan]
-    B --> F[4. Video Praktikum\n3 Domain: Waktu, Panjang, Massa]
-    B --> G[5. Panduan Alat\nPetunjuk Operasi OLabs & PhET]
-    B --> H[6. Modul Ajar\nSintaks Discovery Learning & PDF]
+    C --> D[1. Bahan Ajar\n16 Slide Presentasi Interaktif]
+    C --> E[2. Lab Virtual Interaktif\nDual Mode: In-App & Canvas]
+    C --> F[3. Video Praktikum\n3 Domain: Waktu, Panjang, Massa]
+    C --> G[4. Panduan Praktikum\nPetunjuk Operasi OLabs & PhET]
+    C --> H[5. Modul Ajar Kurikulum Merdeka\n11 Halaman PDF Reader In-App]
+    C --> I[6. Kuis HOTS\n10 Soal Acak + Umpan Balik Instan]
     
-    D --> D1[Bandul & Waktu - PhET Embedded]
-    D --> D2[Jangka Sorong - OLabs + Canvas]
-    D --> D3[Neraca Pegas - OLabs + Canvas]
+    E --> E1[Jangka Sorong: OLabs In-App / Jendela + Canvas LKPD]
+    E --> E2[Neraca Pegas: PhET / OLabs In-App + Canvas Gravitasi]
+    E --> E3[Bandul PhET: Colorado In-App + Canvas Stopwatch]
+    E --> E4[Lembar LKPD Digital: Auto-Kalkulasi & Cetak Laporan]
     
-    E -->|Selesai Mengerjakan| I[Sertifikat Prestasi Siswa\nCetak / Simpan PDF]
+    I -->|Lulus Evaluasi| J[Sertifikat Prestasi Siswa\nCetak / Simpan PDF]
 ```
 
 ---
 
-## 🌟 6 Pilar Pembelajaran Utama
+## 🌟 Fitur Unggulan Media Pembelajaran
 
-### 1. Halaman Pembuka Tunggal (*Unified Cover Screen*)
-- **Desain Papan Kayu Gantung Interaktif** bergaya petualangan alam dan sains.
-- **Satu Layar Terpadu**: Tidak ada halaman ganda (*double cover*) dan tanpa tombol navigasi yang membingungkan.
-- **Deteksi Profil Otomatis**: Jika siswa sudah pernah masuk, sistem menyapa nama siswa dengan tombol *"Lanjutkan Petualangan!"*. Jika siswa baru atau ingin berganti identitas, formulir input nama, kelas, no. absen, dan sekolah dapat diisi langsung di halaman utama.
-
-### 2. Bahan Ajar Interaktif (16 Slide Canva)
-- Menampilkan visual materi besaran pokok, satuan standar internasional (SI), alat ukur, dan konversi satuan.
-- Dilengkapi navigasi panah, *auto-play slide*, dan thumbnail panel.
-
-### 3. Lab Virtual Interaktif (*Embedded Real Simulator*)
-- **Pengukuran Waktu (PhET Interactive Pendulum Lab)**:
-  - Berjalan **langsung di dalam aplikasi (*in-app embedded iframe*)** tanpa mengarahkan siswa keluar ke web eksternal.
-  - Dilengkapi mode bandul kanvas offline 60 FPS dengan stopwatch digital dan rumus periode $T = t/n$.
-- **Pengukuran Panjang (Jangka Sorong)**:
-  - Terintegrasi simulasi Amrita OLabs Jangka Sorong dan kanvas interaktif dengan rahang geser draggable, penghitungan skala utama (SU) dan skala nonius (SN).
-- **Pengukuran Massa & Gaya (Neraca Pegas)**:
-  - Terintegrasi simulasi Amrita OLabs Neraca Pegas dan kanvas elastisitas dengan pengubah percepatan gravitasi planet (Bumi, Bulan, Mars, Jupiter) serta pembuktian rumus $M = w/g$.
-
-### 4. Video Praktikum (3 Domain Pengukuran)
-- **Tab 1: Pengukuran Waktu**: Video panduan praktikum ayunan bandul dan penggunaan stopwatch.
-- **Tab 2: Pengukuran Panjang**: Panduan pengukuran tebal dan diameter dalam/luar dengan jangka sorong.
-- **Tab 3: Pengukuran Massa**: Panduan penimbangan beban menggunakan neraca pegas.
-
-### 5. Panduan Alat & Modul Ajar Kurikulum Merdeka
-- Naskah modul ajar lengkap untuk guru dan peserta didik berbasis *Discovery Learning*.
-- Akses dan unduh dokumen PDF asli:
-  - *Modul Ajar Pengukuran.pdf*
-  - *Bahan Ajar Pengukuran.pdf*
-  - *User Guide Praktikum Virtual Jangka Sorong.pdf*
-  - *User Guide Praktikum Virtual Neraca Pegas.pdf*
-  - *User Guide Pengukuran Waktu.pdf*
-  - *KUIS MATERI PENGUKURAN KELAS VII.pdf*
-
-### 6. Kuis HOTS & Sertifikat Prestasi Siswa
-- 10 Soal penalaran tingkat tinggi (Higher Order Thinking Skills).
-- **Soal dan Pilihan Diacak (*Randomized*)** setiap sesi agar siswa tidak saling menyontek.
-- **Umpan Balik Langsung (*Instant Feedback*)**: Begitu siswa memilih jawaban, sistem langsung menampilkan koreksi (Benar/Salah), kunci jawaban yang benar, serta penjelasan ilmiah lengkap.
-- **Sertifikat Kelulusan Resmi**: Menampilkan nama siswa, kelas, skor akhir, predikat kelulusan, dan tanggal pelaksanaan yang dapat langsung dicetak atau disimpan sebagai PDF.
+### 1. Halaman Pembuka Estetik Bebas Scroll (*Zero-Scroll Cover*)
+- **Desain Papan Kayu Gantung Interaktif** bertema rimbun alam dan sains (*deep emerald forest*) dengan pancaran cahaya *sunbeam*, kanopi daun, dan efek kedalaman visual.
+- **Bebas Scrollbar (100% Viewport-Fitted)**: Halaman pembuka langsung pas di layar komputer, tablet, maupun layar HP tanpa perlu di-scroll ke bawah.
+- **Alur Onboarding Bertahap**: Halaman depan bersih tanpa form input yang mengganggu. Siswa menekan tombol 3D **"MULAI PETUALANGAN"**, lalu muncul pop-up modal dialog modern untuk mengisi Nama Lengkap, Kelas, No. Absen, dan Sekolah.
+- **Sesi Otomatis**: Jika siswa sudah terdaftar, tombol utama berubah menjadi *"LANJUTKAN: [NAMA SISWA]!"*, dan tersedia tombol *"Ganti Siswa"* di navbar untuk mereset sesi.
 
 ---
 
-## 🌐 Panduan Deployment
+### 2. Laboratorium Virtual Terintegrasi (*Dual-Mode Virtual Lab*)
+Setiap domain pengukuran dilengkapi sistem **Dual-Mode** (seperti yang terdapat pada PhET Bandul):
 
-### Opsi 1: Deploy ke Hostinger (Web Hosting / Shared Hosting) — SANGAT DIREKOMENDASIKAN ⭐
+#### A. Pengukuran Panjang (Jangka Sorong)
+1. **Mode 1: 🌐 Simulasi OLabs Resmi (Tersemat In-App)**:
+   - Menampilkan frame simulator **OLabs Vernier Calipers** (*Amrita Vishwa Vidyapeetham & CDAC*).
+   - Dilengkapi tombol kontrol: `🔄 Muat Ulang`, `⛶ Layar Penuh`, dan `🚀 Jendela OLabs` (membuka jendela interaktif utuh tanpa batasan frame).
+2. **Mode 2: 🔬 Simulasi Canvas Interaktif (100% Offline & LKPD)**:
+   - Mengukur 3 dimensi: **Diameter Luar**, **Diameter Dalam**, dan **Kedalaman**.
+   - Dilengkapi 6 pilihan objek uji (*Sphere/Kelereng, Iron Block, Beaker/Gelas Kimia, Silinder, Koin, Baut*).
+   - Kotak **Kaca Pembesar Skala Nonius** untuk melihat garis berimpit dengan presisi 0,01 cm.
+   - Tombol **"Catat Hasil ke LKPD Digital"** untuk mentransfer data langsung ke tabel lembar kerja.
 
-> **Apakah aplikasi ini bisa langsung running di Hostinger Web Hosting biasa (tanpa VPS)?**  
-> **YA, BISA 100%!**  
-> Aplikasi ini dibangun murni menggunakan **HTML5, CSS3, dan Vanilla JavaScript (Client-side PWA)**. Tidak membutuhkan runtime Node.js, Python, ataupun database server di sisi hosting. Seluruh data identitas dan kuis disimpan aman di browser masing-masing siswa (`localStorage`).
+#### B. Pengukuran Massa & Gaya (Neraca Pegas)
+1. **Mode 1: 🌐 Simulasi PhET / OLabs (Tersemat In-App)**:
+   - Terintegrasi simulator **PhET Masses & Springs** (HTML5 resmi tanpa pemblokiran frame) untuk menguji konstanta pegas, gaya regangan, dan osilasi massa.
+   - Tersedia tombol cepat membuka **OLabs Helical Spring Balance**.
+2. **Mode 2: 🔬 Simulasi Neraca Pegas Canvas (Offline)**:
+   - Gantungkan beban uji (Silinder 250g, Kunci 60g, Balok 120g, Batu 320g).
+   - Pengatur percepatan gravitasi planet: **Bumi (9,8 N/kg)**, **Bulan (1,6 N/kg)**, **Mars (3,7 N/kg)**, dan **Jupiter (24,8 N/kg)**.
+   - Pembuktian rumus gaya berat $w = m \times g$ dan konversi massa $m = w / g$.
 
-#### Langkah-langkah Deploy ke Hostinger:
-1. Login ke panel Hostinger (**hPanel**).
-2. Masuk ke menu **Websites** ➔ pilih domain Anda ➔ buka **File Manager**.
-3. Buka folder **`public_html`**.
-4. Upload seluruh file dari repositori ini ke dalam folder `public_html/`:
+#### C. Pengukuran Waktu (Bandul Matematis & Stopwatch)
+1. **Mode 1: 🌐 Simulasi PhET Colorado Resmi (Tersemat In-App)**:
+   - Simulator PhET Pendulum Lab resmi tersemat langsung dengan grafik energi dan variasi panjang tali/massa.
+2. **Mode 2: 🔬 Simulasi Bandul Canvas (Offline)**:
+   - Gerak harmonik bandul 60 FPS dengan stopwatch digital dan pendeteksi otomatis 10 ayunan untuk menghitung periode $T = t / n$.
+
+#### D. Lembar LKPD Digital Terintegrasi
+- 3 Tabel praktikum otomatis: Pengukuran Panjang, Massa & Gaya, serta Waktu & Periode.
+- Siswa dapat mengisi analisis data, kesimpulan, dan mencetak laporan praktikum beridentitas resmi guru/sekolah.
+
+---
+
+### 3. Bahan Ajar Interaktif (16 Slide Presentasi)
+- Visualisasi materi hakikat fisika, besaran pokok, besaran turunan, dimensi, dan konversi satuan SI.
+- Dilengkapi tombol panah, thumbnail strip, mode *auto-play*, dan tautan unduh dokumen PDF asli.
+
+---
+
+### 4. Modul Ajar Kurikulum Merdeka (11 Halaman Cinema Viewer)
+- Penampil naskah modul ajar 11 halaman lengkap dengan thumbnail strip dan navigasi slide.
+- Memuat capaian pembelajaran (TP), sintaks model *Discovery Learning*, dan profil pelajar Pancasila.
+
+---
+
+### 5. Kuis Penalaran HOTS & Sertifikat Prestasi Siswa
+- **10 Soal Berbasis Masalah Nyata (HOTS)** dengan pengacakan otomatis urutan soal dan pilihan jawaban.
+- **Umpan Balik Langsung**: Menjelaskan alasan ilmiah di balik setiap jawaban benar dan salah.
+- **Sertifikat Kelulusan Cetak**: Dilengkapi nama siswa, kelas, skor, predikat (*Sangat Memuaskan / Terampil*), tanggal pengerjaan, dan QR Code verifikasi.
+
+---
+
+## 🚀 Panduan Menjalankan Aplikasi
+
+Aplikasi ini dapat dijalankan melalui **Web Hosting biasa (cPanel/Shared Hosting)** maupun **Server Lokal menggunakan Docker**.
+
+### Opsi A: Deploy ke Web Hosting (cPanel / Shared Hosting / Vercel / GitHub Pages) ⭐
+
+> **Apakah aplikasi ini bisa running di Web Hosting biasa tanpa VPS/Docker?**  
+> **YA, 100% BISA!**  
+> Arsitektur aplikasi ini adalah **Pure Client-Side Web Application & PWA (HTML5, CSS3, ES6 JavaScript)**. Tidak membutuhkan server Node.js, Python, ataupun database SQL di sisi server. Semua data tersimpan aman di browser siswa (`localStorage`).
+
+#### Cara Deploy ke cPanel / Shared Hosting:
+1. Login ke cPanel / hPanel hosting Anda.
+2. Buka menu **File Manager** ➔ masuk ke folder **`public_html/`**.
+3. Upload seluruh file dan folder repositori ini ke dalam `public_html/`:
    - `index.html`
+   - `manifest.json` dan `sw.js`
    - Folder `css/`
    - Folder `js/`
-   - File manifest & service worker (`manifest.json`, `sw.js`)
-   - File video (`.mp4`) dan dokumen materi (`.pdf`)
-5. Selesai! Buka nama domain Anda di browser. Media pembelajaran langsung aktif, berkecepatan tinggi berkat web server LiteSpeed Hostinger, dan otomatis terenkripsi SSL HTTPS.
+   - Folder `assets/`
+   - Dokumen PDF & video MP4
+4. Selesai! Buka domain Anda di browser (`https://domainanda.com`). Aplikasi langsung aktif dengan dukungan HTTPS dan PWA offline caching.
+
+#### Cara Deploy ke GitHub Pages (Gratis):
+1. Masuk ke tab **Settings** pada repositori GitHub ini.
+2. Pilih menu **Pages** di panel kiri.
+3. Pada bagian **Branch**, pilih `main` dan folder `/ (root)`, lalu klik **Save**.
+4. Dalam 1-2 menit, aplikasi akan live di `https://username.github.io/repository-name/`.
 
 ---
 
-### Opsi 2: Deploy Menggunakan Docker & Cloudflare Tunnel
+### Opsi B: Menjalankan di Server Lokal / Docker Nginx 🐳
 
-Jika Anda ingin menjalankan aplikasi di server lokal sekolah (PC server lab komputer) lalu menghubungkannya ke internet publik secara gratis dan aman:
+Jika Anda ingin menjalankan aplikasi di jaringan komputer laboratorium sekolah secara lokal tanpa internet:
 
-#### 1. Jalankan dengan Docker Compose
-Pastikan Docker sudah terpasang, lalu jalankan perintah:
-
-```bash
-docker compose up -d --build
-```
-
-Aplikasi akan berjalan pada port **8080** (`http://localhost:8080`).
-
-#### 2. Sambungkan dengan Cloudflare Tunnel
-1. Pasang CLI Cloudflare:
+1. **Jalankan via Docker Compose**:
    ```bash
-   # Di Linux / Mac / Windows
-   cloudflared tunnel login
+   docker compose up -d --build
    ```
-2. Buat tunnel baru:
-   ```bash
-   cloudflared tunnel create lab-ipa-tunnel
+2. Buka peramban pada alamat:
+   ```text
+   http://localhost:8080
    ```
-3. Arahkan traffic ke port lokal Docker:
-   ```bash
-   cloudflared tunnel route dns lab-ipa-tunnel lab.sekolahanda.sch.id
-   cloudflared tunnel run --url http://localhost:8080 lab-ipa-tunnel
-   ```
-Siswa dapat mengakses langsung melalui domain `https://lab.sekolahanda.sch.id`.
+3. **Keunggulan Mode Docker Nginx**:
+   Di dalam file `nginx.conf`, sudah dikonfigurasi reverse proxy `/olabs-proxy/` yang secara otomatis menghapus header `X-Frame-Options` dan CSP dari server OLabs. Ini memungkinkan simulator OLabs tampil 100% di dalam iframe tanpa diblokir oleh browser.
 
 ---
 
-### Opsi 3: Menjalankan Secara Lokal di Windows (Offline)
+### Opsi C: Menjalankan Langsung di Windows (Tanpa Instalasi Apapun) 💻
 
-1. Buka folder proyek.
+1. Buka folder proyek di komputer Windows.
 2. Klik ganda (**Double Click**) file **`Buka_Aplikasi.bat`**.
-3. Browser akan otomatis terbuka pada alamat `http://localhost:8080/index.html`.
+3. Browser akan otomatis terbuka dan menampilkan media pembelajaran siap pakai.
 
 ---
 
-## 📱 PWA & Akses Siswa via QR Code
+## ❓ Seputar Tampilan Simulator OLabs & PhET
 
-- **Akses Cepat Siswa**: Guru cukup membuka menu **`📱 Bagi QR`** di bilah navigasi atas dan menampilkannya di layar proyektor kelas. Siswa memindai QR code menggunakan kamera HP untuk langsung masuk.
-- **Pemasangan Offline (PWA)**: Klik tombol **`📥 Unduh App`** di bilah navigasi untuk memasang aplikasi ke layar beranda HP (*Add to Home Screen*) tanpa perlu mengunduh dari toko aplikasi.
+| Simulator | Mode Tersemat (In-App) | Mode Canvas (Offline) | Keterangan Akses |
+| :--- | :---: | :---: | :--- |
+| **PhET Pendulum Lab** | ✅ 100% Tersemat | ✅ Ada (Stopwatch 10 Ayunan) | Server PhET University of Colorado mengizinkan cross-origin embedding resmi. |
+| **PhET Masses & Springs** | ✅ 100% Tersemat | ✅ Ada (Gravitasi Planet) | Simulasi resmi HTML5 berjalan mulus langsung di dalam aplikasi. |
+| **OLabs Vernier Calipers** | ✅ Iframe + Jendela Cepat | ✅ Ada (Magnifier + 6 Objek) | Server resmi OLabs CDAC menerapkan `X-Frame-Options: SAMEORIGIN`. Pada web hosting biasa, klik tombol **"Buka Jendela Interaktif OLabs"** untuk membuka simulator utuh, atau gunakan **Simulasi Canvas** yang 100% offline dan terintegrasi LKPD! Pada Docker, Nginx Proxy mem-bypass batasan ini secara otomatis. |
 
 ---
 
 ## 📂 Struktur Repositori
 
 ```text
-├── index.html                   # Entry point aplikasi utama (Single Unified Screen)
+├── index.html                   # Entry point aplikasi utama (Responsive & Zero-Scroll)
 ├── manifest.json                # Web App Manifest untuk PWA
 ├── sw.js                        # Service Worker untuk caching offline
-├── Buka_Aplikasi.bat            # Script 1-klik buka aplikasi lokal di Windows
+├── Buka_Aplikasi.bat            # Script 1-klik jalankan aplikasi lokal Windows
 ├── server.py                    # Server mini Python untuk pengujian lokal
-├── Dockerfile                   # Docker build berbasis Nginx Alpine
-├── docker-compose.yml           # Orkestrasi container Docker lokal
-├── nginx.conf                   # Konfigurasi Nginx produksi & MIME types
+├── Dockerfile                   # Docker image berbasis Nginx Alpine
+├── docker-compose.yml           # Konfigurasi container Docker lokal (Port 8080)
+├── nginx.conf                   # Konfigurasi Nginx produksi & OLabs reverse-proxy
 ├── css/
-│   └── style.css                # Desain visual game, papan kayu, responsif & animasi
+│   └── style.css                # Desain visual game, background alam, tema kayu, responsif
 ├── js/
-│   ├── app.js                   # Navigasi layar terpadu, identitas siswa, PWA, audio
-│   ├── virtual-lab.js           # Engine simulasi Jangka Sorong, Neraca Pegas, PhET Bandul
-│   ├── quiz.js                  # Soal HOTS acak, umpan balik instan & sertifikat
-│   ├── audio.js                 # Efek suara interaktif Web Audio API
+│   ├── app.js                   # Navigasi layar, modal siswa, sub-simulator switch, PWA, audio
+│   ├── virtual-lab.js           # Engine simulasi Jangka Sorong, Neraca Pegas, & LKPD Digital
+│   ├── quiz.js                  # Engine kuis HOTS acak, umpan balik instan & sertifikat
+│   ├── audio.js                 # Efek suara interaktif Web Audio API sintetis
 │   └── qrcode.min.js            # Generator QR Code otomatis
+├── assets/
+│   ├── slides/                  # 16 Slide bahan ajar visual
+│   └── modul/                   # 11 Halaman modul ajar Kurikulum Merdeka
 ├── Video Panduan Praktikum Pengukuran Waktu.mp4
 ├── Modul Ajar Pengukuran.pdf
 ├── Bahan Ajar Pengukuran.pdf

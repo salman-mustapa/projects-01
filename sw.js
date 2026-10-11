@@ -3,7 +3,7 @@
  * Progressive Web App Offline Cache
  */
 
-const CACHE_NAME = 'lab-pengukuran-v1';
+const CACHE_NAME = 'lab-pengukuran-v2';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -31,7 +31,13 @@ const ASSETS_TO_CACHE = [
   './assets/slides/slide_13.jpg',
   './assets/slides/slide_14.jpg',
   './assets/slides/slide_15.jpg',
-  './assets/slides/slide_16.jpg'
+  './assets/slides/slide_16.jpg',
+  './assets/modul/page_01.jpg',
+  './assets/modul/page_02.jpg',
+  './assets/modul/page_03.jpg',
+  './assets/guides/User_Guide_Praktikum_Virtual_Jangka_Sorong/page_01.jpg',
+  './assets/guides/User_Guide_Praktikum_Virtual_Neraca_Pegas/page_01.jpg',
+  './assets/guides/User_Guide_Pengukuran_Waktu/page_01.jpg'
 ];
 
 self.addEventListener('install', (event) => {

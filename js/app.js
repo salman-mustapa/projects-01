@@ -11,6 +11,10 @@ class AppState {
         this.totalSlides = 16;
         this.slideAutoplayTimer = null;
         this.deferredPrompt = null;
+        this.modulPage = 1;
+        this.totalModulPages = 11;
+        this.guidePages = { caliper: 1, spring: 1, pendulum: 1 };
+        this.guideTotals = { caliper: 5, spring: 5, pendulum: 9 };
     }
 
     init() {
@@ -19,6 +23,16 @@ class AppState {
         this.setupPWA();
         this.updateSoundBtn();
         this.setupSlides();
+        this.setupModulViewer();
+        this.setupGuideViewer();
+
+        // Check if running in Docker with Nginx reverse proxy
+        if (window.location.port === "8080" || window.location.pathname.startsWith("/olabs-proxy/")) {
+            const caliperFrame = document.getElementById("caliper-inapp-frame");
+            if (caliperFrame) {
+                caliperFrame.src = "/olabs-proxy/?sub=1&brch=5&sim=16&cnt=4";
+            }
+        }
     }
 
     getStudent() {
@@ -40,10 +54,6 @@ class AppState {
         const chipName = document.getElementById("chip-student-name");
         const dashGreeting = document.getElementById("dash-greeting-name");
         const badge = document.getElementById("header-student-badge");
-        const coverProfCard = document.getElementById("cover-profile-card");
-        const coverFormCard = document.getElementById("cover-form-card");
-        const coverDispName = document.getElementById("cover-disp-name");
-        const coverDispMeta = document.getElementById("cover-disp-meta");
         const playPrimary = document.getElementById("play-text-primary");
         const playSub = document.getElementById("play-text-sub");
 
@@ -52,64 +62,86 @@ class AppState {
             if (dashGreeting) dashGreeting.textContent = this.student.name;
             if (badge) badge.style.display = "flex";
 
-            if (coverDispName) coverDispName.textContent = this.student.name.toUpperCase();
-            if (coverDispMeta) coverDispMeta.textContent = `Kelas ${this.student.className} • ${this.student.school || "SMP/MTs"}`;
             if (playPrimary) playPrimary.textContent = `LANJUTKAN: ${this.student.name.toUpperCase()}!`;
-            if (playSub) playSub.textContent = `Kelas ${this.student.className} • Klik untuk lanjut ke Misi Belajar`;
-
-            if (coverProfCard) coverProfCard.style.display = "flex";
-            if (coverFormCard) coverFormCard.style.display = "none";
+            if (playSub) playSub.textContent = `Kelas ${this.student.className} • Klik untuk Mulai Misi Belajar`;
         } else {
             if (chipName) chipName.textContent = "Siswa";
             if (dashGreeting) dashGreeting.textContent = "Siswa";
             if (badge) badge.style.display = "none";
 
-            if (coverProfCard) coverProfCard.style.display = "none";
-            if (coverFormCard) coverFormCard.style.display = "block";
-            const cancelRow = document.getElementById("cover-cancel-row");
-            if (cancelRow) cancelRow.style.display = "none";
+            if (playPrimary) playPrimary.textContent = "MULAI PETUALANGAN";
+            if (playSub) playSub.textContent = "Klik di sini untuk Membuka Laboratorium Sains";
         }
     }
 
-    toggleCoverForm(showForm) {
+    openStudentModal(forceEdit = false) {
         window.sound.playClick();
-        const coverProfCard = document.getElementById("cover-profile-card");
-        const coverFormCard = document.getElementById("cover-form-card");
-        const cancelRow = document.getElementById("cover-cancel-row");
-        const cancelName = document.getElementById("cover-cancel-name");
+        const modal = document.getElementById("student-modal");
+        const regBox = document.getElementById("student-modal-registered");
+        const formBox = document.getElementById("student-input-form");
 
-        if (showForm) {
-            if (coverProfCard) coverProfCard.style.display = "none";
-            if (coverFormCard) coverFormCard.style.display = "block";
+        if (this.student && this.student.name && this.student.name !== "Peserta Didik" && !forceEdit) {
+            if (regBox) regBox.style.display = "block";
+            if (formBox) formBox.style.display = "none";
 
-            if (this.student && this.student.name && this.student.name !== "Peserta Didik") {
-                if (cancelRow) cancelRow.style.display = "block";
-                if (cancelName) cancelName.textContent = this.student.name;
-                const inName = document.getElementById("cover-input-nama");
-                const inKelas = document.getElementById("cover-input-kelas");
-                const inAbsen = document.getElementById("cover-input-absen");
-                const inSekolah = document.getElementById("cover-input-sekolah");
-                if (inName) inName.value = this.student.name;
-                if (inKelas) inKelas.value = this.student.className;
-                if (inAbsen) inAbsen.value = (this.student.absen !== "-" ? this.student.absen : "");
-                if (inSekolah) inSekolah.value = this.student.school || "SMP/MTs";
-            } else {
-                if (cancelRow) cancelRow.style.display = "none";
-            }
+            const regName = document.getElementById("modal-reg-name");
+            const regMeta = document.getElementById("modal-reg-meta");
+            const regBtnName = document.getElementById("modal-reg-btn-name");
 
-            const inName = document.getElementById("cover-input-nama");
-            if (inName) setTimeout(() => inName.focus(), 80);
+            if (regName) regName.textContent = this.student.name.toUpperCase();
+            if (regMeta) regMeta.textContent = `Kelas ${this.student.className} • ${this.student.school || "SMP/MTs"}`;
+            if (regBtnName) regBtnName.textContent = this.student.name;
         } else {
-            if (coverFormCard) coverFormCard.style.display = "none";
-            if (coverProfCard) coverProfCard.style.display = "flex";
+            this.showStudentFormFields(forceEdit);
         }
+
+        if (modal) modal.classList.add("active");
     }
 
-    handleCoverFormSubmit() {
-        const nameInput = document.getElementById("cover-input-nama");
-        const kelasInput = document.getElementById("cover-input-kelas");
-        const absenInput = document.getElementById("cover-input-absen");
-        const sekolahInput = document.getElementById("cover-input-sekolah");
+    closeStudentModal() {
+        window.sound.playClick();
+        const modal = document.getElementById("student-modal");
+        if (modal) modal.classList.remove("active");
+    }
+
+    showStudentFormFields(prefill = true) {
+        const regBox = document.getElementById("student-modal-registered");
+        const formBox = document.getElementById("student-input-form");
+
+        if (regBox) regBox.style.display = "none";
+        if (formBox) formBox.style.display = "block";
+
+        const inName = document.getElementById("input-nama");
+        const inKelas = document.getElementById("input-kelas");
+        const inAbsen = document.getElementById("input-absen");
+        const inSekolah = document.getElementById("input-sekolah");
+
+        if (prefill && this.student && this.student.name && this.student.name !== "Peserta Didik") {
+            if (inName) inName.value = this.student.name;
+            if (inKelas) inKelas.value = this.student.className;
+            if (inAbsen) inAbsen.value = (this.student.absen !== "-" ? this.student.absen : "");
+            if (inSekolah) inSekolah.value = this.student.school || "SMP/MTs";
+        } else {
+            if (inName) inName.value = "";
+            if (inKelas) inKelas.value = "";
+            if (inAbsen) inAbsen.value = "";
+            if (inSekolah) inSekolah.value = "SMP Negeri 1";
+        }
+
+        if (inName) setTimeout(() => inName.focus(), 150);
+    }
+
+    continueAsRegistered() {
+        this.closeStudentModal();
+        window.sound.playSuccess();
+        this.navigateTo("dashboard");
+    }
+
+    handleStudentFormSubmit() {
+        const nameInput = document.getElementById("input-nama");
+        const kelasInput = document.getElementById("input-kelas");
+        const absenInput = document.getElementById("input-absen");
+        const sekolahInput = document.getElementById("input-sekolah");
 
         const name = nameInput ? nameInput.value.trim() : "";
         const kelas = kelasInput ? kelasInput.value.trim() : "";
@@ -121,23 +153,22 @@ class AppState {
             return;
         }
 
-        this.saveStudent(name, kelas || "VII", absen, sekolah);
+        this.saveStudent(name, kelas || "VII A", absen, sekolah);
+        this.closeStudentModal();
         window.sound.playSuccess();
+        if (window.confetti && window.confetti.start) {
+            window.confetti.start(1200);
+        }
         this.navigateTo("dashboard");
+    }
+
+    handlePlayClick() {
+        this.openStudentModal(false);
     }
 
     checkInitialScreen() {
         this.updateHeaderProfile();
         this.navigateTo("cover");
-    }
-
-    handlePlayClick() {
-        window.sound.playClick();
-        if (this.student && this.student.name && this.student.name !== "Peserta Didik") {
-            this.navigateTo("dashboard");
-        } else {
-            this.toggleCoverForm(true);
-        }
     }
 
     showScreen(screenId) {
@@ -167,7 +198,7 @@ class AppState {
 
         const target = document.getElementById(`screen-${screenId}`);
         if (target) {
-            target.style.display = "block";
+            target.style.display = (screenId === "cover") ? "flex" : "block";
             requestAnimationFrame(() => {
                 target.classList.add("active");
             });
@@ -181,6 +212,11 @@ class AppState {
         }
 
         this.currentScreen = screenId;
+        if (screenId === "cover") {
+            document.body.classList.add("on-cover");
+        } else {
+            document.body.classList.remove("on-cover");
+        }
         window.scrollTo({ top: 0, behavior: "smooth" });
 
         // Trigger simulator canvas sizes if entering virtual lab
@@ -222,22 +258,18 @@ class AppState {
                 exitModal.classList.remove("active");
                 
                 // Reset form inputs
-                const inName = document.getElementById("cover-input-nama");
-                const inKelas = document.getElementById("cover-input-kelas");
-                const inAbsen = document.getElementById("cover-input-absen");
+                const inName = document.getElementById("input-nama");
+                const inKelas = document.getElementById("input-kelas");
+                const inAbsen = document.getElementById("input-absen");
+                const inSekolah = document.getElementById("input-sekolah");
                 if (inName) inName.value = "";
                 if (inKelas) inKelas.value = "";
                 if (inAbsen) inAbsen.value = "";
+                if (inSekolah) inSekolah.value = "SMP Negeri 1";
                 
                 this.updateHeaderProfile();
-                this.toggleCoverForm(true);
                 this.navigateTo("cover");
-            });
-        }
-
-        if (exitModal) {
-            exitModal.addEventListener("click", (e) => {
-                if (e.target === exitModal) exitModal.classList.remove("active");
+                this.showToast("Berhasil keluar dari sesi belajar", "info");
             });
         }
 
@@ -445,7 +477,7 @@ class AppState {
 
     // --- VIRTUAL LAB TAB SWITCHING ---
     switchLab(labKey) {
-        window.sound.playClick();
+        window.sound?.playClick();
         document.querySelectorAll(".lab-tab-chips .lab-chip-btn").forEach(btn => btn.classList.remove("active"));
         document.querySelectorAll(".lab-panel").forEach(panel => panel.classList.remove("active"));
 
@@ -455,15 +487,112 @@ class AppState {
         if (panel) panel.classList.add("active");
 
         setTimeout(() => {
-            if (labKey === "caliper") window.vernierSim.draw();
-            if (labKey === "spring") window.springSim.draw();
-            if (labKey === "pendulum") window.pendulumSim.draw();
+            if (labKey === "caliper") window.vernierSim?.draw();
+            if (labKey === "spring") window.springSim?.draw();
+            if (labKey === "pendulum") window.pendulumSim?.draw();
+            if (labKey === "lkpd") window.lkpdManager?.renderAll();
         }, 50);
     }
 
-    // --- SUB-SIMULATOR TOGGLES (CANVAS vs EMBEDDED PHET/OLABS) ---
+    // --- SUB-SIMULATOR TOGGLES (CANVAS vs EMBEDDED OLABS / PHET) ---
+    switchCaliperMode(mode) {
+        window.sound?.playClick();
+        const btnOlabs = document.getElementById("btn-caliper-mode-olabs");
+        const btnCanvas = document.getElementById("btn-caliper-mode-canvas");
+        const viewOlabs = document.getElementById("caliper-olabs-view");
+        const viewCanvas = document.getElementById("caliper-canvas-view");
+
+        if (mode === "olabs") {
+            if (btnOlabs) btnOlabs.classList.add("active");
+            if (btnCanvas) btnCanvas.classList.remove("active");
+            if (viewOlabs) { viewOlabs.style.display = "block"; viewOlabs.classList.add("active"); }
+            if (viewCanvas) { viewCanvas.style.display = "none"; viewCanvas.classList.remove("active"); }
+        } else {
+            if (btnCanvas) btnCanvas.classList.add("active");
+            if (btnOlabs) btnOlabs.classList.remove("active");
+            if (viewCanvas) { viewCanvas.style.display = "block"; viewCanvas.classList.add("active"); }
+            if (viewOlabs) { viewOlabs.style.display = "none"; viewOlabs.classList.remove("active"); }
+            setTimeout(() => window.vernierSim?.draw(), 50);
+        }
+    }
+
+    reloadCaliperFrame() {
+        window.sound?.playClick();
+        const frame = document.getElementById("caliper-inapp-frame");
+        if (frame) {
+            const currentSrc = frame.src;
+            frame.src = "about:blank";
+            setTimeout(() => { frame.src = currentSrc; }, 100);
+        }
+    }
+
+    fullscreenCaliperFrame() {
+        window.sound?.playClick();
+        const holder = document.getElementById("caliper-iframe-holder");
+        if (!holder) return;
+        if (!document.fullscreenElement) {
+            if (holder.requestFullscreen) holder.requestFullscreen();
+            else if (holder.webkitRequestFullscreen) holder.webkitRequestFullscreen();
+        } else {
+            if (document.exitFullscreen) document.exitFullscreen();
+        }
+    }
+
+    switchSpringMode(mode) {
+        window.sound?.playClick();
+        const btnOnline = document.getElementById("btn-spring-mode-online");
+        const btnCanvas = document.getElementById("btn-spring-mode-canvas");
+        const viewOnline = document.getElementById("spring-online-view");
+        const viewCanvas = document.getElementById("spring-canvas-view");
+
+        if (mode === "online") {
+            if (btnOnline) btnOnline.classList.add("active");
+            if (btnCanvas) btnCanvas.classList.remove("active");
+            if (viewOnline) { viewOnline.style.display = "block"; viewOnline.classList.add("active"); }
+            if (viewCanvas) { viewCanvas.style.display = "none"; viewCanvas.classList.remove("active"); }
+        } else {
+            if (btnCanvas) btnCanvas.classList.add("active");
+            if (btnOnline) btnOnline.classList.remove("active");
+            if (viewCanvas) { viewCanvas.style.display = "block"; viewCanvas.classList.add("active"); }
+            if (viewOnline) { viewOnline.style.display = "none"; viewOnline.classList.remove("active"); }
+            setTimeout(() => window.springSim?.draw(), 50);
+        }
+    }
+
+    reloadSpringFrame() {
+        window.sound?.playClick();
+        const frame = document.getElementById("spring-inapp-frame");
+        if (frame) {
+            const currentSrc = frame.src;
+            frame.src = "about:blank";
+            setTimeout(() => { frame.src = currentSrc; }, 100);
+        }
+    }
+
+    fullscreenSpringFrame() {
+        window.sound?.playClick();
+        const holder = document.getElementById("spring-iframe-holder");
+        if (!holder) return;
+        if (!document.fullscreenElement) {
+            if (holder.requestFullscreen) holder.requestFullscreen();
+            else if (holder.webkitRequestFullscreen) holder.webkitRequestFullscreen();
+        } else {
+            if (document.exitFullscreen) document.exitFullscreen();
+        }
+    }
+
+    openOLabsWindow(type) {
+        window.sound?.playClick();
+        let url = "https://www.olabs.edu.in/?sub=1&brch=5&sim=16&cnt=4";
+        if (type === "spring") {
+            url = "https://www.olabs.edu.in/?sub=1&brch=5&sim=18&cnt=4";
+        }
+        window.open(url, "OLabsSimulationWindow", "width=1100,height=750,scrollbars=yes,resizable=yes");
+    }
+
+    // --- SUB-SIMULATOR TOGGLES (CANVAS vs EMBEDDED PHET) ---
     switchPendulumMode(mode) {
-        window.sound.playClick();
+        window.sound?.playClick();
         const btnPhet = document.getElementById("btn-pendulum-mode-phet");
         const btnCanvas = document.getElementById("btn-pendulum-mode-canvas");
         const viewPhet = document.getElementById("pendulum-phet-view");
@@ -479,12 +608,12 @@ class AppState {
             if (btnPhet) btnPhet.classList.remove("active");
             if (viewCanvas) { viewCanvas.style.display = "block"; viewCanvas.classList.add("active"); }
             if (viewPhet) { viewPhet.style.display = "none"; viewPhet.classList.remove("active"); }
-            setTimeout(() => window.pendulumSim.draw(), 50);
+            setTimeout(() => window.pendulumSim?.draw(), 50);
         }
     }
 
     reloadPhetFrame() {
-        window.sound.playClick();
+        window.sound?.playClick();
         const frame = document.getElementById("phet-inapp-frame");
         if (frame) {
             const currentSrc = frame.src;
@@ -494,7 +623,7 @@ class AppState {
     }
 
     fullscreenPhetFrame() {
-        window.sound.playClick();
+        window.sound?.playClick();
         const holder = document.getElementById("phet-iframe-holder");
         if (!holder) return;
 
@@ -509,126 +638,171 @@ class AppState {
         }
     }
 
-    switchCaliperMode(mode) {
-        window.sound.playClick();
-        const btnCanvas = document.getElementById("btn-mode-caliper-canvas");
-        const btnOlabs = document.getElementById("btn-mode-caliper-olabs");
-        const viewCanvas = document.getElementById("view-caliper-canvas");
-        const viewOlabs = document.getElementById("view-caliper-olabs");
-        const frame = document.getElementById("olabs-caliper-frame");
+    // --- MODUL AJAR 11-PAGE VIEWER ---
+    setupModulViewer() {
+        const strip = document.getElementById("modul-thumb-strip");
+        if (!strip) return;
+        strip.innerHTML = "";
 
-        if (mode === "olabs") {
-            if (btnOlabs) btnOlabs.classList.add("active");
-            if (btnCanvas) btnCanvas.classList.remove("active");
-            if (viewOlabs) { viewOlabs.style.display = "block"; viewOlabs.classList.add("active"); }
-            if (viewCanvas) { viewCanvas.style.display = "none"; viewCanvas.classList.remove("active"); }
-            if (frame && (!frame.src || frame.src === "about:blank")) {
-                frame.src = frame.getAttribute("data-src") || "https://amrita.olabs.edu.in/?sub=1&brch=5&sim=16&cnt=4";
-            }
-        } else {
-            if (btnCanvas) btnCanvas.classList.add("active");
-            if (btnOlabs) btnOlabs.classList.remove("active");
-            if (viewCanvas) { viewCanvas.style.display = "block"; viewCanvas.classList.add("active"); }
-            if (viewOlabs) { viewOlabs.style.display = "none"; viewOlabs.classList.remove("active"); }
-            setTimeout(() => window.vernierSim.draw(), 50);
+        for (let i = 1; i <= this.totalModulPages; i++) {
+            const pad = i.toString().padStart(2, "0");
+            const thumb = document.createElement("div");
+            thumb.className = `modul-thumb-item ${i === this.modulPage ? "active" : ""}`;
+            thumb.id = `modul-thumb-${i}`;
+            thumb.innerHTML = `
+                <img src="assets/modul/page_${pad}.jpg" alt="Thumb ${i}" loading="lazy">
+                <span>Hal ${i}</span>
+            `;
+            thumb.onclick = () => this.jumpModulPage(i);
+            strip.appendChild(thumb);
+        }
+        this.updateModulViewer();
+    }
+
+    updateModulViewer() {
+        const pad = this.modulPage.toString().padStart(2, "0");
+        const img = document.getElementById("img-modul-current");
+        const badge = document.getElementById("modul-page-badge");
+
+        if (img) img.src = `assets/modul/page_${pad}.jpg`;
+        if (badge) badge.textContent = `Halaman ${this.modulPage} dari ${this.totalModulPages}`;
+
+        document.querySelectorAll(".modul-thumb-item").forEach(item => item.classList.remove("active"));
+        const activeThumb = document.getElementById(`modul-thumb-${this.modulPage}`);
+        if (activeThumb) {
+            activeThumb.classList.add("active");
+            activeThumb.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
         }
     }
 
-    switchSpringMode(mode) {
-        window.sound.playClick();
-        const btnCanvas = document.getElementById("btn-mode-spring-canvas");
-        const btnOlabs = document.getElementById("btn-mode-spring-olabs");
-        const viewCanvas = document.getElementById("view-spring-canvas");
-        const viewOlabs = document.getElementById("view-spring-olabs");
-        const frame = document.getElementById("olabs-spring-frame");
-
-        if (mode === "olabs") {
-            if (btnOlabs) btnOlabs.classList.add("active");
-            if (btnCanvas) btnCanvas.classList.remove("active");
-            if (viewOlabs) { viewOlabs.style.display = "block"; viewOlabs.classList.add("active"); }
-            if (viewCanvas) { viewCanvas.style.display = "none"; viewCanvas.classList.remove("active"); }
-            if (frame && (!frame.src || frame.src === "about:blank")) {
-                frame.src = frame.getAttribute("data-src") || "https://amrita.olabs.edu.in/?sub=1&brch=5&sim=22&cnt=4";
-            }
-        } else {
-            if (btnCanvas) btnCanvas.classList.add("active");
-            if (btnOlabs) btnOlabs.classList.remove("active");
-            if (viewCanvas) { viewCanvas.style.display = "block"; viewCanvas.classList.add("active"); }
-            if (viewOlabs) { viewOlabs.style.display = "none"; viewOlabs.classList.remove("active"); }
-            setTimeout(() => window.springSim.draw(), 50);
+    prevModulPage() {
+        if (this.modulPage > 1) {
+            this.modulPage--;
+            window.sound?.playClick();
+            this.updateModulViewer();
         }
     }
 
-    // --- EMBEDDED SIMULATION IFRAME PLAYER (HUB) ---
-    loadSimFrame(simKey) {
-        window.sound.playClick();
-        const frame = document.getElementById("inapp-sim-frame");
-        const titleEl = document.getElementById("sim-active-title");
-        const descEl = document.getElementById("sim-active-desc");
-        const extLink = document.getElementById("btn-sim-ext-link");
-
-        document.querySelectorAll(".sim-switch-chips .chip-btn").forEach(b => b.classList.remove("active"));
-
-        let src = "";
-        let title = "";
-        let desc = "";
-        let btnId = "";
-
-        if (simKey === "phet") {
-            src = "https://phet.colorado.edu/sims/html/pendulum-lab/latest/pendulum-lab_all.html";
-            title = "🎯 <strong>PhET Interactive Simulations:</strong> Pendulum Lab (University of Colorado)";
-            desc = "Simulasi berjalan langsung di dalam aplikasi! Atur panjang tali, massa bandul, gesekan udara, dan ukur waktu periode ayunan secara interaktif.";
-            btnId = "btn-sim-phet";
-        } else if (simKey === "olabs-caliper") {
-            src = "https://amrita.olabs.edu.in/?sub=1&brch=5&sim=16&cnt=4";
-            title = "📏 <strong>Amrita OLabs:</strong> Virtual Vernier Caliper (Jangka Sorong)";
-            desc = "Simulasi web resmi OLabs pengukuran panjang dengan rahang geser dan skala nonius ketelitian 0,01 cm.";
-            btnId = "btn-sim-caliper";
-        } else if (simKey === "olabs-spring") {
-            src = "https://amrita.olabs.edu.in/?sub=1&brch=5&sim=22&cnt=4";
-            title = "⚖️ <strong>Amrita OLabs:</strong> Virtual Spring Balance (Neraca Pegas)";
-            desc = "Simulasi web resmi OLabs penentuan gaya berat dan massa beban berdasarkan Hukum Hooke.";
-            btnId = "btn-sim-spring";
+    nextModulPage() {
+        if (this.modulPage < this.totalModulPages) {
+            this.modulPage++;
+            window.sound?.playClick();
+            this.updateModulViewer();
         }
+    }
 
-        const activeBtn = document.getElementById(btnId);
+    jumpModulPage(page) {
+        if (page >= 1 && page <= this.totalModulPages) {
+            this.modulPage = page;
+            window.sound?.playClick();
+            this.updateModulViewer();
+        }
+    }
+
+    // --- PANDUAN PRAKTIKUM MULTI-PAGE VIEWER ---
+    setupGuideViewer() {
+        ["caliper", "spring", "pendulum"].forEach(guideKey => {
+            const strip = document.getElementById(`thumbs-guide-${guideKey}`);
+            if (!strip) return;
+            strip.innerHTML = "";
+
+            const total = this.guideTotals[guideKey];
+            const folder = guideKey === "caliper" ? "User_Guide_Praktikum_Virtual_Jangka_Sorong" :
+                          (guideKey === "spring" ? "User_Guide_Praktikum_Virtual_Neraca_Pegas" : "User_Guide_Pengukuran_Waktu");
+
+            for (let i = 1; i <= total; i++) {
+                const pad = i.toString().padStart(2, "0");
+                const thumb = document.createElement("div");
+                thumb.className = `guide-thumb-item ${i === this.guidePages[guideKey] ? "active" : ""}`;
+                thumb.id = `guide-thumb-${guideKey}-${i}`;
+                thumb.innerHTML = `
+                    <img src="assets/guides/${folder}/page_${pad}.jpg" alt="Hal ${i}" loading="lazy">
+                    <span>Hal ${i}</span>
+                `;
+                thumb.onclick = () => this.jumpGuidePage(guideKey, i);
+                strip.appendChild(thumb);
+            }
+        });
+    }
+
+    switchGuide(guideKey) {
+        window.sound?.playClick();
+        document.querySelectorAll("#screen-panduan-praktikum .lab-chip-btn").forEach(btn => btn.classList.remove("active"));
+        document.querySelectorAll("#screen-panduan-praktikum .guide-content-panel").forEach(p => {
+            p.classList.remove("active");
+            p.style.display = "none";
+        });
+
+        const activeBtn = document.getElementById(`tab-guide-${guideKey}`);
+        const activePanel = document.getElementById(`panel-guide-${guideKey}`);
         if (activeBtn) activeBtn.classList.add("active");
-
-        if (frame && src) frame.src = src;
-        if (titleEl) titleEl.innerHTML = title;
-        if (descEl) descEl.textContent = desc;
-        if (extLink) extLink.href = src;
+        if (activePanel) {
+            activePanel.style.display = "block";
+            activePanel.classList.add("active");
+        }
+        this.updateGuideViewer(guideKey);
     }
 
-    reloadSimFrame() {
-        window.sound.playClick();
-        const frame = document.getElementById("inapp-sim-frame");
-        if (frame) {
-            const currentSrc = frame.src;
-            frame.src = "about:blank";
-            setTimeout(() => { frame.src = currentSrc; }, 100);
+    updateGuideViewer(guideKey) {
+        const cur = this.guidePages[guideKey];
+        const total = this.guideTotals[guideKey];
+        const pad = cur.toString().padStart(2, "0");
+        const folder = guideKey === "caliper" ? "User_Guide_Praktikum_Virtual_Jangka_Sorong" :
+                      (guideKey === "spring" ? "User_Guide_Praktikum_Virtual_Neraca_Pegas" : "User_Guide_Pengukuran_Waktu");
+
+        const img = document.getElementById(`img-guide-${guideKey}`);
+        const badge = document.getElementById(`badge-guide-${guideKey}`);
+
+        if (img) img.src = `assets/guides/${folder}/page_${pad}.jpg`;
+        if (badge) badge.textContent = `Halaman ${cur} dari ${total}`;
+
+        document.querySelectorAll(`#thumbs-guide-${guideKey} .guide-thumb-item`).forEach(it => it.classList.remove("active"));
+        const activeThumb = document.getElementById(`guide-thumb-${guideKey}-${cur}`);
+        if (activeThumb) {
+            activeThumb.classList.add("active");
+            activeThumb.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
         }
     }
 
-    fullscreenSimFrame() {
-        window.sound.playClick();
-        const holder = document.getElementById("sim-iframe-holder");
-        if (!holder) return;
-
-        if (!document.fullscreenElement) {
-            if (holder.requestFullscreen) {
-                holder.requestFullscreen();
-            } else if (holder.webkitRequestFullscreen) {
-                holder.webkitRequestFullscreen();
-            }
-        } else {
-            if (document.exitFullscreen) {
-                document.exitFullscreen();
-            }
+    prevGuidePage(guideKey) {
+        if (this.guidePages[guideKey] > 1) {
+            this.guidePages[guideKey]--;
+            window.sound?.playClick();
+            this.updateGuideViewer(guideKey);
         }
     }
 
-    openDownloadModal() {
+    nextGuidePage(guideKey) {
+        if (this.guidePages[guideKey] < this.guideTotals[guideKey]) {
+            this.guidePages[guideKey]++;
+            window.sound?.playClick();
+            this.updateGuideViewer(guideKey);
+        }
+    }
+
+    jumpGuidePage(guideKey, page) {
+        if (page >= 1 && page <= this.guideTotals[guideKey]) {
+            this.guidePages[guideKey] = page;
+            window.sound?.playClick();
+            this.updateGuideViewer(guideKey);
+        }
+    }
+
+    // --- TOAST NOTIFICATION HELPER ---
+    showToast(message, type = "success") {
+        const toast = document.getElementById("app-toast");
+        if (!toast) return;
+
+        toast.textContent = message;
+        toast.className = `app-toast active ${type}`;
+        
+        clearTimeout(this._toastTimer);
+        this._toastTimer = setTimeout(() => {
+            toast.classList.remove("active");
+        }, 2800);
+    }
+
+        openDownloadModal() {
         window.sound.playClick();
         const m = document.getElementById("download-app-modal");
         if (m) m.classList.add("active");
@@ -737,7 +911,8 @@ window.appState = new AppState();
 
 document.addEventListener("DOMContentLoaded", () => {
     window.appState.init();
-    window.vernierSim.init();
-    window.springSim.init();
-    window.pendulumSim.init();
+    window.vernierSim?.init();
+    window.springSim?.init();
+    window.pendulumSim?.init();
+    window.lkpdManager?.init();
 });
