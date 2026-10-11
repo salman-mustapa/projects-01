@@ -4,6 +4,11 @@ scratch_*.py
 __pycache__/
 *.pyc
 
+# Batch scripts and logs
+*.bat
+*.cmd
+*.log
+
 # OS generated files
 .DS_Store
 Thumbs.db

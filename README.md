@@ -146,11 +146,11 @@ Jika Anda ingin menjalankan aplikasi di jaringan komputer laboratorium sekolah s
 
 ---
 
-### Opsi C: Menjalankan Langsung di Windows (Tanpa Instalasi Apapun) 💻
+### Opsi C: Menjalankan Langsung di Komputer (Tanpa Server Apapun) 💻
 
-1. Buka folder proyek di komputer Windows.
-2. Klik ganda (**Double Click**) file **`Buka_Aplikasi.bat`**.
-3. Browser akan otomatis terbuka dan menampilkan media pembelajaran siap pakai.
+1. Buka folder proyek.
+2. Klik ganda (**Double Click**) file **`index.html`**.
+3. Browser akan otomatis terbuka dan media pembelajaran langsung siap digunakan 100% interaktif!
 
 ---
 
@@ -170,8 +170,6 @@ Jika Anda ingin menjalankan aplikasi di jaringan komputer laboratorium sekolah s
 ├── index.html                   # Entry point aplikasi utama (Responsive & Zero-Scroll)
 ├── manifest.json                # Web App Manifest untuk PWA
 ├── sw.js                        # Service Worker untuk caching offline
-├── Buka_Aplikasi.bat            # Script 1-klik jalankan aplikasi lokal Windows
-├── server.py                    # Server mini Python untuk pengujian lokal
 ├── Dockerfile                   # Docker image berbasis Nginx Alpine
 ├── docker-compose.yml           # Konfigurasi container Docker lokal (Port 8080)
 ├── nginx.conf                   # Konfigurasi Nginx produksi & OLabs reverse-proxy

@@ -4065,23 +4065,57 @@ body.game-theme.on-cover .app-viewport-wrapper {
     flex-wrap: wrap;
 }
 
-.sim-engine-bar {
+/* ==========================================================================
+   CLEAN SINGLE-ROW SIMULATOR TOOLBAR
+   ========================================================================== */
+.sim-clean-bar {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 8px;
     flex-wrap: wrap;
+    gap: 8px;
     margin-bottom: 8px;
     padding: 6px 10px;
-    background: #f1f5f9;
+    background: #f8fafc;
     border-radius: var(--radius-md);
     border: 1.5px solid #cbd5e1;
 }
 
-.sim-engine-bar .bar-lbl {
-    font-size: 0.82rem;
-    font-weight: 800;
-    color: #334155;
-    margin-right: 4px;
+.sim-mode-chips {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.sim-mode-chips .chip-btn {
+    padding: 5px 12px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    border-radius: 6px;
+    border: 1.5px solid #cbd5e1;
+    background: #ffffff;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.sim-mode-chips .chip-btn.active {
+    background: #059669;
+    color: #ffffff;
+    border-color: #047857;
+    box-shadow: 0 2px 4px rgba(5, 150, 105, 0.2);
+}
+
+.btn-orient-toggle {
+    background: #fef3c7 !important;
+    border-color: #d97706 !important;
+    color: #92400e !important;
+    font-weight: 800 !important;
+    cursor: pointer;
+}
+
+.btn-orient-toggle:hover {
+    background: #fde68a !important;
 }
 
 /* ==========================================================================
@@ -4199,19 +4233,20 @@ body.game-theme.on-cover .app-viewport-wrapper {
         white-space: nowrap;
     }
 
-    /* Sub-mode Toggles & Actions Bar */
-    .sim-mode-toggle-bar {
+    /* Clean Simulator Bar on Mobile */
+    .sim-clean-bar {
         flex-direction: column;
         align-items: stretch;
         gap: 6px;
         margin-bottom: 6px;
+        padding: 5px 6px;
     }
-    .mode-toggle-chips {
+    .sim-mode-chips {
         display: flex;
         width: 100%;
         gap: 4px;
     }
-    .mode-toggle-chips .chip-btn {
+    .sim-mode-chips .chip-btn {
         flex: 1;
         text-align: center;
         padding: 5px 6px;
@@ -4237,54 +4272,11 @@ body.game-theme.on-cover .app-viewport-wrapper {
         text-overflow: ellipsis;
     }
 
-    /* Simulator In-App Engine Bar */
-    .sim-engine-bar {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 4px;
-        padding: 5px 8px;
-        border-radius: 6px;
-        margin-bottom: 6px;
-    }
-    .sim-engine-bar .bar-lbl {
-        font-size: 0.72rem;
-        margin-right: 0;
-    }
-    .sim-engine-bar .chip-btn {
-        width: 100%;
-        padding: 5px 8px;
-        font-size: 0.72rem;
-        border-radius: 6px;
-        text-align: center;
-    }
-
     /* Frame container */
     .sim-iframe-holder {
         height: 440px;
         border-radius: 6px;
         margin-bottom: 6px;
-    }
-
-    .olabs-helper-card {
-        padding: 8px 10px;
-        gap: 8px;
-        border-radius: 6px;
-    }
-    .olabs-helper-icon {
-        font-size: 1.5rem;
-    }
-    .olabs-helper-content h4 {
-        font-size: 0.85rem;
-    }
-    .olabs-helper-content p {
-        font-size: 0.75rem;
-        margin-bottom: 6px;
-    }
-    .olabs-helper-actions .btn-game-primary,
-    .olabs-helper-actions .btn-tool-pill {
-        font-size: 0.75rem;
-        padding: 6px 10px;
-        border-radius: 6px;
     }
 }
 
@@ -4296,7 +4288,7 @@ body.game-theme.on-cover .app-viewport-wrapper {
     .nav-student-chip {
         display: none;
     }
-    .mode-toggle-chips .chip-btn {
+    .sim-mode-chips .chip-btn {
         font-size: 0.68rem;
         padding: 4px;
     }
@@ -4331,11 +4323,9 @@ body.game-theme.on-cover .app-viewport-wrapper {
         padding: 3px 8px !important;
         font-size: 0.72rem !important;
     }
-    .sim-mode-toggle-bar {
-        display: none !important;
-    }
-    .sim-engine-bar {
-        display: none !important;
+    .sim-clean-bar {
+        margin-bottom: 2px !important;
+        padding: 3px 6px !important;
     }
     .sim-iframe-holder {
         height: 85vh !important;
@@ -4343,8 +4333,47 @@ body.game-theme.on-cover .app-viewport-wrapper {
         margin-bottom: 0 !important;
         border-width: 1.5px !important;
     }
-    .olabs-helper-card,
-    .online-hub-footer {
-        display: none !important;
-    }
+}
+
+/* In-App Simulated / Forced Device Landscape Mode (Toggle via Button) */
+.app-viewport-wrapper.device-landscape-mode {
+    max-width: 100% !important;
+    padding: 2px 6px !important;
+}
+
+.app-viewport-wrapper.device-landscape-mode .app-navbar {
+    display: none !important;
+}
+
+.app-viewport-wrapper.device-landscape-mode .inner-toolbar {
+    margin-bottom: 3px !important;
+}
+
+.app-viewport-wrapper.device-landscape-mode .inner-toolbar .sub-badge {
+    display: none !important;
+}
+
+.app-viewport-wrapper.device-landscape-mode .btn-back-pill {
+    padding: 3px 8px !important;
+    font-size: 0.72rem !important;
+}
+
+.app-viewport-wrapper.device-landscape-mode .lab-tab-chips {
+    margin-bottom: 3px !important;
+    padding-bottom: 1px !important;
+}
+
+.app-viewport-wrapper.device-landscape-mode .lab-chip-btn {
+    padding: 3px 8px !important;
+    font-size: 0.72rem !important;
+}
+
+.app-viewport-wrapper.device-landscape-mode .sim-clean-bar {
+    margin-bottom: 3px !important;
+    padding: 3px 6px !important;
+}
+
+.app-viewport-wrapper.device-landscape-mode .sim-iframe-holder {
+    height: clamp(340px, 80vh, 600px) !important;
+    margin-bottom: 2px !important;
 }

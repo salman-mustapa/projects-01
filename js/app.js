@@ -575,6 +575,38 @@ class AppState {
         }
     }
 
+    toggleDeviceOrientation() {
+        window.sound?.playClick();
+        const wrapper = document.querySelector(".app-viewport-wrapper");
+        if (!wrapper) return;
+
+        const isLandscape = wrapper.classList.toggle("device-landscape-mode");
+
+        if (screen.orientation && screen.orientation.lock) {
+            screen.orientation.lock(isLandscape ? "landscape" : "portrait").catch(() => {});
+        }
+
+        const orientBtns = document.querySelectorAll(".btn-orient-toggle");
+        orientBtns.forEach(btn => {
+            const text = btn.querySelector(".orient-text");
+            const icon = btn.querySelector(".orient-icon");
+            if (text) text.textContent = isLandscape ? "Mode Portrait" : "Putar Layar";
+            if (icon) icon.textContent = isLandscape ? "📱" : "🔄";
+        });
+
+        if (isLandscape) {
+            this.showToast("🔄 Tampilan dialihkan ke Mode Landscape (Mendatar)", "info");
+        } else {
+            this.showToast("📱 Tampilan dialihkan ke Mode Portrait (Tegak)", "info");
+        }
+
+        setTimeout(() => {
+            window.vernierSim?.draw();
+            window.springSim?.draw();
+            window.pendulumSim?.draw();
+        }, 150);
+    }
+
     switchSpringMode(mode) {
         window.sound?.playClick();
         const btnOnline = document.getElementById("btn-spring-mode-online");

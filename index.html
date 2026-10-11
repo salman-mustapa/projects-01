@@ -307,30 +307,23 @@
                     </div>
 
                     <!-- Panel 1: Jangka Sorong (Panjang) -->
-                    <!-- Panel 1: Jangka Sorong (Panjang) -->
-                    <div class="lab-panel active" id="panel-lab-caliper">
-                        <div class="lab-content-box">
-                            <!-- In-App Top Controls & Mode Switch (OLabs Resmi vs Canvas Interaktif) -->
-                            <div class="sim-mode-toggle-bar">
-                                <div class="mode-toggle-chips">
-                                    <button class="chip-btn active" id="btn-caliper-mode-olabs" onclick="appState.switchCaliperMode('olabs')">🌐 Simulasi OLabs Resmi (Tersemat In-App)</button>
-                                    <button class="chip-btn" id="btn-caliper-mode-canvas" onclick="appState.switchCaliperMode('canvas')">🔬 Simulasi Canvas Interaktif (Offline & LKPD)</button>
+                                       <!-- Clean, Single-Row Simulator Controls -->
+                            <div class="sim-clean-bar">
+                                <div class="sim-mode-chips">
+                                    <button class="chip-btn active" id="btn-caliper-mode-olabs" onclick="appState.switchCaliperMode('olabs')">⚡ Simulasi OLabs</button>
+                                    <button class="chip-btn" id="btn-caliper-mode-canvas" onclick="appState.switchCaliperMode('canvas')">🔬 Simulasi Canvas</button>
                                 </div>
                                 <div class="sim-actions-row">
-                                    <button class="btn-tool-pill" onclick="appState.reloadCaliperFrame()" title="Muat ulang simulator OLabs">🔄 Muat Ulang</button>
-                                    <button class="btn-tool-pill" onclick="appState.fullscreenCaliperFrame()" title="Perbesar layar simulasi">⛶ Layar Penuh</button>
-                                    <button class="btn-tool-pill btn-olabs-direct" onclick="appState.openOLabsWindow('caliper')" title="Buka jendela interaktif OLabs">🚀 Jendela OLabs</button>
-                                    <button class="btn-tool-pill" onclick="vernierSim.logToLkpd()" title="Catat hasil ke LKPD">📥 Catat ke LKPD</button>
+                                    <button class="btn-tool-pill btn-orient-toggle" onclick="appState.toggleDeviceOrientation()" title="Putar Posisi Layar (Landscape / Portrait)">
+                                        <span class="orient-icon">🔄</span> <span class="orient-text">Putar Layar</span>
+                                    </button>
+                                    <button class="btn-tool-pill" onclick="appState.fullscreenCaliperFrame()" title="Perbesar Layar Penuh">⛶ Layar Penuh</button>
+                                    <button class="btn-tool-pill btn-olabs-direct" onclick="appState.openOLabsWindow('caliper')" title="Buka Portal Resmi OLabs di Tab Baru">🌐 Web Resmi ↗</button>
                                 </div>
                             </div>
 
                             <!-- View A: Interactive In-App Simulator (Default Active: OLabs HTML5 In-App Edition) -->
                             <div id="caliper-olabs-view" class="lab-subview active">
-                                <div class="sim-engine-bar">
-                                    <span class="bar-lbl">Pilihan Akses Lab:</span>
-                                    <button class="chip-btn active" id="btn-engine-compadre" onclick="appState.switchCaliperEngine('inapp')">⚡ Simulasi OLabs In-App (Tersemat 100% & Interaktif)</button>
-                                    <button class="chip-btn" id="btn-engine-olabs" onclick="appState.openOLabsWindow('caliper')" title="Buka Portal Resmi OLabs di tab baru tanpa batasan frame">🏛️ Buka Portal Resmi OLabs (olabs.edu.in) ↗</button>
-                                </div>
                                 <div class="sim-iframe-holder" id="caliper-iframe-holder">
                                     <iframe id="caliper-inapp-frame" 
                                             src="assets/simulators/vernier/index.html" 
@@ -338,30 +331,6 @@
                                             loading="lazy" 
                                             title="OLabs Vernier Calipers Simulator">
                                     </iframe>
-                                </div>
-                                <div class="olabs-helper-card" id="caliper-olabs-helper" style="display: none;">
-                                    <div class="olabs-helper-icon">🔬</div>
-                                    <div class="olabs-helper-content">
-                                        <h4>Akses Portal Resmi OLabs India (olabs.edu.in)</h4>
-                                        <p>Server resmi OLabs menerapkan kebijakan keamanan <code>X-Frame-Options: SAMEORIGIN</code>. Pada web hosting biasa, klik tombol di bawah untuk membuka simulator resmi utuh di jendela interaktif baru atau gunakan simulator In-App di atas yang tersemat 100%:</p>
-                                        <div class="olabs-helper-actions">
-                                            <button class="btn-game-primary" onclick="appState.openOLabsWindow('caliper')">
-                                                🚀 Buka Jendela Interaktif OLabs (Ukuran Penuh)
-                                            </button>
-                                            <button class="btn-tool-pill" onclick="appState.switchCaliperEngine('compadre')">
-                                                ⚡ Kembali ke Simulator OLabs In-App Tersemat
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="online-hub-footer">
-                                    <div class="hub-status-info">
-                                        <div class="hub-status-header">
-                                            <span>📏 <strong>OLabs Vernier Calipers:</strong> Amrita Vishwa Vidyapeetham & CDAC</span>
-                                            <button class="btn-mini-launch" onclick="appState.openOLabsWindow('caliper')">🚀 Buka Jendela Interaktif OLabs</button>
-                                        </div>
-                                        <p>Simulasi laboratorium resmi OLabs. Jika web browser atau hosting membatasi frame langsung, klik tombol <strong>"Buka Jendela Interaktif OLabs"</strong> untuk membuka simulator utuh, atau beralih ke tab <strong>"Simulasi Canvas Interaktif"</strong> di atas yang 100% offline dan terintegrasi otomatis dengan LKPD Digital!</p>
-                                    </div>
                                 </div>
                             </div>
 
@@ -433,17 +402,18 @@
                     <!-- Panel 2: Neraca Pegas (Massa & Gaya Berat) -->
                     <div class="lab-panel" id="panel-lab-spring">
                         <div class="lab-content-box">
-                            <!-- In-App Top Controls & Mode Switch -->
-                            <div class="sim-mode-toggle-bar">
-                                <div class="mode-toggle-chips">
-                                    <button class="chip-btn active" id="btn-spring-mode-online" onclick="appState.switchSpringMode('online')">🌐 Simulasi PhET / OLabs (Tersemat In-App)</button>
-                                    <button class="chip-btn" id="btn-spring-mode-canvas" onclick="appState.switchSpringMode('canvas')">🔬 Simulasi Neraca Pegas Canvas (Offline)</button>
+                            <!-- Clean, Single-Row Simulator Controls -->
+                            <div class="sim-clean-bar">
+                                <div class="sim-mode-chips">
+                                    <button class="chip-btn active" id="btn-spring-mode-online" onclick="appState.switchSpringMode('online')">⚡ Simulasi PhET</button>
+                                    <button class="chip-btn" id="btn-spring-mode-canvas" onclick="appState.switchSpringMode('canvas')">🔬 Simulasi Canvas</button>
                                 </div>
                                 <div class="sim-actions-row">
-                                    <button class="btn-tool-pill" onclick="appState.reloadSpringFrame()" title="Muat ulang simulasi">🔄 Muat Ulang</button>
-                                    <button class="btn-tool-pill" onclick="appState.fullscreenSpringFrame()" title="Perbesar layar simulasi">⛶ Layar Penuh</button>
-                                    <button class="btn-tool-pill btn-olabs-direct" onclick="appState.openOLabsWindow('spring')" title="Buka jendela OLabs Spring">🚀 Jendela OLabs</button>
-                                    <button class="btn-tool-pill" onclick="springSim.logToLkpd()" title="Catat hasil ke LKPD">📥 Catat ke LKPD</button>
+                                    <button class="btn-tool-pill btn-orient-toggle" onclick="appState.toggleDeviceOrientation()" title="Putar Posisi Layar (Landscape / Portrait)">
+                                        <span class="orient-icon">🔄</span> <span class="orient-text">Putar Layar</span>
+                                    </button>
+                                    <button class="btn-tool-pill" onclick="appState.fullscreenSpringFrame()" title="Perbesar Layar Penuh">⛶ Layar Penuh</button>
+                                    <button class="btn-tool-pill btn-olabs-direct" onclick="appState.openOLabsWindow('spring')" title="Buka Portal OLabs Spring di Tab Baru">🌐 Web Resmi ↗</button>
                                 </div>
                             </div>
 
@@ -456,15 +426,6 @@
                                             loading="lazy" 
                                             title="PhET Masses and Springs Interactive Simulator">
                                     </iframe>
-                                </div>
-                                <div class="online-hub-footer">
-                                    <div class="hub-status-info">
-                                        <div class="hub-status-header">
-                                            <span>⚖️ <strong>Simulasi Massa & Neraca Pegas:</strong> PhET University of Colorado & OLabs Spring</span>
-                                            <button class="btn-mini-launch" onclick="appState.openOLabsWindow('spring')">🚀 Buka OLabs Helical Spring</button>
-                                        </div>
-                                        <p>Simulasi berjalan langsung di dalam aplikasi! Ukur massa beban (50g, 100g, 250g), konstanta pegas k, osilasi gaya berat, dan gravitasi planet secara interaktif. Untuk modul OLabs Helical Spring, ketuk tombol <strong>"Buka OLabs Helical Spring"</strong>.</p>
-                                    </div>
                                 </div>
                             </div>
 
@@ -531,16 +492,17 @@
                     <!-- Panel 3: Bandul & Waktu (PhET EMBEDDED IN-APP DEFAULT) -->
                     <div class="lab-panel" id="panel-lab-pendulum">
                         <div class="lab-content-box">
-                            <!-- In-App Top Controls & Mode Switch -->
-                            <div class="sim-mode-toggle-bar">
-                                <div class="mode-toggle-chips">
-                                    <button class="chip-btn active" id="btn-pendulum-mode-phet" onclick="appState.switchPendulumMode('phet')">🌐 Simulasi PhET Resmi (Tersemat In-App)</button>
-                                    <button class="chip-btn" id="btn-pendulum-mode-canvas" onclick="appState.switchPendulumMode('canvas')">🔬 Simulasi Bandul Canvas (Offline)</button>
+                            <!-- Clean, Single-Row Simulator Controls -->
+                            <div class="sim-clean-bar">
+                                <div class="sim-mode-chips">
+                                    <button class="chip-btn active" id="btn-pendulum-mode-phet" onclick="appState.switchPendulumMode('phet')">⚡ Simulasi PhET</button>
+                                    <button class="chip-btn" id="btn-pendulum-mode-canvas" onclick="appState.switchPendulumMode('canvas')">🔬 Simulasi Canvas</button>
                                 </div>
                                 <div class="sim-actions-row">
-                                    <button class="btn-tool-pill" onclick="appState.reloadPhetFrame()" title="Muat ulang simulasi PhET">🔄 Muat Ulang</button>
-                                    <button class="btn-tool-pill" onclick="appState.fullscreenPhetFrame()" title="Perbesar layar simulasi">⛶ Layar Penuh</button>
-                                    <button class="btn-tool-pill" onclick="pendulumSim.logToLkpd()" title="Catat data percobaan ke LKPD">📥 Catat ke LKPD</button>
+                                    <button class="btn-tool-pill btn-orient-toggle" onclick="appState.toggleDeviceOrientation()" title="Putar Posisi Layar (Landscape / Portrait)">
+                                        <span class="orient-icon">🔄</span> <span class="orient-text">Putar Layar</span>
+                                    </button>
+                                    <button class="btn-tool-pill" onclick="appState.fullscreenPhetFrame()" title="Perbesar Layar Penuh">⛶ Layar Penuh</button>
                                 </div>
                             </div>
 
@@ -548,12 +510,6 @@
                             <div id="pendulum-phet-view" class="lab-subview active">
                                 <div class="sim-iframe-holder" id="phet-iframe-holder">
                                     <iframe id="phet-inapp-frame" src="https://phet.colorado.edu/sims/html/pendulum-lab/latest/pendulum-lab_all.html" allow="fullscreen; autoplay" loading="lazy" title="PhET Pendulum Lab Tersemat In-App"></iframe>
-                                </div>
-                                <div class="online-hub-footer">
-                                    <div class="hub-status-info">
-                                        <span>⏱️ <strong>PhET Interactive Simulations:</strong> Pendulum Lab (University of Colorado)</span>
-                                        <p>Simulasi berjalan langsung di dalam aplikasi! Atur panjang tali, massa bandul, aktifkan stopwatch, dan hitung 10 ayunan.</p>
-                                    </div>
                                 </div>
                             </div>
 
