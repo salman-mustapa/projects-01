@@ -541,16 +541,15 @@ class AppState {
         if (engine === "compadre" || engine === "inapp") {
             if (btnCompadre) btnCompadre.classList.add("active");
             if (btnOlabs) btnOlabs.classList.remove("active");
-            if (frame) frame.src = "assets/simulators/vernier/index.html";
+            if (frame && !frame.src.includes("assets/simulators/vernier/index.html")) {
+                frame.src = "assets/simulators/vernier/index.html";
+            }
             if (olabsCard) olabsCard.style.display = "none";
         } else {
-            if (btnOlabs) btnOlabs.classList.add("active");
-            if (btnCompadre) btnCompadre.classList.remove("active");
-            const src = (window.location.port === "8080" || window.location.pathname.startsWith("/olabs-proxy/"))
-                ? "/olabs-proxy/?sub=1&brch=5&sim=16&cnt=4"
-                : "https://www.olabs.edu.in/?sub=1&brch=5&sim=16&cnt=4";
-            if (frame) frame.src = src;
-            if (olabsCard) olabsCard.style.display = "flex";
+            // Open official portal directly in new tab (avoids ERR_BLOCKED_BY_RESPONSE / sad face)
+            this.openOLabsWindow("caliper");
+            if (btnCompadre) btnCompadre.classList.add("active");
+            if (btnOlabs) btnOlabs.classList.remove("active");
         }
     }
 

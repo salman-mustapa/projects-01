@@ -318,6 +318,207 @@
             color: #fef08a;
             font-size: 0.7rem;
             text-align: center;
+            padding: 4px;
+            letter-spacing: 0.3px;
+        }
+
+        /* ==========================================================================
+           RESPONSIVE MOBILE VIEWPORT (PORTRAIT & LANDSCAPE)
+           ========================================================================== */
+        @media (max-width: 680px) {
+            body {
+                padding: 0;
+            }
+            .olabs-sim-container {
+                border-width: 2px;
+                border-radius: 6px;
+                max-height: 100vh;
+                height: 100vh;
+            }
+            .olabs-top-header {
+                padding: 4px 8px;
+            }
+            .olabs-sim-title {
+                font-size: 0.92rem;
+            }
+            .olabs-lc-tag {
+                font-size: 0.7rem;
+                padding: 2px 6px;
+            }
+            .olabs-stage-body {
+                flex-direction: column;
+            }
+            .olabs-sidebar {
+                width: 100%;
+                flex-direction: row;
+                align-items: center;
+                padding: 4px 6px;
+                overflow-x: auto;
+                gap: 5px;
+                border-right: none;
+                border-bottom: 2px solid #e2d2c1;
+                flex-shrink: 0;
+                -webkit-overflow-scrolling: touch;
+            }
+            .sidebar-title {
+                display: none;
+            }
+            .obj-select-grid {
+                display: flex;
+                flex-direction: row;
+                gap: 4px;
+                flex-shrink: 0;
+            }
+            .obj-btn {
+                padding: 4px 8px;
+                flex-direction: row;
+                gap: 4px;
+                white-space: nowrap;
+                border-radius: 5px;
+            }
+            .obj-icon {
+                font-size: 1rem;
+            }
+            .obj-label {
+                font-size: 0.68rem;
+            }
+            #btn-obj-free {
+                width: auto !important;
+                margin-top: 0 !important;
+                padding: 4px 8px;
+                flex-direction: row;
+                gap: 4px;
+                white-space: nowrap;
+                border-radius: 5px;
+                flex-shrink: 0;
+            }
+            .btn-olabs-reset {
+                margin-top: 0;
+                margin-left: auto;
+                padding: 4px 10px;
+                font-size: 0.72rem;
+                white-space: nowrap;
+                border-radius: 5px;
+                flex-shrink: 0;
+            }
+            .olabs-center-stage {
+                flex: 1;
+                width: 100%;
+                min-height: 0;
+            }
+            .canvas-wrapper {
+                width: 100%;
+                flex: 1;
+                min-height: 0;
+                overflow: hidden;
+            }
+            #caliper-canvas {
+                width: 100%;
+                height: auto;
+                max-width: 100%;
+                aspect-ratio: 780 / 340;
+                touch-action: none;
+            }
+            .olabs-magnifier-box {
+                top: 4px;
+                right: 4px;
+                width: 160px;
+                height: 62px;
+                border-width: 1.5px;
+                border-radius: 5px;
+            }
+            .magnifier-header {
+                font-size: 0.58rem;
+                padding: 1px 4px;
+            }
+            .olabs-bottom-bar {
+                padding: 4px 6px;
+                gap: 4px;
+            }
+            .readout-chips {
+                gap: 6px;
+                font-size: 0.72rem;
+                flex-wrap: wrap;
+            }
+            .r-val {
+                padding: 1px 4px;
+                margin-left: 2px;
+                border-radius: 4px;
+            }
+            .step-ctrls {
+                gap: 4px;
+            }
+            .step-btn {
+                padding: 4px 8px;
+                font-size: 0.7rem;
+                border-radius: 4px;
+            }
+            .btn-log-lkpd {
+                padding: 4px 8px;
+                font-size: 0.72rem;
+                border-radius: 4px;
+            }
+            .olabs-footer-note {
+                font-size: 0.6rem;
+                padding: 2px 4px;
+            }
+        }
+
+        /* Landscape Mobile */
+        @media (max-height: 520px) and (orientation: landscape) {
+            body {
+                padding: 0;
+            }
+            .olabs-sim-container {
+                border-radius: 0;
+                height: 100vh;
+                max-height: 100vh;
+            }
+            .olabs-top-header {
+                padding: 2px 8px;
+            }
+            .olabs-sim-title {
+                font-size: 0.85rem;
+            }
+            .olabs-sidebar {
+                width: 110px;
+                padding: 4px;
+                gap: 4px;
+            }
+            .obj-select-grid {
+                grid-template-columns: 1fr;
+                gap: 3px;
+            }
+            .obj-btn {
+                padding: 2px 4px;
+                flex-direction: row;
+                justify-content: flex-start;
+                gap: 4px;
+                border-radius: 4px;
+            }
+            .obj-icon {
+                font-size: 0.85rem;
+            }
+            .obj-label {
+                font-size: 0.65rem;
+            }
+            #caliper-canvas {
+                max-height: 68vh;
+                width: auto;
+                touch-action: none;
+            }
+            .olabs-magnifier-box {
+                width: 170px;
+                height: 60px;
+                border-radius: 4px;
+            }
+            .olabs-bottom-bar {
+                padding: 2px 8px;
+            }
+            .olabs-footer-note {
+                display: none;
+            }
+        }
             padding: 4px 8px;
             letter-spacing: 0.3px;
         }
@@ -444,6 +645,7 @@
             }
 
             function onDown(e) {
+                if (e.touches && e.cancelable) e.preventDefault();
                 state.isDragging = true;
                 state.startX = getCanvasX(e);
                 state.startVal = state.currentVal;
@@ -451,6 +653,7 @@
 
             function onMove(e) {
                 if (!state.isDragging) return;
+                if (e.touches && e.cancelable) e.preventDefault();
                 const curX = getCanvasX(e);
                 const deltaX = curX - state.startX;
                 let newVal = state.startVal + (deltaX / PIXELS_PER_CM);
@@ -468,8 +671,8 @@
             window.addEventListener("mousemove", onMove);
             window.addEventListener("mouseup", onUp);
 
-            canvas.addEventListener("touchstart", onDown, { passive: true });
-            window.addEventListener("touchmove", onMove, { passive: true });
+            canvas.addEventListener("touchstart", onDown, { passive: false });
+            window.addEventListener("touchmove", onMove, { passive: false });
             window.addEventListener("touchend", onUp);
         }
 

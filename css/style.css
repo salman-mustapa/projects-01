@@ -33,11 +33,11 @@
     --text-muted: #475569;
     --text-white: #ffffff;
 
-    /* Border & Shadow 3D Tactile */
-    --radius-sm: 8px;
-    --radius-md: 12px;
-    --radius-lg: 16px;
-    --radius-pill: 999px;
+    /* Border & Shadow 3D Tactile - Sleek & Proportional */
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-pill: 8px;
 
     --btn-depth-green: 0 4px 0 #065f46;
     --btn-depth-wood: 0 4px 0 #78350f;
@@ -160,6 +160,8 @@ h1, h2, h3, h4, .nav-app-name, .btn-game-primary, .adv-title, .score-num, .sign-
    NAVBAR (COMPACT & GAME HEADER)
    ========================================================================== */
 .app-navbar {
+    position: relative;
+    z-index: 25;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -2770,6 +2772,13 @@ h1, h2, h3, h4, .nav-app-name, .btn-game-primary, .adv-title, .score-num, .sign-
     opacity: 0.85;
 }
 
+#screen-cover:not(.active) .jungle-canopy-top,
+#screen-cover:not(.active) .jungle-ferns-bottom,
+body:not(.on-cover) .jungle-canopy-top,
+body:not(.on-cover) .jungle-ferns-bottom {
+    display: none !important;
+}
+
 .jungle-canopy-top.left {
     left: 0;
     background: radial-gradient(circle at 0% 0%, #15803d 0%, #166534 40%, transparent 70%);
@@ -4019,50 +4028,40 @@ body.game-theme.on-cover .app-viewport-wrapper {
     background: #0369a1 !important;
 }
 
-@media (max-width: 768px) {
-    .sim-iframe-holder {
-        height: 380px;
-    }
-    .hub-status-header {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-}
-
 .olabs-helper-card {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 14px;
     background: #f0fdf4;
-    border: 2px solid #86efac;
+    border: 1.5px solid #86efac;
     border-radius: var(--radius-md);
-    padding: 14px 18px;
-    margin-top: 10px;
-    margin-bottom: 12px;
+    padding: 12px 16px;
+    margin-top: 8px;
+    margin-bottom: 10px;
 }
 
 .olabs-helper-icon {
-    font-size: 2.2rem;
+    font-size: 2rem;
     flex-shrink: 0;
 }
 
 .olabs-helper-content h4 {
     margin: 0 0 4px;
-    font-size: 1rem;
+    font-size: 0.95rem;
     color: #14532d;
     font-weight: 800;
 }
 
 .olabs-helper-content p {
-    margin: 0 0 10px;
-    font-size: 0.85rem;
+    margin: 0 0 8px;
+    font-size: 0.82rem;
     color: #166534;
     line-height: 1.4;
 }
 
 .olabs-helper-actions {
     display: flex;
-    gap: 10px;
+    gap: 8px;
     flex-wrap: wrap;
 }
 
@@ -4071,16 +4070,281 @@ body.game-theme.on-cover .app-viewport-wrapper {
     align-items: center;
     gap: 8px;
     flex-wrap: wrap;
-    margin-bottom: 10px;
-    padding: 8px 12px;
+    margin-bottom: 8px;
+    padding: 6px 10px;
     background: #f1f5f9;
     border-radius: var(--radius-md);
     border: 1.5px solid #cbd5e1;
 }
 
 .sim-engine-bar .bar-lbl {
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     font-weight: 800;
     color: #334155;
     margin-right: 4px;
+}
+
+/* ==========================================================================
+   COMPREHENSIVE RESPONSIVE SUITE (TABLET & MOBILE PORTRAIT + LANDSCAPE)
+   ========================================================================== */
+@media (max-width: 820px) {
+    .app-navbar {
+        padding: 6px 12px;
+        margin-bottom: 10px;
+        border-radius: 10px;
+    }
+    .nav-brand-icon {
+        font-size: 1.5rem;
+    }
+    .nav-app-name {
+        font-size: 1rem;
+    }
+    .nav-app-sub {
+        font-size: 0.68rem;
+    }
+    .nav-student-chip {
+        padding: 3px 8px;
+        font-size: 0.78rem;
+    }
+    .nav-action-btn, .nav-icon-btn {
+        height: 32px;
+        padding: 0 8px;
+        font-size: 0.78rem;
+    }
+    .sim-iframe-holder {
+        height: 480px;
+    }
+}
+
+@media (max-width: 640px) {
+    /* Mobile Navbar */
+    .app-navbar {
+        padding: 5px 8px;
+        margin-bottom: 8px;
+        border-radius: 8px;
+        gap: 6px;
+    }
+    .nav-brand-icon {
+        font-size: 1.3rem;
+    }
+    .nav-app-name {
+        font-size: 0.88rem;
+        line-height: 1.1;
+    }
+    .nav-app-sub {
+        display: none;
+    }
+    .nav-right {
+        gap: 4px;
+    }
+    .nav-student-chip {
+        padding: 2px 6px;
+        font-size: 0.72rem;
+        max-width: 105px;
+    }
+    .chip-name {
+        max-width: 70px;
+    }
+    .nav-action-btn span:not(.btn-icon) {
+        display: none;
+    }
+    .nav-action-btn, .nav-icon-btn {
+        height: 28px;
+        padding: 0 6px;
+        font-size: 0.75rem;
+        border-radius: 6px;
+    }
+
+    /* Virtual Lab Inner Stage & Toolbar */
+    .inner-stage {
+        padding: 6px;
+    }
+    .inner-toolbar {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 6px;
+        margin-bottom: 8px;
+    }
+    .btn-back-pill {
+        padding: 5px 10px;
+        font-size: 0.75rem;
+        border-radius: 6px;
+    }
+    .sub-badge {
+        font-size: 0.72rem;
+        padding: 4px 8px;
+        border-radius: 6px;
+    }
+
+    /* Domain Tabs (Horizontal Swipe) */
+    .lab-tab-chips {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        gap: 5px;
+        padding: 2px 2px 6px 2px;
+        margin-bottom: 6px;
+        scrollbar-width: none;
+    }
+    .lab-tab-chips::-webkit-scrollbar {
+        display: none;
+    }
+    .lab-chip-btn {
+        flex-shrink: 0;
+        padding: 5px 10px;
+        font-size: 0.75rem;
+        border-radius: 6px;
+        white-space: nowrap;
+    }
+
+    /* Sub-mode Toggles & Actions Bar */
+    .sim-mode-toggle-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+        margin-bottom: 6px;
+    }
+    .mode-toggle-chips {
+        display: flex;
+        width: 100%;
+        gap: 4px;
+    }
+    .mode-toggle-chips .chip-btn {
+        flex: 1;
+        text-align: center;
+        padding: 5px 6px;
+        font-size: 0.72rem;
+        border-radius: 6px;
+        white-space: nowrap;
+    }
+    .sim-actions-row {
+        display: flex;
+        gap: 4px;
+        width: 100%;
+    }
+    .sim-actions-row .btn-tool-pill {
+        flex: 1;
+        min-width: 0;
+        padding: 5px 2px;
+        font-size: 0.66rem;
+        border-radius: 6px;
+        justify-content: center;
+        text-align: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Simulator In-App Engine Bar */
+    .sim-engine-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 4px;
+        padding: 5px 8px;
+        border-radius: 6px;
+        margin-bottom: 6px;
+    }
+    .sim-engine-bar .bar-lbl {
+        font-size: 0.72rem;
+        margin-right: 0;
+    }
+    .sim-engine-bar .chip-btn {
+        width: 100%;
+        padding: 5px 8px;
+        font-size: 0.72rem;
+        border-radius: 6px;
+        text-align: center;
+    }
+
+    /* Frame container */
+    .sim-iframe-holder {
+        height: 440px;
+        border-radius: 6px;
+        margin-bottom: 6px;
+    }
+
+    .olabs-helper-card {
+        padding: 8px 10px;
+        gap: 8px;
+        border-radius: 6px;
+    }
+    .olabs-helper-icon {
+        font-size: 1.5rem;
+    }
+    .olabs-helper-content h4 {
+        font-size: 0.85rem;
+    }
+    .olabs-helper-content p {
+        font-size: 0.75rem;
+        margin-bottom: 6px;
+    }
+    .olabs-helper-actions .btn-game-primary,
+    .olabs-helper-actions .btn-tool-pill {
+        font-size: 0.75rem;
+        padding: 6px 10px;
+        border-radius: 6px;
+    }
+}
+
+/* Extra Small Phones (iPhone SE / width < 380px) */
+@media (max-width: 380px) {
+    .sim-iframe-holder {
+        height: 400px;
+    }
+    .nav-student-chip {
+        display: none;
+    }
+    .mode-toggle-chips .chip-btn {
+        font-size: 0.68rem;
+        padding: 4px;
+    }
+}
+
+/* Mobile Landscape Mode (Maximizes Simulator Canvas Visibility) */
+@media (orientation: landscape) and (max-height: 520px) {
+    .app-navbar {
+        display: none !important;
+    }
+    .app-viewport-wrapper {
+        padding: 2px 4px !important;
+    }
+    .inner-stage {
+        padding: 2px !important;
+    }
+    .inner-toolbar {
+        margin-bottom: 2px !important;
+    }
+    .inner-toolbar .sub-badge {
+        display: none !important;
+    }
+    .btn-back-pill {
+        padding: 3px 8px !important;
+        font-size: 0.7rem !important;
+    }
+    .lab-tab-chips {
+        margin-bottom: 2px !important;
+        padding-bottom: 1px !important;
+    }
+    .lab-chip-btn {
+        padding: 3px 8px !important;
+        font-size: 0.72rem !important;
+    }
+    .sim-mode-toggle-bar {
+        display: none !important;
+    }
+    .sim-engine-bar {
+        display: none !important;
+    }
+    .sim-iframe-holder {
+        height: 85vh !important;
+        min-height: 280px;
+        margin-bottom: 0 !important;
+        border-width: 1.5px !important;
+    }
+    .olabs-helper-card,
+    .online-hub-footer {
+        display: none !important;
+    }
 }

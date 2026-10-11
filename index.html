@@ -327,9 +327,9 @@
                             <!-- View A: Interactive In-App Simulator (Default Active: OLabs HTML5 In-App Edition) -->
                             <div id="caliper-olabs-view" class="lab-subview active">
                                 <div class="sim-engine-bar">
-                                    <span class="bar-lbl">Pilihan Simulator In-App:</span>
-                                    <button class="chip-btn active" id="btn-engine-compadre" onclick="appState.switchCaliperEngine('compadre')">⚡ Simulasi OLabs In-App (Tersemat 100% & Interaktif)</button>
-                                    <button class="chip-btn" id="btn-engine-olabs" onclick="appState.switchCaliperEngine('olabs')">🏛️ Portal Resmi OLabs (olabs.edu.in)</button>
+                                    <span class="bar-lbl">Pilihan Akses Lab:</span>
+                                    <button class="chip-btn active" id="btn-engine-compadre" onclick="appState.switchCaliperEngine('inapp')">⚡ Simulasi OLabs In-App (Tersemat 100% & Interaktif)</button>
+                                    <button class="chip-btn" id="btn-engine-olabs" onclick="appState.openOLabsWindow('caliper')" title="Buka Portal Resmi OLabs di tab baru tanpa batasan frame">🏛️ Buka Portal Resmi OLabs (olabs.edu.in) ↗</button>
                                 </div>
                                 <div class="sim-iframe-holder" id="caliper-iframe-holder">
                                     <iframe id="caliper-inapp-frame" 
