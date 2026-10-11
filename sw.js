@@ -3,7 +3,7 @@
  * Progressive Web App Offline Cache
  */
 
-const CACHE_NAME = 'lab-pengukuran-v2';
+const CACHE_NAME = 'lab-pengukuran-v4';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -16,6 +16,8 @@ const ASSETS_TO_CACHE = [
   './manifest.json',
   './assets/icons/icon-192.png',
   './assets/icons/icon-512.png',
+  './assets/icons/icon-maskable-192.png',
+  './assets/icons/icon-maskable-512.png',
   './assets/slides/slide_01.jpg',
   './assets/slides/slide_02.jpg',
   './assets/slides/slide_03.jpg',

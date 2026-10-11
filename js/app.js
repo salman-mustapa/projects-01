@@ -18,6 +18,8 @@ class AppState {
     }
 
     init() {
+        this.detectDeviceType();
+        this.setupOrientationHandler();
         this.setupEventListeners();
         this.checkInitialScreen();
         this.setupPWA();
@@ -33,6 +35,74 @@ class AppState {
                 caliperFrame.src = "/olabs-proxy/?sub=1&brch=5&sim=16&cnt=4";
             }
         }
+    }
+
+    detectDeviceType() {
+        const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+        const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        const isSmallScreen = window.innerWidth <= 820;
+
+        const isMobile = (isTouch && isSmallScreen) || isMobileUA;
+
+        if (isMobile) {
+            document.body.classList.add("is-mobile-device");
+            document.body.classList.remove("is-desktop-device");
+        } else {
+            document.body.classList.add("is-desktop-device");
+            document.body.classList.remove("is-mobile-device");
+        }
+        return isMobile;
+    }
+
+    setupOrientationHandler() {
+        const handlePhysicalOrientation = () => {
+            const isMobile = this.detectDeviceType();
+            if (!isMobile) return;
+
+            let isLandscape = false;
+            if (window.screen && window.screen.orientation) {
+                isLandscape = window.screen.orientation.type.includes("landscape");
+            } else if (typeof window.orientation !== "undefined") {
+                isLandscape = Math.abs(window.orientation) === 90;
+            } else {
+                isLandscape = window.innerWidth > window.innerHeight;
+            }
+
+            const wrapper = document.querySelector(".app-viewport-wrapper");
+            if (wrapper) {
+                if (isLandscape) {
+                    wrapper.classList.add("device-landscape-mode");
+                } else {
+                    wrapper.classList.remove("device-landscape-mode");
+                }
+                this.updateOrientButtonLabels(isLandscape);
+            }
+
+            setTimeout(() => {
+                window.vernierSim?.draw();
+                window.springSim?.draw();
+                window.pendulumSim?.draw();
+            }, 180);
+        };
+
+        window.addEventListener("resize", () => {
+            this.detectDeviceType();
+        });
+
+        if (window.screen && window.screen.orientation) {
+            window.screen.orientation.addEventListener("change", handlePhysicalOrientation);
+        }
+        window.addEventListener("orientationchange", handlePhysicalOrientation);
+    }
+
+    updateOrientButtonLabels(isLandscape) {
+        const orientBtns = document.querySelectorAll(".btn-orient-toggle");
+        orientBtns.forEach(btn => {
+            const text = btn.querySelector(".orient-text");
+            const icon = btn.querySelector(".orient-icon");
+            if (text) text.textContent = isLandscape ? "Mode Portrait" : "Putar Layar";
+            if (icon) icon.textContent = isLandscape ? "📱" : "🔄";
+        });
     }
 
     getStudent() {
@@ -219,13 +289,23 @@ class AppState {
         }
         window.scrollTo({ top: 0, behavior: "smooth" });
 
-        // Trigger simulator canvas sizes if entering virtual lab
+        // Trigger sub-initializers per screen
         if (screenId === "virtual-lab") {
             setTimeout(() => {
-                window.vernierSim.draw();
-                window.springSim.draw();
-                window.pendulumSim.draw();
+                window.vernierSim?.draw();
+                window.springSim?.draw();
+                window.pendulumSim?.draw();
             }, 100);
+        } else if (screenId === "kuis") {
+            if (window.quizManager && (!window.quizManager.questions || !window.quizManager.questions.length || !document.getElementById("quiz-question-box").children.length)) {
+                window.quizManager.start();
+            }
+        } else if (screenId === "panduan-praktikum") {
+            this.switchGuide("caliper");
+        } else if (screenId === "video-praktikum") {
+            this.switchVideoTab("pendulum");
+        } else if (screenId === "modul-ajar") {
+            this.updateModulViewer();
         }
     }
 
@@ -293,6 +373,44 @@ class AppState {
                 }
             }
         });
+
+        // Fullscreen change synchronization for Bahan Ajar
+        document.addEventListener("fullscreenchange", () => {
+            const frame = document.getElementById("slide-main-frame");
+            const btnFs = document.getElementById("btn-toggle-fullscreen");
+            const btnClose = document.getElementById("btn-slide-fs-exit");
+            if (!document.fullscreenElement) {
+                if (frame) frame.classList.remove("is-fullscreen");
+                if (btnFs) btnFs.innerHTML = "⛶ Full";
+                if (btnClose) btnClose.style.display = "none";
+            } else {
+                if (btnFs) btnFs.innerHTML = "🗗 Keluar Full";
+                if (btnClose) btnClose.style.display = "inline-flex";
+            }
+        });
+
+        // Listen to physical orientation change on mobile devices
+        window.addEventListener("orientationchange", () => {
+            const wrapper = document.querySelector(".app-viewport-wrapper");
+            if (wrapper) wrapper.classList.remove("device-landscape-mode");
+            setTimeout(() => {
+                window.vernierSim?.draw();
+                window.springSim?.draw();
+                window.pendulumSim?.draw();
+            }, 200);
+        });
+
+        if (window.screen && window.screen.orientation) {
+            window.screen.orientation.addEventListener("change", () => {
+                const wrapper = document.querySelector(".app-viewport-wrapper");
+                if (wrapper) wrapper.classList.remove("device-landscape-mode");
+                setTimeout(() => {
+                    window.vernierSim?.draw();
+                    window.springSim?.draw();
+                    window.pendulumSim?.draw();
+                }, 200);
+            });
+        }
 
         // Sound Toggle Button
         const soundBtn = document.getElementById("btn-toggle-sound");
@@ -448,23 +566,59 @@ class AppState {
     toggleSlideFullscreen() {
         const frame = document.getElementById("slide-main-frame");
         if (!frame) return;
-        if (!document.fullscreenElement) {
-            frame.requestFullscreen?.().catch(() => {});
+        if (!document.fullscreenElement && !frame.classList.contains("is-fullscreen")) {
+            this.enterSlideFullscreen();
         } else {
+            this.exitSlideFullscreen();
+        }
+    }
+
+    enterSlideFullscreen() {
+        const frame = document.getElementById("slide-main-frame");
+        const btnFs = document.getElementById("btn-toggle-fullscreen");
+        const btnClose = document.getElementById("btn-slide-fs-exit");
+        if (!frame) return;
+
+        if (frame.requestFullscreen) {
+            frame.requestFullscreen().catch(() => {
+                frame.classList.add("is-fullscreen");
+            });
+        } else {
+            frame.classList.add("is-fullscreen");
+        }
+        if (btnFs) btnFs.innerHTML = "🗗 Keluar Full";
+        if (btnClose) btnClose.style.display = "inline-flex";
+    }
+
+    exitSlideFullscreen() {
+        const frame = document.getElementById("slide-main-frame");
+        const btnFs = document.getElementById("btn-toggle-fullscreen");
+        const btnClose = document.getElementById("btn-slide-fs-exit");
+
+        if (document.fullscreenElement) {
             document.exitFullscreen?.().catch(() => {});
         }
+        if (frame) frame.classList.remove("is-fullscreen");
+        if (btnFs) btnFs.innerHTML = "⛶ Full";
+        if (btnClose) btnClose.style.display = "none";
     }
 
     // --- PANDUAN PRAKTIKUM TAB SWITCHING ---
     switchGuide(guideKey) {
-        window.sound.playClick();
+        window.sound?.playClick();
         document.querySelectorAll(".guide-tab-chips .lab-chip-btn").forEach(btn => btn.classList.remove("active"));
-        document.querySelectorAll(".guide-content-panel").forEach(panel => panel.classList.remove("active"));
+        document.querySelectorAll(".guide-content-panel").forEach(panel => {
+            panel.classList.remove("active");
+            panel.style.display = "none";
+        });
 
         const tabBtn = document.getElementById(`tab-guide-${guideKey}`);
         const tabContent = document.getElementById(`panel-guide-${guideKey}`);
         if (tabBtn) tabBtn.classList.add("active");
-        if (tabContent) tabContent.classList.add("active");
+        if (tabContent) {
+            tabContent.style.display = "block";
+            tabContent.classList.add("active");
+        }
     }
 
     // --- VIDEO PRAKTIKUM TAB SWITCHING (3 DOMAIN PENGUKURAN) ---
@@ -494,12 +648,18 @@ class AppState {
     switchLab(labKey) {
         window.sound?.playClick();
         document.querySelectorAll(".lab-tab-chips .lab-chip-btn").forEach(btn => btn.classList.remove("active"));
-        document.querySelectorAll(".lab-panel").forEach(panel => panel.classList.remove("active"));
+        document.querySelectorAll(".lab-panel").forEach(panel => {
+            panel.classList.remove("active");
+            panel.style.display = "none";
+        });
 
         const tabBtn = document.getElementById(`tab-lab-${labKey}`);
         const panel = document.getElementById(`panel-lab-${labKey}`);
         if (tabBtn) tabBtn.classList.add("active");
-        if (panel) panel.classList.add("active");
+        if (panel) {
+            panel.style.display = "block";
+            panel.classList.add("active");
+        }
 
         setTimeout(() => {
             if (labKey === "caliper") window.vernierSim?.draw();
@@ -898,32 +1058,47 @@ class AppState {
     }
 
     // --- QR CODE GENERATION & SHARE ---
+    getShareUrl() {
+        let currentUrl = window.location.href;
+        // If run locally (file:/// or localhost), use canonical live GitHub Pages URL
+        if (currentUrl.startsWith("file:///") || window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+            return "https://salman-mustapa.github.io/projects-01/";
+        }
+        // If running on webhosting / subdomain, use the clean origin + path
+        return window.location.origin + window.location.pathname;
+    }
+
     openQrModal() {
-        window.sound.playClick();
+        window.sound?.playClick();
         const qrModal = document.getElementById("qr-modal");
         const container = document.getElementById("qrcode-target");
         if (!qrModal || !container) return;
 
-        const currentUrl = window.location.href;
+        const currentUrl = this.getShareUrl();
         const linkInput = document.getElementById("share-url-input");
         if (linkInput) linkInput.value = currentUrl;
 
         container.innerHTML = "";
         try {
             if (window.QRCodeGenerator) {
-                const canvas = window.QRCodeGenerator.generateCanvas(currentUrl, 200);
+                // Generate clean, high-contrast QR canvas with standard quiet zone margin
+                const canvas = window.QRCodeGenerator.generateCanvas(currentUrl, 260);
                 canvas.id = "generated-qr-canvas";
+                canvas.style.maxWidth = "100%";
+                canvas.style.height = "auto";
+                canvas.style.borderRadius = "8px";
+                canvas.style.boxShadow = "0 2px 10px rgba(0,0,0,0.12)";
                 container.appendChild(canvas);
             }
         } catch (e) {
-            container.innerHTML = `<p>Gagal membuat QR: ${e.message}</p>`;
+            container.innerHTML = `<p style="color:#b91c1c;">Gagal membuat QR: ${e.message}</p>`;
         }
 
         qrModal.classList.add("active");
     }
 
     copyShareLink() {
-        window.sound.playPop();
+        window.sound?.playPop();
         const input = document.getElementById("share-url-input");
         if (input) {
             navigator.clipboard.writeText(input.value).then(() => {
@@ -932,18 +1107,79 @@ class AppState {
                     btn.textContent = "✅ Disalin!";
                     setTimeout(() => btn.textContent = "Salin Link", 2000);
                 }
+                this.showToast("Link berhasil disalin ke papan klip!", "success");
+            }).catch(() => {
+                input.select();
+                document.execCommand("copy");
+                this.showToast("Link disalin!", "success");
             });
         }
     }
 
     downloadQrImage() {
-        window.sound.playPop();
-        const canvas = document.getElementById("generated-qr-canvas");
-        if (!canvas) return;
+        window.sound?.playPop();
+        const qrCanvas = document.getElementById("generated-qr-canvas");
+        if (!qrCanvas) return;
+
+        const url = this.getShareUrl();
+
+        // Render Branded Export Card (500 x 580)
+        const exportCanvas = document.createElement("canvas");
+        exportCanvas.width = 500;
+        exportCanvas.height = 580;
+        const ctx = exportCanvas.getContext("2d");
+
+        // Pure white background
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, 500, 580);
+
+        // Header Background
+        ctx.fillStyle = "#047857";
+        ctx.fillRect(0, 0, 500, 85);
+
+        // Header Texts
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "bold 20px Outfit, sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText("LAB VIRTUAL: PETUALANGAN PENGUKURAN", 250, 38);
+
+        ctx.fillStyle = "#d1fae5";
+        ctx.font = "14px Outfit, sans-serif";
+        ctx.fillText("Media Pembelajaran Interaktif IPA Kelas VII SMP", 250, 64);
+
+        // QR Code Container Box - Pure white with crisp outline
+        ctx.fillStyle = "#ffffff";
+        ctx.strokeStyle = "#cbd5e1";
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.roundRect(85, 115, 330, 330, 12);
+        ctx.fill();
+        ctx.stroke();
+
+        // Draw the QR Code image (300 x 300) with proper quiet zone margin
+        ctx.drawImage(qrCanvas, 100, 130, 300, 300);
+
+        // Instruction Text Below QR
+        ctx.fillStyle = "#0f172a";
+        ctx.font = "bold 15px Outfit, sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText("Scan QR Code dengan Kamera HP Anda", 250, 480);
+
+        ctx.fillStyle = "#047857";
+        ctx.font = "bold 13px Outfit, monospace";
+        const displayUrl = url.length > 50 ? url.slice(0, 47) + "..." : url;
+        ctx.fillText(displayUrl, 250, 510);
+
+        ctx.fillStyle = "#64748b";
+        ctx.font = "12px Outfit, sans-serif";
+        ctx.fillText("Kurikulum Merdeka • Mandiri & Interaktif", 250, 545);
+
+        // Trigger Download
         const a = document.createElement("a");
-        a.download = "QR_Code_Media_Pembelajaran_Pengukuran.png";
-        a.href = canvas.toDataURL("image/png");
+        a.download = "QR_Media_Pembelajaran_Petualangan_Pengukuran.png";
+        a.href = exportCanvas.toDataURL("image/png");
         a.click();
+        this.showToast("📥 Gambar Barcode QR berhasil diunduh!", "success");
     }
 
     // --- PWA SETUP ---

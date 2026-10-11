@@ -7,8 +7,10 @@
     <meta name="description" content="Media Pembelajaran Interaktif IPA Kelas VII SMP - Petualangan Pengukuran Berbasis Web & Virtual Lab.">
     <title>Lab Virtual IPA: Petualangan Pengukuran | SMP Kelas VII</title>
     
-    <!-- PWA Manifest -->
+    <!-- PWA Manifest & Icons -->
     <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/icons/icon-192.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="assets/icons/icon-192.png">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧪</text></svg>">
     
     <!-- Google Fonts -->
@@ -69,22 +71,22 @@
 
                 <!-- Action Buttons: Icon + Text on Desktop, Compact on Mobile -->
                 <button class="nav-action-btn" id="btn-toggle-sound" title="Pengaturan Efek Suara (On/Off)">
-                    <span id="sound-icon-display">🔊</span>
+                    <span class="nav-btn-icon" id="sound-icon-display">🔊</span>
                     <span class="btn-text-desktop">Suara: On</span>
                 </button>
 
                 <button class="nav-action-btn btn-install-action" id="btn-install-app" onclick="appState.openDownloadModal()" title="Unduh Materi & Pasang Web App">
-                    <span>📥</span>
+                    <span class="nav-btn-icon">📥</span>
                     <span class="btn-text-desktop">Unduh App</span>
                 </button>
 
                 <button class="nav-action-btn btn-qr-action" id="btn-share-app" title="Bagikan & Scan Barcode QR">
-                    <span>📱</span>
+                    <span class="nav-btn-icon">📱</span>
                     <span class="btn-text-desktop">Bagi QR</span>
                 </button>
 
                 <button class="nav-action-btn btn-exit-action" id="btn-exit-app" onclick="appState.openExitModal()" title="Keluar / Ganti Identitas Siswa">
-                    <span>🚪</span>
+                    <span class="nav-btn-icon">🚪</span>
                     <span class="btn-text-desktop">Ganti Siswa</span>
                 </button>
             </div>
@@ -260,13 +262,16 @@
                         <div class="slide-indicator-chip" id="slide-counter">Slide 1 / 16</div>
                         <div class="toolbar-right-btns">
                             <button class="btn-tool-pill" id="btn-autoplay-slide" onclick="appState.toggleAutoplay()">▶ Auto</button>
-                            <button class="btn-tool-pill" onclick="appState.toggleSlideFullscreen()">⛶ Full</button>
+                            <button class="btn-tool-pill" id="btn-toggle-fullscreen" onclick="appState.toggleSlideFullscreen()">⛶ Full</button>
                             <a href="Bahan Ajar Pengukuran.pdf" target="_blank" class="btn-tool-pill" download>📥 PDF</a>
                         </div>
                     </div>
 
                     <!-- Slide Screen (Aspect 16:9 Fit) -->
                     <div class="slide-cinema-frame" id="slide-main-frame">
+                        <button class="btn-slide-fs-exit" id="btn-slide-fs-exit" onclick="appState.exitSlideFullscreen()" title="Tutup Layar Penuh (Esc)">
+                            ✕ Tutup Fullscreen
+                        </button>
                         <div class="slide-img-viewport">
                             <img id="current-slide-img" src="assets/slides/slide_01.jpg" alt="Bahan Ajar Slide">
                             <button class="slide-arrow-btn left" onclick="appState.prevSlide()">❮</button>
@@ -307,7 +312,9 @@
                     </div>
 
                     <!-- Panel 1: Jangka Sorong (Panjang) -->
-                                       <!-- Clean, Single-Row Simulator Controls -->
+                    <div class="lab-panel active" id="panel-lab-caliper">
+                        <div class="lab-content-box">
+                            <!-- Clean, Single-Row Simulator Controls -->
                             <div class="sim-clean-bar">
                                 <div class="sim-mode-chips">
                                     <button class="chip-btn active" id="btn-caliper-mode-olabs" onclick="appState.switchCaliperMode('olabs')">⚡ Simulasi OLabs</button>
@@ -828,7 +835,7 @@
                     </div>
 
                     <!-- Panel Spring Guide -->
-                    <div class="guide-content-panel" id="panel-guide-spring" style="display: none;">
+                    <div class="guide-content-panel" id="panel-guide-spring">
                         <div class="guide-cinema-card">
                             <div class="guide-reader-header">
                                 <span class="guide-reader-title">⚖️ Panduan Praktikum Neraca Pegas (OLabs)</span>
@@ -852,7 +859,7 @@
                     </div>
 
                     <!-- Panel Pendulum Guide -->
-                    <div class="guide-content-panel" id="panel-guide-pendulum" style="display: none;">
+                    <div class="guide-content-panel" id="panel-guide-pendulum">
                         <div class="guide-cinema-card">
                             <div class="guide-reader-header">
                                 <span class="guide-reader-title">⏱️ Panduan Praktikum Pengukuran Waktu & Bandul (PhET)</span>
@@ -962,7 +969,7 @@
                 </div>
                 <div class="modal-actions-col">
                     <button class="btn-game-primary w-100 pulse-scale" id="btn-modal-continue" onclick="appState.continueAsRegistered()">
-                        🚀 Lanjutkan sebagai&nbsp;<span id="modal-reg-btn-name">Salman</span>
+                        🚀 Lanjutkan
                     </button>
                     <button class="btn-tool-pill w-100" onclick="appState.showStudentFormFields(true)">
                         ✏️ Ganti Identitas Siswa Baru
@@ -996,7 +1003,7 @@
                 <div class="modal-btn-row mt-3">
                     <button type="button" class="btn-dialog-cancel" onclick="appState.closeStudentModal()">Batal</button>
                     <button type="submit" class="btn-game-primary flex-1 pulse-btn" id="btn-submit-student">
-                        🚀 Masuk ke Lab Petualangan!
+                        🚀 Masuk
                     </button>
                 </div>
             </form>

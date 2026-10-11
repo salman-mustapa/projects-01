@@ -258,6 +258,14 @@ h1, h2, h3, h4, .nav-app-name, .btn-game-primary, .adv-title, .score-num, .sign-
     white-space: nowrap;
 }
 
+.nav-btn-icon {
+    font-size: 1rem;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .nav-action-btn:hover,
 .nav-icon-btn:hover {
     background: #f8fafc;
@@ -774,6 +782,73 @@ h1, h2, h3, h4, .nav-app-name, .btn-game-primary, .adv-title, .score-num, .sign-
     border-radius: var(--radius-md);
     overflow: hidden;
     margin-bottom: 12px;
+    position: relative;
+}
+
+/* Fullscreen Bahan Ajar Overlay & Exit Button */
+.btn-slide-fs-exit {
+    display: none;
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    z-index: 1000;
+    background: rgba(15, 23, 42, 0.9);
+    color: #ffffff;
+    border: 1.5px solid rgba(255, 255, 255, 0.4);
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(8px);
+    transition: all 0.2s;
+}
+
+.btn-slide-fs-exit:hover {
+    background: #dc2626;
+    border-color: #ef4444;
+    transform: scale(1.04);
+}
+
+:fullscreen .btn-slide-fs-exit,
+:-webkit-full-screen .btn-slide-fs-exit,
+.slide-cinema-frame.is-fullscreen .btn-slide-fs-exit {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 6px;
+}
+
+.slide-cinema-frame.is-fullscreen {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    max-width: 100vw !important;
+    z-index: 999999 !important;
+    background: #090d16 !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+    padding: 10px !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+}
+
+.slide-cinema-frame.is-fullscreen .slide-img-viewport {
+    flex: 1 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: calc(100vh - 80px) !important;
+    max-height: calc(100vh - 80px) !important;
+}
+
+.slide-cinema-frame.is-fullscreen .slide-img-viewport img {
+    max-height: 100% !important;
+    max-width: 100% !important;
+    object-fit: contain !important;
 }
 
 .slide-img-viewport {
@@ -932,7 +1007,7 @@ h1, h2, h3, h4, .nav-app-name, .btn-game-primary, .adv-title, .score-num, .sign-
 }
 
 .lab-panel.active, .guide-content-panel.active {
-    display: block;
+    display: block !important;
 }
 
 .lab-content-box {
@@ -4106,7 +4181,22 @@ body.game-theme.on-cover .app-viewport-wrapper {
     box-shadow: 0 2px 4px rgba(5, 150, 105, 0.2);
 }
 
+/* Device Orientation Toggle Button:
+   Hidden by default on Desktop & Laptop PC to keep PC interface clean & uncluttered.
+   Explicitly hidden whenever .is-desktop-device is present.
+   Only displayed on Mobile & Tablet devices where rotation is appropriate! */
 .btn-orient-toggle {
+    display: none !important;
+}
+
+body.is-desktop-device .btn-orient-toggle {
+    display: none !important;
+}
+
+body.is-mobile-device .btn-orient-toggle {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 4px;
     background: #fef3c7 !important;
     border-color: #d97706 !important;
     color: #92400e !important;
@@ -4114,8 +4204,24 @@ body.game-theme.on-cover .app-viewport-wrapper {
     cursor: pointer;
 }
 
-.btn-orient-toggle:hover {
+body.is-mobile-device .btn-orient-toggle:hover {
     background: #fde68a !important;
+}
+
+@media (max-width: 820px) {
+    body:not(.is-desktop-device) .btn-orient-toggle {
+        display: inline-flex !important;
+        align-items: center;
+        gap: 4px;
+        background: #fef3c7 !important;
+        border-color: #d97706 !important;
+        color: #92400e !important;
+        font-weight: 800 !important;
+        cursor: pointer;
+    }
+    body:not(.is-desktop-device) .btn-orient-toggle:hover {
+        background: #fde68a !important;
+    }
 }
 
 /* ==========================================================================
@@ -4179,14 +4285,25 @@ body.game-theme.on-cover .app-viewport-wrapper {
     .chip-name {
         max-width: 70px;
     }
-    .nav-action-btn span:not(.btn-icon) {
-        display: none;
+    .nav-action-btn .btn-text-desktop {
+        display: none !important;
     }
     .nav-action-btn, .nav-icon-btn {
-        height: 28px;
-        padding: 0 6px;
-        font-size: 0.75rem;
+        height: 30px;
+        width: 30px;
+        min-width: 30px;
+        padding: 0;
+        font-size: 0.95rem;
         border-radius: 6px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+    .nav-action-btn .nav-btn-icon {
+        display: inline-flex !important;
+        font-size: 0.95rem;
+        line-height: 1;
     }
 
     /* Virtual Lab Inner Stage & Toolbar */
@@ -4280,13 +4397,48 @@ body.game-theme.on-cover .app-viewport-wrapper {
     }
 }
 
+/* Small Phones (width < 480px) */
+@media (max-width: 480px) {
+    .nav-left {
+        min-width: 0;
+        flex-shrink: 1;
+        overflow: hidden;
+    }
+    .nav-app-name {
+        font-size: 0.78rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .nav-student-chip {
+        padding: 2px 4px;
+        font-size: 0.68rem;
+        max-width: 68px;
+    }
+    .chip-name {
+        max-width: 38px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .nav-action-btn, .nav-icon-btn {
+        height: 28px;
+        width: 28px;
+        min-width: 28px;
+        font-size: 0.88rem;
+    }
+    .nav-action-btn .nav-btn-icon {
+        font-size: 0.88rem;
+    }
+}
+
 /* Extra Small Phones (iPhone SE / width < 380px) */
 @media (max-width: 380px) {
     .sim-iframe-holder {
         height: 400px;
     }
     .nav-student-chip {
-        display: none;
+        display: none !important;
     }
     .sim-mode-chips .chip-btn {
         font-size: 0.68rem;
