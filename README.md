@@ -49,9 +49,10 @@ flowchart TD
 Setiap domain pengukuran dilengkapi sistem **Dual-Mode** (seperti yang terdapat pada PhET Bandul):
 
 #### A. Pengukuran Panjang (Jangka Sorong)
-1. **Mode 1: 🌐 Simulasi OLabs Resmi (Tersemat In-App)**:
-   - Menampilkan frame simulator **OLabs Vernier Calipers** (*Amrita Vishwa Vidyapeetham & CDAC*).
-   - Dilengkapi tombol kontrol: `🔄 Muat Ulang`, `⛶ Layar Penuh`, dan `🚀 Jendela OLabs` (membuka jendela interaktif utuh tanpa batasan frame).
+1. **Mode 1: 🌐 Simulasi OLabs In-App Edition (Tersemat 100% di Iframe)**:
+   - Tersemat langsung di dalam iframe aplikasi tanpa blank screen dan 100% interaktif di semua Web Hosting maupun lokal!
+   - **Tampilan & Fitur Identik OLabs**: Desain papan kerja bertekstur, jangka sorong baja presisi, menu objek uji (*Sphere, Iron block, Beaker, Cylinder, Manual Drag*), HUD Kaca Pembesar Zoom (*Vernier Coincidence* dengan garis merah berimpit), pembacaan M.S.R (SU) & V.S.R (SN), tombol gerak mikro ±0.01 cm, serta tombol **"Catat ke LKPD"** yang otomatis mengirim data pengukuran ke lembar kerja siswa.
+   - Tersedia tombol cepat beralih ke **Portal Resmi OLabs (olabs.edu.in)** dengan bantuan jendela interaktif.
 2. **Mode 2: 🔬 Simulasi Canvas Interaktif (100% Offline & LKPD)**:
    - Mengukur 3 dimensi: **Diameter Luar**, **Diameter Dalam**, dan **Kedalaman**.
    - Dilengkapi 6 pilihan objek uji (*Sphere/Kelereng, Iron Block, Beaker/Gelas Kimia, Silinder, Koin, Baut*).
@@ -159,7 +160,7 @@ Jika Anda ingin menjalankan aplikasi di jaringan komputer laboratorium sekolah s
 | :--- | :---: | :---: | :--- |
 | **PhET Pendulum Lab** | ✅ 100% Tersemat | ✅ Ada (Stopwatch 10 Ayunan) | Server PhET University of Colorado mengizinkan cross-origin embedding resmi. |
 | **PhET Masses & Springs** | ✅ 100% Tersemat | ✅ Ada (Gravitasi Planet) | Simulasi resmi HTML5 berjalan mulus langsung di dalam aplikasi. |
-| **OLabs Vernier Calipers** | ✅ Iframe + Jendela Cepat | ✅ Ada (Magnifier + 6 Objek) | Server resmi OLabs CDAC menerapkan `X-Frame-Options: SAMEORIGIN`. Pada web hosting biasa, klik tombol **"Buka Jendela Interaktif OLabs"** untuk membuka simulator utuh, atau gunakan **Simulasi Canvas** yang 100% offline dan terintegrasi LKPD! Pada Docker, Nginx Proxy mem-bypass batasan ini secara otomatis. |
+| **OLabs Vernier Calipers** | ✅ 100% Tersemat (In-App HTML5 Edition) + Opsi Portal Resmi | ✅ Ada (Magnifier + 6 Objek) | Berjalan 100% mulus di iframe aplikasi pada Web Hosting maupun offline tanpa blank screen! Tersedia tombol cepat ke portal resmi. Pada Docker, Nginx Proxy mem-bypass batasan olabs.edu.in secara otomatis. |
 
 ---
 

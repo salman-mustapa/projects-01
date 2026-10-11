@@ -279,6 +279,21 @@ class AppState {
             });
         }
 
+        // Listen to postMessage from embedded simulators (e.g. OLabs HTML5 Vernier Caliper)
+        window.addEventListener("message", (e) => {
+            if (e.data && e.data.type === "LOG_CALIPER_TO_LKPD") {
+                if (window.lkpdManager) {
+                    window.lkpdManager.addMeasurement("length", {
+                        obj: e.data.obj || "Jangka Sorong",
+                        su: e.data.su,
+                        sn: e.data.sn,
+                        total: e.data.total
+                    });
+                    this.showToast(`✅ Data ${e.data.obj} (${e.data.total} cm) berhasil dicatat ke LKPD!`, "success");
+                }
+            }
+        });
+
         // Sound Toggle Button
         const soundBtn = document.getElementById("btn-toggle-sound");
         if (soundBtn) {
@@ -513,6 +528,29 @@ class AppState {
             if (viewCanvas) { viewCanvas.style.display = "block"; viewCanvas.classList.add("active"); }
             if (viewOlabs) { viewOlabs.style.display = "none"; viewOlabs.classList.remove("active"); }
             setTimeout(() => window.vernierSim?.draw(), 50);
+        }
+    }
+
+    switchCaliperEngine(engine) {
+        window.sound?.playClick();
+        const btnCompadre = document.getElementById("btn-engine-compadre");
+        const btnOlabs = document.getElementById("btn-engine-olabs");
+        const frame = document.getElementById("caliper-inapp-frame");
+        const olabsCard = document.getElementById("caliper-olabs-helper");
+
+        if (engine === "compadre" || engine === "inapp") {
+            if (btnCompadre) btnCompadre.classList.add("active");
+            if (btnOlabs) btnOlabs.classList.remove("active");
+            if (frame) frame.src = "assets/simulators/vernier/index.html";
+            if (olabsCard) olabsCard.style.display = "none";
+        } else {
+            if (btnOlabs) btnOlabs.classList.add("active");
+            if (btnCompadre) btnCompadre.classList.remove("active");
+            const src = (window.location.port === "8080" || window.location.pathname.startsWith("/olabs-proxy/"))
+                ? "/olabs-proxy/?sub=1&brch=5&sim=16&cnt=4"
+                : "https://www.olabs.edu.in/?sub=1&brch=5&sim=16&cnt=4";
+            if (frame) frame.src = src;
+            if (olabsCard) olabsCard.style.display = "flex";
         }
     }
 

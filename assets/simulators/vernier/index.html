@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OLabs Vernier Calipers Simulator (HTML5 In-App Edition)</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #5c3a21;
+            background: linear-gradient(135deg, #452613 0%, #2e1708 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            padding: 8px;
+        }
+
+        .olabs-sim-container {
+            width: 100%;
+            max-width: 960px;
+            height: 100%;
+            max-height: 540px;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 4px solid #7c4a27;
+        }
+
+        /* Top Header (OLabs Style) */
+        .olabs-top-header {
+            background: #543319;
+            background: linear-gradient(to right, #43240e, #633c1f);
+            color: #ffffff;
+            padding: 8px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #381a07;
+        }
+
+        .olabs-sim-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            color: #fef08a;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
+        }
+
+        .olabs-lc-tag {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid #ca8a04;
+            color: #fef08a;
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        /* Main Workspace: Left Sidebar + Simulator Stage */
+        .olabs-stage-body {
+            flex: 1;
+            display: flex;
+            background: #fdfbf7;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Left Object Selection Bar */
+        .olabs-sidebar {
+            width: 155px;
+            background: #f5ede4;
+            border-right: 2px solid #e2d2c1;
+            padding: 12px 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .sidebar-title {
+            font-size: 0.82rem;
+            font-weight: 800;
+            color: #5c3a21;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+            text-align: center;
+        }
+
+        .obj-select-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+        }
+
+        .obj-btn {
+            background: #ffffff;
+            border: 1.5px solid #d6c0aa;
+            border-radius: 6px;
+            padding: 6px 4px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .obj-btn:hover {
+            border-color: #92542a;
+            background: #fffbf5;
+            transform: translateY(-1px);
+        }
+
+        .obj-btn.active {
+            border-color: #b45309;
+            background: #fef3c7;
+            box-shadow: 0 0 0 2px rgba(180, 83, 9, 0.3);
+        }
+
+        .obj-icon {
+            font-size: 1.3rem;
+            display: block;
+        }
+
+        .obj-label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #451a03;
+            text-align: center;
+        }
+
+        .btn-olabs-reset {
+            margin-top: auto;
+            background: linear-gradient(to bottom, #f3f4f6, #e5e7eb);
+            border: 1.5px solid #9ca3af;
+            border-radius: 4px;
+            padding: 7px 10px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #374151;
+            cursor: pointer;
+            text-align: center;
+            box-shadow: 0 2px 2px rgba(0,0,0,0.1);
+            transition: all 0.15s;
+        }
+
+        .btn-olabs-reset:hover {
+            background: #e5e7eb;
+            color: #111827;
+        }
+
+        /* Center Canvas Simulation Stage */
+        .olabs-center-stage {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background: #ffffff;
+            overflow: hidden;
+        }
+
+        .canvas-wrapper {
+            flex: 1;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle at center, #ffffff 60%, #f7f3ec 100%);
+        }
+
+        #caliper-canvas {
+            display: block;
+            cursor: grab;
+        }
+
+        #caliper-canvas:active {
+            cursor: grabbing;
+        }
+
+        /* Magnifier HUD Overlay (Top-Right like OLabs) */
+        .olabs-magnifier-box {
+            position: absolute;
+            top: 10px;
+            right: 14px;
+            width: 250px;
+            height: 95px;
+            background: #ffffff;
+            border: 2px solid #78350f;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .magnifier-header {
+            background: #78350f;
+            color: #fef08a;
+            font-size: 0.72rem;
+            font-weight: 800;
+            padding: 2px 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        #zoom-canvas {
+            flex: 1;
+            width: 100%;
+            background: #fefefd;
+        }
+
+        /* Bottom Readout & Control Bar */
+        .olabs-bottom-bar {
+            background: #f7ede2;
+            border-top: 2px solid #e5d5c5;
+            padding: 6px 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .readout-chips {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            font-size: 0.85rem;
+        }
+
+        .r-tag {
+            color: #78350f;
+            font-weight: 700;
+        }
+
+        .r-val {
+            color: #0f172a;
+            font-weight: 800;
+            background: #ffffff;
+            padding: 2px 8px;
+            border-radius: 4px;
+            border: 1px solid #cbd5e1;
+            margin-left: 4px;
+        }
+
+        .r-total {
+            color: #15803d;
+            background: #dcfce7;
+            border-color: #86efac;
+            font-size: 0.92rem;
+        }
+
+        .step-ctrls {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .step-btn {
+            background: #ffffff;
+            border: 1.5px solid #b45309;
+            color: #78350f;
+            font-weight: 800;
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .step-btn:hover {
+            background: #78350f;
+            color: #ffffff;
+        }
+
+        .btn-log-lkpd {
+            background: #15803d;
+            border: 1.5px solid #166534;
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 0.78rem;
+            padding: 5px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            box-shadow: 0 2px 0 #14532d;
+            transition: all 0.15s;
+        }
+
+        .btn-log-lkpd:hover {
+            background: #166534;
+            transform: translateY(-1px);
+        }
+
+        .btn-log-lkpd:active {
+            transform: translateY(1px);
+            box-shadow: none;
+        }
+
+        /* Bottom Footer */
+        .olabs-footer-note {
+            background: #452613;
+            color: #fef08a;
+            font-size: 0.7rem;
+            text-align: center;
+            padding: 4px 8px;
+            letter-spacing: 0.3px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="olabs-sim-container">
+        <!-- Top Header Bar -->
+        <div class="olabs-top-header">
+            <div class="olabs-sim-title">Vernier Calipers</div>
+            <div class="olabs-lc-tag">L.C = 0.01 cm (0.1 mm)</div>
+        </div>
+
+        <!-- Main Stage -->
+        <div class="olabs-stage-body">
+            <!-- Left Object Selector -->
+            <div class="olabs-sidebar">
+                <div class="sidebar-title">Select Object:</div>
+                <div class="obj-select-grid">
+                    <button class="obj-btn active" id="btn-obj-sphere" onclick="selectObject('sphere')">
+                        <span class="obj-icon">🏐</span>
+                        <span class="obj-label">Sphere</span>
+                    </button>
+                    <button class="obj-btn" id="btn-obj-iron" onclick="selectObject('iron')">
+                        <span class="obj-icon">🔲</span>
+                        <span class="obj-label">Iron block</span>
+                    </button>
+                    <button class="obj-btn" id="btn-obj-beaker" onclick="selectObject('beaker')">
+                        <span class="obj-icon">🧪</span>
+                        <span class="obj-label">Beaker</span>
+                    </button>
+                    <button class="obj-btn" id="btn-obj-cylinder" onclick="selectObject('cylinder')">
+                        <span class="obj-icon">🥫</span>
+                        <span class="obj-label">Cylinder</span>
+                    </button>
+                </div>
+
+                <div style="margin-top: 10px;" class="sidebar-title">Mode:</div>
+                <button class="obj-btn" id="btn-obj-free" onclick="selectObject('free')" style="width: 100%;">
+                    <span class="obj-icon">🖐️</span>
+                    <span class="obj-label">Drag Free (Manual)</span>
+                </button>
+
+                <button class="btn-olabs-reset" onclick="resetSim()">Reset</button>
+            </div>
+
+            <!-- Center Stage -->
+            <div class="olabs-center-stage">
+                <div class="canvas-wrapper" id="canvas-container">
+                    <canvas id="caliper-canvas" width="780" height="360"></canvas>
+
+                    <!-- Inset Magnifier (Nonius Coincidence Zoom) -->
+                    <div class="olabs-magnifier-box">
+                        <div class="magnifier-header">
+                            <span>VERNIER COINCIDENCE (ZOOM)</span>
+                            <span id="mag-sn-indicator">SN: 4</span>
+                        </div>
+                        <canvas id="zoom-canvas" width="250" height="72"></canvas>
+                    </div>
+                </div>
+
+                <!-- Bottom Readout Bar -->
+                <div class="olabs-bottom-bar">
+                    <div class="readout-chips">
+                        <div><span class="r-tag">M.S.R (SU):</span> <span class="r-val" id="disp-msr">2.3 cm</span></div>
+                        <div><span class="r-tag">V.S.R (SN):</span> <span class="r-val" id="disp-vsr">4 &times; 0.01 = 0.04 cm</span></div>
+                        <div><span class="r-tag">Reading:</span> <span class="r-val r-total" id="disp-total">2.34 cm</span></div>
+                    </div>
+
+                    <div class="step-ctrls">
+                        <button class="step-btn" onclick="stepSlider(-0.01)">◀ -0.01</button>
+                        <button class="step-btn" onclick="stepSlider(0.01)">+0.01 ▶</button>
+                        <button class="btn-log-lkpd" onclick="logDataToParent()">📥 Log to LKPD</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="olabs-footer-note">
+            Developed based on Amrita Vishwa Vidyapeetham & CDAC Standard || Interactive HTML5 Virtual Lab Edition
+        </div>
+    </div>
+
+    <script>
+        // State variables
+        const state = {
+            currentVal: 2.34, // in cm (SU=2.3, SN=4)
+            currentObj: 'sphere',
+            isDragging: false,
+            startX: 0,
+            startVal: 0,
+            objects: {
+                sphere: { name: "Sphere (Bola Logam)", val: 1.84, color: "#9333ea", radius: 24, type: "sphere" },
+                iron: { name: "Iron Block (Balok Besi)", val: 2.65, color: "#475569", width: 34, height: 42, type: "box" },
+                beaker: { name: "Beaker (Gelas Kimia)", val: 3.42, color: "#0284c7", width: 44, height: 50, type: "beaker" },
+                cylinder: { name: "Cylinder (Silinder Logam)", val: 2.34, color: "#d97706", width: 30, height: 46, type: "cylinder" },
+                free: { name: "Geser Bebas", val: 2.34, color: "#64748b", type: "none" }
+            }
+        };
+
+        const canvas = document.getElementById("caliper-canvas");
+        const ctx = canvas.getContext("2d");
+        const zoomCanvas = document.getElementById("zoom-canvas");
+        const zoomCtx = zoomCanvas.getContext("2d");
+
+        // Scale: 1 cm = 68 pixels on main stage
+        const PIXELS_PER_CM = 68;
+        const ORIGIN_X = 140; // Jaw closure point X
+        const BEAM_Y = 120;
+        const BEAM_HEIGHT = 80;
+
+        function init() {
+            setupEvents();
+            selectObject('sphere');
+        }
+
+        function setupEvents() {
+            function getCanvasX(e) {
+                const rect = canvas.getBoundingClientRect();
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                return (clientX - rect.left) * (canvas.width / rect.width);
+            }
+
+            function onDown(e) {
+                state.isDragging = true;
+                state.startX = getCanvasX(e);
+                state.startVal = state.currentVal;
+            }
+
+            function onMove(e) {
+                if (!state.isDragging) return;
+                const curX = getCanvasX(e);
+                const deltaX = curX - state.startX;
+                let newVal = state.startVal + (deltaX / PIXELS_PER_CM);
+                if (newVal < 0) newVal = 0;
+                if (newVal > 8.0) newVal = 8.0;
+                state.currentVal = Math.round(newVal * 100) / 100;
+                render();
+            }
+
+            function onUp() {
+                state.isDragging = false;
+            }
+
+            canvas.addEventListener("mousedown", onDown);
+            window.addEventListener("mousemove", onMove);
+            window.addEventListener("mouseup", onUp);
+
+            canvas.addEventListener("touchstart", onDown, { passive: true });
+            window.addEventListener("touchmove", onMove, { passive: true });
+            window.addEventListener("touchend", onUp);
+        }
+
+        function selectObject(key) {
+            state.currentObj = key;
+            document.querySelectorAll(".obj-btn").forEach(btn => btn.classList.remove("active"));
+            const curBtn = document.getElementById(`btn-obj-${key}`);
+            if (curBtn) curBtn.classList.add("active");
+
+            if (key !== "free") {
+                state.currentVal = state.objects[key].val;
+            }
+            render();
+        }
+
+        function stepSlider(step) {
+            let newVal = state.currentVal + step;
+            if (newVal < 0) newVal = 0;
+            if (newVal > 8) newVal = 8;
+            state.currentVal = Math.round(newVal * 100) / 100;
+            render();
+        }
+
+        function resetSim() {
+            selectObject('sphere');
+        }
+
+        function render() {
+            drawMainStage();
+            drawMagnifier();
+            updateReadout();
+        }
+
+        function drawMainStage() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const jawGap = state.currentVal * PIXELS_PER_CM;
+            const sliderX = ORIGIN_X + jawGap;
+
+            // 1. Draw Object between jaws
+            drawClampedObject(ORIGIN_X, jawGap);
+
+            // 2. Draw Main Fixed Beam (Metallic Steel)
+            drawMainBeam();
+
+            // 3. Draw Fixed Left Jaw
+            drawFixedJaw();
+
+            // 4. Draw Sliding Vernier Jaw
+            drawSlidingJaw(sliderX);
+        }
+
+        function drawMainBeam() {
+            const beamX = 40;
+            const beamW = 710;
+            const beamY = BEAM_Y;
+            const beamH = BEAM_HEIGHT;
+
+            // Metallic gradient
+            const grad = ctx.createLinearGradient(0, beamY, 0, beamY + beamH);
+            grad.addColorStop(0, "#cbd5e1");
+            grad.addColorStop(0.3, "#f1f5f9");
+            grad.addColorStop(0.7, "#94a3b8");
+            grad.addColorStop(1, "#64748b");
+
+            ctx.fillStyle = grad;
+            ctx.strokeStyle = "#475569";
+            ctx.lineWidth = 1.5;
+            ctx.fillRect(beamX, beamY, beamW, beamH);
+            ctx.strokeRect(beamX, beamY, beamW, beamH);
+
+            // Main scale graduations (0 to 10 cm, mm ticks)
+            ctx.fillStyle = "#0f172a";
+            ctx.strokeStyle = "#1e293b";
+            ctx.font = "bold 11px sans-serif";
+            ctx.textAlign = "center";
+
+            for (let i = 0; i <= 90; i++) {
+                const tickX = ORIGIN_X + (i * PIXELS_PER_CM / 10);
+                if (tickX > beamX + beamW - 10) break;
+
+                const isCm = (i % 10 === 0);
+                const isHalf = (i % 5 === 0 && !isCm);
+                const tickLen = isCm ? 22 : (isHalf ? 15 : 10);
+
+                ctx.lineWidth = isCm ? 1.5 : 1;
+                ctx.beginPath();
+                ctx.moveTo(tickX, beamY + beamH);
+                ctx.lineTo(tickX, beamY + beamH - tickLen);
+                ctx.stroke();
+
+                if (isCm) {
+                    ctx.fillText((i / 10).toString(), tickX, beamY + beamH - 26);
+                }
+            }
+
+            // Top Scale (Inches / Upper Jaw scale)
+            for (let i = 0; i <= 30; i++) {
+                const tickX = ORIGIN_X + (i * 24);
+                if (tickX > beamX + beamW - 10) break;
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(tickX, beamY);
+                ctx.lineTo(tickX, beamY + 10);
+                ctx.stroke();
+            }
+        }
+
+        function drawFixedJaw() {
+            ctx.save();
+            ctx.fillStyle = "#94a3b8";
+            ctx.strokeStyle = "#475569";
+            ctx.lineWidth = 1.5;
+
+            // Fixed Main Jaw Body
+            ctx.beginPath();
+            ctx.moveTo(40, BEAM_Y);
+            ctx.lineTo(ORIGIN_X, BEAM_Y);
+            ctx.lineTo(ORIGIN_X, BEAM_Y + BEAM_HEIGHT);
+            // Lower jaw extending down
+            ctx.lineTo(ORIGIN_X, BEAM_Y + BEAM_HEIGHT + 130);
+            ctx.lineTo(ORIGIN_X - 28, BEAM_Y + BEAM_HEIGHT + 130);
+            ctx.lineTo(ORIGIN_X - 45, BEAM_Y + BEAM_HEIGHT + 30);
+            ctx.lineTo(40, BEAM_Y + BEAM_HEIGHT);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Upper Fixed Jaw (Internal measurement)
+            ctx.beginPath();
+            ctx.moveTo(ORIGIN_X, BEAM_Y);
+            ctx.lineTo(ORIGIN_X, BEAM_Y - 70);
+            ctx.lineTo(ORIGIN_X - 25, BEAM_Y - 70);
+            ctx.lineTo(ORIGIN_X - 40, BEAM_Y);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.restore();
+        }
+
+        function drawSlidingJaw(x) {
+            ctx.save();
+            const grad = ctx.createLinearGradient(x, BEAM_Y - 70, x + 90, BEAM_Y + 210);
+            grad.addColorStop(0, "#e2e8f0");
+            grad.addColorStop(0.5, "#cbd5e1");
+            grad.addColorStop(1, "#94a3b8");
+
+            ctx.fillStyle = grad;
+            ctx.strokeStyle = "#334155";
+            ctx.lineWidth = 1.5;
+
+            // Slider Body Frame
+            ctx.beginPath();
+            // Upper Jaw
+            ctx.moveTo(x, BEAM_Y - 70);
+            ctx.lineTo(x + 25, BEAM_Y - 70);
+            ctx.lineTo(x + 40, BEAM_Y);
+            // Slider Window Box
+            ctx.lineTo(x + 85, BEAM_Y);
+            ctx.lineTo(x + 85, BEAM_Y + BEAM_HEIGHT);
+            // Lower Jaw
+            ctx.lineTo(x + 45, BEAM_Y + BEAM_HEIGHT + 30);
+            ctx.lineTo(x + 28, BEAM_Y + BEAM_HEIGHT + 130);
+            ctx.lineTo(x, BEAM_Y + BEAM_HEIGHT + 130);
+            ctx.lineTo(x, BEAM_Y + BEAM_HEIGHT);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Inner Cutout Window for viewing Vernier Scale
+            ctx.fillStyle = "rgba(255, 255, 255, 0.95)";
+            ctx.strokeStyle = "#1e293b";
+            ctx.lineWidth = 1.2;
+            const winX = x + 4;
+            const winY = BEAM_Y + BEAM_HEIGHT - 38;
+            const winW = 76;
+            const winH = 34;
+            ctx.fillRect(winX, winY, winW, winH);
+            ctx.strokeRect(winX, winY, winW, winH);
+
+            // Vernier Graduations (10 divisions = 9 mm on main scale)
+            // 1 vernier division = 0.9 mm = 0.09 cm = (0.09 * PIXELS_PER_CM)
+            const V_DIV_PX = 0.09 * PIXELS_PER_CM;
+            ctx.fillStyle = "#0f172a";
+            ctx.strokeStyle = "#0f172a";
+            ctx.font = "bold 9px sans-serif";
+            ctx.textAlign = "center";
+
+            for (let v = 0; v <= 10; v++) {
+                const tickX = x + (v * V_DIV_PX);
+                const isTen = (v === 0 || v === 5 || v === 10);
+                const tLen = isTen ? 14 : 9;
+
+                ctx.lineWidth = (v === 0) ? 1.8 : 1;
+                ctx.strokeStyle = (v === 0) ? "#dc2626" : "#0f172a"; // Red index mark
+
+                ctx.beginPath();
+                ctx.moveTo(tickX, winY + 2);
+                ctx.lineTo(tickX, winY + 2 + tLen);
+                ctx.stroke();
+
+                if (v % 2 === 0) {
+                    ctx.fillText(v.toString(), tickX, winY + 2 + tLen + 9);
+                }
+            }
+
+            // Drag handle grip
+            ctx.fillStyle = "#64748b";
+            ctx.fillRect(x + 88, BEAM_Y + 20, 10, 40);
+            ctx.strokeStyle = "#334155";
+            ctx.strokeRect(x + 88, BEAM_Y + 20, 10, 40);
+
+            ctx.restore();
+        }
+
+        function drawClampedObject(originX, gap) {
+            const objKey = state.currentObj;
+            if (objKey === "free" || !state.objects[objKey] || gap < 5) return;
+
+            const obj = state.objects[objKey];
+            const centerX = originX + (gap / 2);
+            const centerY = BEAM_Y + BEAM_HEIGHT + 55;
+
+            ctx.save();
+            ctx.fillStyle = obj.color;
+            ctx.strokeStyle = "#1e293b";
+            ctx.lineWidth = 1.5;
+
+            if (obj.type === "sphere") {
+                const rad = Math.min(gap / 2, 32);
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, rad, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+                // 3D sphere highlight
+                const grad = ctx.createRadialGradient(centerX - rad * 0.3, centerY - rad * 0.3, 2, centerX, centerY, rad);
+                grad.addColorStop(0, "rgba(255,255,255,0.7)");
+                grad.addColorStop(1, "rgba(0,0,0,0.2)");
+                ctx.fillStyle = grad;
+                ctx.fill();
+            } else if (obj.type === "box") {
+                const w = Math.min(gap, 65);
+                const h = 50;
+                ctx.fillRect(centerX - w / 2, centerY - h / 2, w, h);
+                ctx.strokeRect(centerX - w / 2, centerY - h / 2, w, h);
+            } else if (obj.type === "beaker") {
+                const w = Math.min(gap, 70);
+                const h = 60;
+                ctx.fillRect(centerX - w / 2, centerY - h / 2, w, h);
+                ctx.strokeRect(centerX - w / 2, centerY - h / 2, w, h);
+                // Glass markings
+                ctx.strokeStyle = "rgba(255,255,255,0.8)";
+                for (let i = -20; i <= 20; i += 10) {
+                    ctx.beginPath();
+                    ctx.moveTo(centerX - w / 2 + 4, centerY + i);
+                    ctx.lineTo(centerX - w / 2 + 14, centerY + i);
+                    ctx.stroke();
+                }
+            } else if (obj.type === "cylinder") {
+                const w = Math.min(gap, 55);
+                const h = 55;
+                ctx.fillRect(centerX - w / 2, centerY - h / 2, w, h);
+                ctx.strokeRect(centerX - w / 2, centerY - h / 2, w, h);
+            }
+
+            ctx.restore();
+        }
+
+        function drawMagnifier() {
+            zoomCtx.clearRect(0, 0, zoomCanvas.width, zoomCanvas.height);
+
+            const val = state.currentVal;
+            const su = Math.floor(val * 10) / 10;
+            const sn = Math.round((val - su) * 100);
+
+            // Zoom factor: 5x magnification
+            const ZOOM = 5.0;
+            const zoomCenter = zoomCanvas.width / 2;
+
+            // Center at coincidence point: sliderX + sn * (0.09 * PIXELS_PER_CM)
+            const coincidenceMainVal = su + (sn * 0.09); // in cm on main scale
+
+            // Draw zoomed main scale ticks (top of zoom)
+            zoomCtx.fillStyle = "#1e293b";
+            zoomCtx.strokeStyle = "#1e293b";
+            zoomCtx.font = "bold 11px sans-serif";
+            zoomCtx.textAlign = "center";
+
+            const startMm = Math.floor((coincidenceMainVal - 0.4) * 10);
+            const endMm = Math.ceil((coincidenceMainVal + 0.4) * 10);
+
+            for (let m = startMm; m <= endMm; m++) {
+                const cmVal = m / 10;
+                const distCm = cmVal - coincidenceMainVal;
+                const x = zoomCenter + (distCm * PIXELS_PER_CM * ZOOM);
+
+                if (x >= -20 && x <= zoomCanvas.width + 20) {
+                    const isCm = (m % 10 === 0);
+                    const tLen = isCm ? 22 : 14;
+                    zoomCtx.lineWidth = isCm ? 2 : 1.2;
+
+                    zoomCtx.beginPath();
+                    zoomCtx.moveTo(x, 0);
+                    zoomCtx.lineTo(x, tLen);
+                    zoomCtx.stroke();
+
+                    if (isCm) {
+                        zoomCtx.fillText((m / 10).toString(), x, tLen + 11);
+                    }
+                }
+            }
+
+            // Draw zoomed vernier scale ticks (bottom of zoom)
+            for (let v = 0; v <= 10; v++) {
+                const distV = (v - sn) * (0.09 * PIXELS_PER_CM * ZOOM);
+                const x = zoomCenter + distV;
+
+                if (x >= -20 && x <= zoomCanvas.width + 20) {
+                    const isCoincident = (v === sn);
+                    const tLen = (v % 5 === 0) ? 22 : 14;
+
+                    zoomCtx.lineWidth = isCoincident ? 2.5 : 1.2;
+                    zoomCtx.strokeStyle = isCoincident ? "#dc2626" : "#0f172a";
+
+                    zoomCtx.beginPath();
+                    zoomCtx.moveTo(x, zoomCanvas.height);
+                    zoomCtx.lineTo(x, zoomCanvas.height - tLen);
+                    zoomCtx.stroke();
+
+                    zoomCtx.fillStyle = isCoincident ? "#dc2626" : "#0f172a";
+                    zoomCtx.fillText(v.toString(), x, zoomCanvas.height - tLen - 4);
+                }
+            }
+
+            // Red Coincidence Alignment Line
+            zoomCtx.strokeStyle = "rgba(220, 38, 38, 0.85)";
+            zoomCtx.lineWidth = 1.5;
+            zoomCtx.setLineDash([3, 2]);
+            zoomCtx.beginPath();
+            zoomCtx.moveTo(zoomCenter, 0);
+            zoomCtx.lineTo(zoomCenter, zoomCanvas.height);
+            zoomCtx.stroke();
+            zoomCtx.setLineDash([]);
+
+            document.getElementById("mag-sn-indicator").textContent = `Coincident Line: SN = ${sn}`;
+        }
+
+        function updateReadout() {
+            const val = state.currentVal;
+            const su = Math.floor(val * 10) / 10;
+            const sn = Math.round((val - su) * 100);
+
+            document.getElementById("disp-msr").textContent = `${su.toFixed(1)} cm`;
+            document.getElementById("disp-vsr").innerHTML = `${sn} &times; 0.01 = ${(sn * 0.01).toFixed(2)} cm`;
+            document.getElementById("disp-total").textContent = `${val.toFixed(2)} cm`;
+        }
+
+        function logDataToParent() {
+            const val = state.currentVal;
+            const su = Math.floor(val * 10) / 10;
+            const sn = Math.round((val - su) * 100);
+            const objName = state.objects[state.currentObj] ? state.objects[state.currentObj].name : "Objek Bebas";
+
+            // Post message to parent window (index.html)
+            if (window.parent && window.parent !== window) {
+                window.parent.postMessage({
+                    type: "LOG_CALIPER_TO_LKPD",
+                    su: su.toFixed(1),
+                    sn: sn,
+                    total: val.toFixed(2),
+                    obj: objName
+                }, "*");
+            } else {
+                alert(`✅ Hasil pengukuran ${objName} (${val.toFixed(2)} cm) berhasil dicatat!`);
+            }
+        }
+
+        // Initialize on page load
+        window.onload = init;
+    </script>
+</body>
+</html>

@@ -324,27 +324,32 @@
                                 </div>
                             </div>
 
-                            <!-- View A: OLabs Iframe Tersemat In-App (Default Active) -->
+                            <!-- View A: Interactive In-App Simulator (Default Active: OLabs HTML5 In-App Edition) -->
                             <div id="caliper-olabs-view" class="lab-subview active">
+                                <div class="sim-engine-bar">
+                                    <span class="bar-lbl">Pilihan Simulator In-App:</span>
+                                    <button class="chip-btn active" id="btn-engine-compadre" onclick="appState.switchCaliperEngine('compadre')">⚡ Simulasi OLabs In-App (Tersemat 100% & Interaktif)</button>
+                                    <button class="chip-btn" id="btn-engine-olabs" onclick="appState.switchCaliperEngine('olabs')">🏛️ Portal Resmi OLabs (olabs.edu.in)</button>
+                                </div>
                                 <div class="sim-iframe-holder" id="caliper-iframe-holder">
                                     <iframe id="caliper-inapp-frame" 
-                                            src="https://www.olabs.edu.in/?sub=1&brch=5&sim=16&cnt=4" 
+                                            src="assets/simulators/vernier/index.html" 
                                             allow="fullscreen; autoplay; clipboard-read; clipboard-write" 
                                             loading="lazy" 
                                             title="OLabs Vernier Calipers Simulator">
                                     </iframe>
                                 </div>
-                                <div class="olabs-helper-card">
+                                <div class="olabs-helper-card" id="caliper-olabs-helper" style="display: none;">
                                     <div class="olabs-helper-icon">🔬</div>
                                     <div class="olabs-helper-content">
-                                        <h4>Akses Simulasi Resmi OLabs Vernier Calipers</h4>
-                                        <p>Server resmi OLabs membatasi penayangan iframe pada web hosting umum (kebijakan <code>X-Frame-Options: SAMEORIGIN</code>). Gunakan tombol di bawah untuk membuka simulator resmi utuh tanpa batasan atau beralih ke mode simulasi canvas interaktif:</p>
+                                        <h4>Akses Portal Resmi OLabs India (olabs.edu.in)</h4>
+                                        <p>Server resmi OLabs menerapkan kebijakan keamanan <code>X-Frame-Options: SAMEORIGIN</code>. Pada web hosting biasa, klik tombol di bawah untuk membuka simulator resmi utuh di jendela interaktif baru atau gunakan simulator In-App di atas yang tersemat 100%:</p>
                                         <div class="olabs-helper-actions">
                                             <button class="btn-game-primary" onclick="appState.openOLabsWindow('caliper')">
                                                 🚀 Buka Jendela Interaktif OLabs (Ukuran Penuh)
                                             </button>
-                                            <button class="btn-tool-pill" onclick="appState.switchCaliperMode('canvas')">
-                                                🔬 Buka Simulasi Canvas (100% Offline & LKPD)
+                                            <button class="btn-tool-pill" onclick="appState.switchCaliperEngine('compadre')">
+                                                ⚡ Kembali ke Simulator OLabs In-App Tersemat
                                             </button>
                                         </div>
                                     </div>
