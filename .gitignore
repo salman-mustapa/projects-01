@@ -8,6 +8,7 @@ __pycache__/
 *.bat
 *.cmd
 *.log
+*.ogg
 
 # OS generated files
 .DS_Store

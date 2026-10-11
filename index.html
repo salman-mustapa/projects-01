@@ -224,11 +224,11 @@
 
                         <!-- Stage 4: Video Praktikum -->
                         <div class="adv-card card-red pulse-hover" onclick="appState.navigateTo('video-praktikum')">
-                            <div class="adv-badge">Video Praktikum</div>
+                            <div class="adv-badge">3 Domain Eksperimen</div>
                             <div class="adv-icon">🎬</div>
                             <h3 class="adv-title">Video Praktikum</h3>
-                            <p class="adv-desc">Video panduan praktikum pengukuran waktu.</p>
-                            <button class="adv-btn">Tonton ➔</button>
+                            <p class="adv-desc">3 Video panduan: Panjang (Jangka Sorong), Massa (Neraca Pegas), & Waktu (Bandul).</p>
+                            <button class="adv-btn">Tonton Video ➔</button>
                         </div>
 
                         <!-- Stage 5: Panduan Praktikum -->
@@ -307,7 +307,7 @@
                     <div class="lab-tab-chips">
                         <button class="lab-chip-btn active" id="tab-lab-caliper" onclick="appState.switchLab('caliper')">📏 Jangka Sorong (OLabs)</button>
                         <button class="lab-chip-btn" id="tab-lab-spring" onclick="appState.switchLab('spring')">⚖️ Neraca Pegas (OLabs)</button>
-                        <button class="lab-chip-btn" id="tab-lab-pendulum" onclick="appState.switchLab('pendulum')">⏱️ Bandul (PhET Colorado)</button>
+                        <button class="lab-chip-btn" id="tab-lab-pendulum" onclick="appState.switchLab('pendulum')">⏱️ Bandul Matematis (OLabs)</button>
                         <button class="lab-chip-btn" id="tab-lab-lkpd" onclick="appState.switchLab('lkpd')">📋 Lembar LKPD Digital</button>
                     </div>
 
@@ -412,7 +412,7 @@
                             <!-- Clean, Single-Row Simulator Controls -->
                             <div class="sim-clean-bar">
                                 <div class="sim-mode-chips">
-                                    <button class="chip-btn active" id="btn-spring-mode-online" onclick="appState.switchSpringMode('online')">⚡ Simulasi PhET</button>
+                                    <button class="chip-btn active" id="btn-spring-mode-online" onclick="appState.switchSpringMode('online')">⚡ Simulasi OLabs</button>
                                     <button class="chip-btn" id="btn-spring-mode-canvas" onclick="appState.switchSpringMode('canvas')">🔬 Simulasi Canvas</button>
                                 </div>
                                 <div class="sim-actions-row">
@@ -420,7 +420,7 @@
                                         <span class="orient-icon">🔄</span> <span class="orient-text">Putar Layar</span>
                                     </button>
                                     <button class="btn-tool-pill" onclick="appState.fullscreenSpringFrame()" title="Perbesar Layar Penuh">⛶ Layar Penuh</button>
-                                    <button class="btn-tool-pill btn-olabs-direct" onclick="appState.openOLabsWindow('spring')" title="Buka Portal OLabs Spring di Tab Baru">🌐 Web Resmi ↗</button>
+                                    <button class="btn-tool-pill btn-olabs-direct" onclick="appState.openOLabsWindow('spring')" title="Buka Portal Resmi OLabs di Tab Baru">🌐 Web Resmi OLabs ↗</button>
                                 </div>
                             </div>
 
@@ -496,13 +496,13 @@
                         </div>
                     </div>
 
-                    <!-- Panel 3: Bandul & Waktu (PhET EMBEDDED IN-APP DEFAULT) -->
+                    <!-- Panel 3: Bandul & Waktu (OLabs / In-App Interactive) -->
                     <div class="lab-panel" id="panel-lab-pendulum">
                         <div class="lab-content-box">
                             <!-- Clean, Single-Row Simulator Controls -->
                             <div class="sim-clean-bar">
                                 <div class="sim-mode-chips">
-                                    <button class="chip-btn active" id="btn-pendulum-mode-phet" onclick="appState.switchPendulumMode('phet')">⚡ Simulasi PhET</button>
+                                    <button class="chip-btn active" id="btn-pendulum-mode-phet" onclick="appState.switchPendulumMode('phet')">⚡ Simulasi OLabs</button>
                                     <button class="chip-btn" id="btn-pendulum-mode-canvas" onclick="appState.switchPendulumMode('canvas')">🔬 Simulasi Canvas</button>
                                 </div>
                                 <div class="sim-actions-row">
@@ -510,6 +510,7 @@
                                         <span class="orient-icon">🔄</span> <span class="orient-text">Putar Layar</span>
                                     </button>
                                     <button class="btn-tool-pill" onclick="appState.fullscreenPhetFrame()" title="Perbesar Layar Penuh">⛶ Layar Penuh</button>
+                                    <button class="btn-tool-pill btn-olabs-direct" onclick="appState.openOLabsWindow('pendulum')" title="Buka Portal Resmi OLabs Simple Pendulum di Tab Baru">🌐 Web Resmi OLabs ↗</button>
                                 </div>
                             </div>
 
@@ -562,7 +563,7 @@
                             <div class="lkpd-title-row">
                                 <div>
                                     <h3>📋 Lembar Kerja Praktikum (LKPD) Digital</h3>
-                                    <p class="text-muted" style="font-size:0.85rem; margin:0;">Tercatat otomatis dari hasil percobaan Jangka Sorong, Neraca Pegas, & Bandul PhET.</p>
+                                    <p class="text-muted" style="font-size:0.85rem; margin:0;">Tercatat otomatis dari hasil percobaan Jangka Sorong, Neraca Pegas, & Bandul OLabs.</p>
                                 </div>
                                 <div class="d-flex gap-2">
                                     <button class="btn-tool-pill" onclick="window.print()">🖨️ Cetak / Simpan PDF</button>
@@ -713,49 +714,44 @@
                 <div class="inner-stage">
                     <div class="inner-toolbar">
                         <button class="btn-back-pill" onclick="appState.navigateTo('dashboard')">⬅ Menu Utama</button>
-                        <span class="sub-badge">Video Panduan Praktikum Nyata</span>
+                        <span class="sub-badge">🎬 Video Panduan Praktikum (3 Domain Pengukuran)</span>
                     </div>
 
-                    <!-- 3 Measurement Video Sub-Tabs -->
-                    <div class="lab-tab-chips">
-                        <button class="lab-chip-btn active" id="tab-video-pendulum" onclick="appState.switchVideoTab('pendulum')">⏱️ Pengukuran Waktu (Bandul)</button>
-                        <button class="lab-chip-btn" id="tab-video-caliper" onclick="appState.switchVideoTab('caliper')">📏 Pengukuran Panjang (Jangka Sorong)</button>
-                        <button class="lab-chip-btn" id="tab-video-spring" onclick="appState.switchVideoTab('spring')">⚖️ Pengukuran Massa (Neraca Pegas)</button>
-                    </div>
-
-                    <!-- Panel Video 1: Pengukuran Waktu (Video Lokal Eksperimen Bandul) -->
-                    <div class="video-panel active" id="panel-video-pendulum">
-                        <div class="video-compact-box">
-                            <div class="video-holder">
-                                <video id="lab-video-player" controls preload="metadata" poster="assets/slides/slide_01.jpg">
-                                    <source src="Video Panduan Praktikum Pengukuran Waktu.mp4" type="video/mp4">
-                                </video>
+                    <!-- 3 Measurement Video Selection Deck (Pilihan Jelas & Menarik) -->
+                    <div class="video-selection-deck">
+                        <button class="video-choice-card active" id="tab-video-caliper" onclick="appState.switchVideoTab('caliper')">
+                            <span class="choice-icon">📏</span>
+                            <div class="choice-info">
+                                <strong>1. Pengukuran Panjang</strong>
+                                <span class="choice-meta">Praktikum Jangka Sorong (OLabs)</span>
                             </div>
-                            <div class="video-points-card">
-                                <h4>⏱️ Panduan Praktikum Pengukuran Waktu & Periode:</h4>
-                                <ol class="styled-numbered-list">
-                                    <li><strong>1 Ayunan Penuh:</strong> Gerak bolak-balik mulai dari simpangan awal kembali ke titik semula (A ➔ B ➔ C ➔ B ➔ A).</li>
-                                    <li><strong>Pengukuran Waktu:</strong> Catat waktu untuk 10 kali ayunan penuh menggunakan stopwatch secara akurat.</li>
-                                    <li><strong>Perhitungan Periode (T):</strong> Dihitung dengan rumus <code>T = t / n</code> (waktu total dibagi 10 ayunan).</li>
-                                    <li><strong>Kesimpulan Penting:</strong> Periode ayunan dipengaruhi oleh <strong>panjang tali</strong>, dan <em>TIDAK</em> dipengaruhi oleh massa beban bandul!</li>
-                                </ol>
-                                <div class="video-quick-action">
-                                    <button class="btn-tool-pill" onclick="appState.navigateTo('virtual-lab'); appState.switchLab('pendulum');">🔬 Buka Simulasi Bandul PhET In-App ➔</button>
-                                </div>
+                        </button>
+                        <button class="video-choice-card" id="tab-video-spring" onclick="appState.switchVideoTab('spring')">
+                            <span class="choice-icon">⚖️</span>
+                            <div class="choice-info">
+                                <strong>2. Pengukuran Massa</strong>
+                                <span class="choice-meta">Praktikum Neraca Pegas (OLabs)</span>
                             </div>
-                        </div>
+                        </button>
+                        <button class="video-choice-card" id="tab-video-pendulum" onclick="appState.switchVideoTab('pendulum')">
+                            <span class="choice-icon">⏱️</span>
+                            <div class="choice-info">
+                                <strong>3. Pengukuran Waktu</strong>
+                                <span class="choice-meta">Praktikum Bandul & Stopwatch</span>
+                            </div>
+                        </button>
                     </div>
 
-                    <!-- Panel Video 2: Pengukuran Panjang (Jangka Sorong OLabs) -->
-                    <div class="video-panel" id="panel-video-caliper" style="display: none;">
+                    <!-- Panel Video 1: Pengukuran Panjang (Jangka Sorong OLabs - Bu Guru Chanel) -->
+                    <div class="video-panel active" id="panel-video-caliper">
                         <div class="video-compact-box">
                             <div class="video-holder">
                                 <div class="video-iframe-wrap">
-                                    <iframe src="https://www.youtube-nocookie.com/embed/z1gK4_h9yT8?rel=0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen title="Video Praktikum Jangka Sorong OLabs"></iframe>
+                                    <iframe id="yt-player-caliper" src="https://www.youtube-nocookie.com/embed/gJPXI0_el-0?enablejsapi=1&rel=0&modestbranding=1" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen title="Praktikum Virtual Jangka Sorong OLabs"></iframe>
                                 </div>
                             </div>
                             <div class="video-points-card">
-                                <h4>📏 Panduan Praktikum Pengukuran Panjang (Jangka Sorong):</h4>
+                                <h4>📏 Panduan Praktikum Pengukuran Panjang (Jangka Sorong OLabs):</h4>
                                 <ol class="styled-numbered-list">
                                     <li><strong>Skala Utama (SU):</strong> Baca nilai pada batang tetap sebelum angka 0 skala nonius dalam satuan cm (misal: 2,3 cm).</li>
                                     <li><strong>Skala Nonius (SN):</strong> Cari garis nonius yang berimpit tegak lurus dengan garis skala utama (misal: garis ke-4).</li>
@@ -763,22 +759,22 @@
                                     <li><strong>Contoh Pembacaan:</strong> 2,3 cm + (4 × 0,01 cm) = <strong>2,34 cm</strong>.</li>
                                 </ol>
                                 <div class="video-quick-action">
-                                    <button class="btn-tool-pill" onclick="appState.navigateTo('virtual-lab'); appState.switchLab('caliper');">🔬 Buka Lab Jangka Sorong In-App ➔</button>
+                                    <button class="btn-game-primary" onclick="appState.navigateTo('virtual-lab'); appState.switchLab('caliper');">🔬 Langsung Coba di Lab Jangka Sorong OLabs ➔</button>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Panel Video 3: Pengukuran Massa (Neraca Pegas OLabs) -->
+                    <!-- Panel Video 2: Pengukuran Massa (Neraca Pegas OLabs - Prihantoro Eko Sulistyo) -->
                     <div class="video-panel" id="panel-video-spring" style="display: none;">
                         <div class="video-compact-box">
                             <div class="video-holder">
                                 <div class="video-iframe-wrap">
-                                    <iframe src="https://www.youtube-nocookie.com/embed/0G3jZqI8uio?rel=0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen title="Video Praktikum Neraca Pegas OLabs"></iframe>
+                                    <iframe id="yt-player-spring" src="https://www.youtube-nocookie.com/embed/pf17eIGw9Fk?enablejsapi=1&rel=0&modestbranding=1" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen title="Praktikum Virtual Neraca Pegas OLabs"></iframe>
                                 </div>
                             </div>
                             <div class="video-points-card">
-                                <h4>⚖️ Panduan Praktikum Pengukuran Massa (Neraca Pegas):</h4>
+                                <h4>⚖️ Panduan Praktikum Pengukuran Massa (Neraca Pegas OLabs):</h4>
                                 <ol class="styled-numbered-list">
                                     <li><strong>Penyesuaian Titik Nol:</strong> Pastikan jarum penunjuk tepat pada garis 0 Newton sebelum diberi beban (zero error correction).</li>
                                     <li><strong>Pembacaan Gaya Berat (w):</strong> Gantung beban di kait neraca dan catat nilai gaya tarik dalam satuan Newton (N).</li>
@@ -786,7 +782,30 @@
                                     <li><strong>Contoh:</strong> Jika w = 2,45 N pada g = 9,8 m/s², maka massa benda M = 0,25 kg (250 gram).</li>
                                 </ol>
                                 <div class="video-quick-action">
-                                    <button class="btn-tool-pill" onclick="appState.navigateTo('virtual-lab'); appState.switchLab('spring');">🔬 Buka Lab Neraca Pegas In-App ➔</button>
+                                    <button class="btn-game-primary" onclick="appState.navigateTo('virtual-lab'); appState.switchLab('spring');">🔬 Langsung Coba di Lab Neraca Pegas OLabs ➔</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Panel Video 3: Pengukuran Waktu (Video Nyata Eksperimen Bandul & Stopwatch) -->
+                    <div class="video-panel" id="panel-video-pendulum" style="display: none;">
+                        <div class="video-compact-box">
+                            <div class="video-holder">
+                                <video id="lab-video-player" controls preload="metadata" poster="assets/slides/slide_01.jpg">
+                                    <source src="Video Panduan Praktikum Pengukuran Waktu.mp4" type="video/mp4">
+                                </video>
+                            </div>
+                            <div class="video-points-card">
+                                <h4>⏱️ Panduan Praktikum Pengukuran Waktu & Periode Bandul:</h4>
+                                <ol class="styled-numbered-list">
+                                    <li><strong>1 Ayunan Penuh:</strong> Gerak bolak-balik mulai dari simpangan awal kembali ke titik semula (A ➔ B ➔ C ➔ B ➔ A).</li>
+                                    <li><strong>Pengukuran Waktu:</strong> Catat waktu untuk 10 kali ayunan penuh menggunakan stopwatch secara akurat.</li>
+                                    <li><strong>Perhitungan Periode (T):</strong> Dihitung dengan rumus <code>T = t / n</code> (waktu total dibagi 10 ayunan).</li>
+                                    <li><strong>Kesimpulan Penting:</strong> Periode ayunan dipengaruhi oleh <strong>panjang tali</strong>, dan <em>TIDAK</em> dipengaruhi oleh massa beban bandul!</li>
+                                </ol>
+                                <div class="video-quick-action">
+                                    <button class="btn-game-primary" onclick="appState.navigateTo('virtual-lab'); appState.switchLab('pendulum');">🔬 Langsung Coba di Lab Bandul OLabs ➔</button>
                                 </div>
                             </div>
                         </div>
@@ -807,7 +826,7 @@
                     <div class="guide-tab-chips">
                         <button class="lab-chip-btn active" id="tab-guide-caliper" onclick="appState.switchGuide('caliper')">📏 Jangka Sorong (5 Hal)</button>
                         <button class="lab-chip-btn" id="tab-guide-spring" onclick="appState.switchGuide('spring')">⚖️ Neraca Pegas (5 Hal)</button>
-                        <button class="lab-chip-btn" id="tab-guide-pendulum" onclick="appState.switchGuide('pendulum')">⏱️ Bandul PhET (9 Hal)</button>
+                        <button class="lab-chip-btn" id="tab-guide-pendulum" onclick="appState.switchGuide('pendulum')">⏱️ Bandul & Waktu (9 Hal)</button>
                     </div>
 
                     <!-- Panel Caliper Guide -->
@@ -822,7 +841,9 @@
                                 </div>
                             </div>
                             <div class="guide-img-display-frame">
+                                <button class="guide-frame-arrow left" onclick="appState.prevGuidePage('caliper')" title="Halaman Sebelumnya">❮</button>
                                 <img id="img-guide-caliper" src="assets/guides/User_Guide_Praktikum_Virtual_Jangka_Sorong/page_01.jpg" alt="Panduan Jangka Sorong">
+                                <button class="guide-frame-arrow right" onclick="appState.nextGuidePage('caliper')" title="Halaman Selanjutnya">❯</button>
                             </div>
                             <div class="guide-thumb-strip" id="thumbs-guide-caliper">
                                 <!-- Thumbnails injected by JS -->
@@ -846,7 +867,9 @@
                                 </div>
                             </div>
                             <div class="guide-img-display-frame">
+                                <button class="guide-frame-arrow left" onclick="appState.prevGuidePage('spring')" title="Halaman Sebelumnya">❮</button>
                                 <img id="img-guide-spring" src="assets/guides/User_Guide_Praktikum_Virtual_Neraca_Pegas/page_01.jpg" alt="Panduan Neraca Pegas">
+                                <button class="guide-frame-arrow right" onclick="appState.nextGuidePage('spring')" title="Halaman Selanjutnya">❯</button>
                             </div>
                             <div class="guide-thumb-strip" id="thumbs-guide-spring">
                                 <!-- Thumbnails injected by JS -->
@@ -862,7 +885,7 @@
                     <div class="guide-content-panel" id="panel-guide-pendulum">
                         <div class="guide-cinema-card">
                             <div class="guide-reader-header">
-                                <span class="guide-reader-title">⏱️ Panduan Praktikum Pengukuran Waktu & Bandul (PhET)</span>
+                                <span class="guide-reader-title">⏱️ Panduan Praktikum Pengukuran Waktu & Bandul</span>
                                 <div class="guide-reader-nav">
                                     <button class="btn-tool-pill" onclick="appState.prevGuidePage('pendulum')">❮ Sebelumnya</button>
                                     <span class="guide-page-badge" id="badge-guide-pendulum">Halaman 1 dari 9</span>
@@ -870,13 +893,15 @@
                                 </div>
                             </div>
                             <div class="guide-img-display-frame">
-                                <img id="img-guide-pendulum" src="assets/guides/User_Guide_Pengukuran_Waktu/page_01.jpg" alt="Panduan Bandul PhET">
+                                <button class="guide-frame-arrow left" onclick="appState.prevGuidePage('pendulum')" title="Halaman Sebelumnya">❮</button>
+                                <img id="img-guide-pendulum" src="assets/guides/User_Guide_Pengukuran_Waktu/page_01.jpg" alt="Panduan Bandul & Waktu">
+                                <button class="guide-frame-arrow right" onclick="appState.nextGuidePage('pendulum')" title="Halaman Selanjutnya">❯</button>
                             </div>
                             <div class="guide-thumb-strip" id="thumbs-guide-pendulum">
                                 <!-- Thumbnails injected by JS -->
                             </div>
                             <div class="guide-bottom-action-row">
-                                <button class="btn-game-primary" onclick="appState.navigateTo('virtual-lab'); appState.switchLab('pendulum');">🔬 Langsung Buka Lab Bandul PhET di Aplikasi ➔</button>
+                                <button class="btn-game-primary" onclick="appState.navigateTo('virtual-lab'); appState.switchLab('pendulum');">🔬 Langsung Buka Lab Bandul OLabs di Aplikasi ➔</button>
                                 <a href="User Guide Pengukuran Waktu.pdf" download class="btn-tool-pill">📥 Unduh PDF</a>
                             </div>
                         </div>

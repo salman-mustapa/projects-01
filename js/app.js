@@ -289,6 +289,9 @@ class AppState {
         }
         window.scrollTo({ top: 0, behavior: "smooth" });
 
+        // Pause all running media when navigating between screens
+        this.pauseAllMedia();
+
         // Trigger sub-initializers per screen
         if (screenId === "virtual-lab") {
             setTimeout(() => {
@@ -303,7 +306,7 @@ class AppState {
         } else if (screenId === "panduan-praktikum") {
             this.switchGuide("caliper");
         } else if (screenId === "video-praktikum") {
-            this.switchVideoTab("pendulum");
+            this.switchVideoTab("caliper");
         } else if (screenId === "modul-ajar") {
             this.updateModulViewer();
         }
@@ -603,33 +606,14 @@ class AppState {
         if (btnClose) btnClose.style.display = "none";
     }
 
-    // --- PANDUAN PRAKTIKUM TAB SWITCHING ---
-    switchGuide(guideKey) {
-        window.sound?.playClick();
-        document.querySelectorAll(".guide-tab-chips .lab-chip-btn").forEach(btn => btn.classList.remove("active"));
-        document.querySelectorAll(".guide-content-panel").forEach(panel => {
-            panel.classList.remove("active");
-            panel.style.display = "none";
-        });
-
-        const tabBtn = document.getElementById(`tab-guide-${guideKey}`);
-        const tabContent = document.getElementById(`panel-guide-${guideKey}`);
-        if (tabBtn) tabBtn.classList.add("active");
-        if (tabContent) {
-            tabContent.style.display = "block";
-            tabContent.classList.add("active");
-        }
-    }
-
     // --- VIDEO PRAKTIKUM TAB SWITCHING (3 DOMAIN PENGUKURAN) ---
     switchVideoTab(videoKey) {
-        window.sound.playClick();
+        window.sound?.playClick();
         
-        // Pause any active HTML5 video
-        const localVideo = document.getElementById("lab-video-player");
-        if (localVideo) localVideo.pause();
+        // Pause any active HTML5 video or YouTube iframe
+        this.pauseAllMedia();
 
-        document.querySelectorAll("#screen-video-praktikum .lab-chip-btn").forEach(btn => btn.classList.remove("active"));
+        document.querySelectorAll("#screen-video-praktikum .video-choice-card").forEach(btn => btn.classList.remove("active"));
         document.querySelectorAll("#screen-video-praktikum .video-panel").forEach(panel => {
             panel.classList.remove("active");
             panel.style.display = "none";
@@ -642,6 +626,31 @@ class AppState {
             panel.style.display = "block";
             panel.classList.add("active");
         }
+    }
+
+    pauseAllMedia() {
+        // Pause local HTML5 video if playing
+        const localVideo = document.getElementById("lab-video-player");
+        if (localVideo && !localVideo.paused) {
+            localVideo.pause();
+        }
+
+        // PostMessage pause to all YouTube embeds
+        const iframes = [
+            document.getElementById("yt-player-caliper"),
+            document.getElementById("yt-player-spring")
+        ];
+        iframes.forEach(iframe => {
+            if (iframe && iframe.contentWindow) {
+                try {
+                    iframe.contentWindow.postMessage(JSON.stringify({
+                        event: "command",
+                        func: "pauseVideo",
+                        args: ""
+                    }), "*");
+                } catch (e) {}
+            }
+        });
     }
 
     // --- VIRTUAL LAB TAB SWITCHING ---
@@ -815,6 +824,8 @@ class AppState {
         let url = "https://www.olabs.edu.in/?sub=1&brch=5&sim=16&cnt=4";
         if (type === "spring") {
             url = "https://www.olabs.edu.in/?sub=1&brch=5&sim=18&cnt=4";
+        } else if (type === "pendulum") {
+            url = "http://amrita.olabs.edu.in/?sub=1&brch=5&sim=159&cnt=4";
         }
         window.open(url, "OLabsSimulationWindow", "width=1100,height=750,scrollbars=yes,resizable=yes");
     }
