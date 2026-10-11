@@ -1,0 +1,14 @@
+# Scratch and test files
+scratch/
+scratch_*.py
+__pycache__/
+*.pyc
+
+# OS generated files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Local IDE
+.vscode/
+.idea/
