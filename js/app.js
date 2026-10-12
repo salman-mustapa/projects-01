@@ -34,6 +34,10 @@ class AppState {
             if (caliperFrame) {
                 caliperFrame.src = "/olabs-proxy/?sub=1&brch=5&sim=16&cnt=4";
             }
+            const springFrame = document.getElementById("spring-inapp-frame");
+            if (springFrame) {
+                springFrame.src = "/olabs-proxy/?sub=1&brch=1&sim=2&cnt=4";
+            }
         }
     }
 
@@ -823,7 +827,7 @@ class AppState {
         window.sound?.playClick();
         let url = "https://www.olabs.edu.in/?sub=1&brch=5&sim=16&cnt=4";
         if (type === "spring") {
-            url = "https://www.olabs.edu.in/?sub=1&brch=5&sim=18&cnt=4";
+            url = "https://www.olabs.edu.in/?sub=1&brch=1&sim=2&cnt=4";
         } else if (type === "pendulum") {
             url = "http://amrita.olabs.edu.in/?sub=1&brch=5&sim=159&cnt=4";
         }
