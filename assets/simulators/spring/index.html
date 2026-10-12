@@ -540,21 +540,33 @@
             logToLkpd() {
                 const force = (this.currentObj.massKg * this.gravity).toFixed(2);
                 const mass = this.currentObj.massG;
+                const payload = {
+                    type: "LOG_SPRING_TO_LKPD",
+                    object: this.currentObj.name,
+                    objName: this.currentObj.name,
+                    force: `${force} N`,
+                    gravity: `${this.gravity.toFixed(1)} N/kg`,
+                    grav: `${this.gravity.toFixed(1)} N/kg`,
+                    formula: `m = w / g = ${force} ÷ ${this.gravity.toFixed(1)}`,
+                    mass: `${mass} g`
+                };
                 try {
-                    if (window.parent && window.parent.lkpdManager) {
-                        window.parent.lkpdManager.addSpringRow({
-                            objName: this.currentObj.name,
-                            force: `${force} N`,
-                            grav: `${this.gravity.toFixed(1)} N/kg`,
-                            formula: `m = w / g = ${force} ÷ ${this.gravity.toFixed(1)}`,
-                            mass: `${mass} g`
-                        });
-                        if (window.parent.appState) {
-                            window.parent.appState.showToast(`✅ Data ${this.currentObj.name} dicatat ke LKPD!`);
-                        }
+                    let handled = false;
+                    if (window.parent && window.parent.lkpdManager && window.parent.lkpdManager.addSpringRow) {
+                        window.parent.lkpdManager.addSpringRow(payload);
+                        handled = true;
+                    }
+                    if (window.parent && window.parent !== window) {
+                        window.parent.postMessage(payload, "*");
+                        handled = true;
+                    }
+                    if (!handled) {
+                        alert(`✅ Data Neraca Pegas (${this.currentObj.name}: ${force} N) dicatat ke LKPD!`);
                     }
                 } catch (e) {
-                    console.log("LKPD Log call:", e);
+                    if (window.parent && window.parent !== window) {
+                        window.parent.postMessage(payload, "*");
+                    }
                 }
             }
 

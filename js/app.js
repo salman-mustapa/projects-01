@@ -368,17 +368,46 @@ class AppState {
             });
         }
 
-        // Listen to postMessage from embedded simulators (e.g. OLabs HTML5 Vernier Caliper)
+        // Listen to postMessage from embedded simulators (OLabs HTML5 Vernier Caliper & Spring Balance)
         window.addEventListener("message", (e) => {
-            if (e.data && e.data.type === "LOG_CALIPER_TO_LKPD") {
+            if (!e.data || typeof e.data !== "object") return;
+
+            if (e.data.type === "LOG_CALIPER_TO_LKPD") {
                 if (window.lkpdManager) {
-                    window.lkpdManager.addMeasurement("length", {
-                        obj: e.data.obj || "Jangka Sorong",
-                        su: e.data.su,
-                        sn: e.data.sn,
-                        total: e.data.total
-                    });
-                    this.showToast(`✅ Data ${e.data.obj} (${e.data.total} cm) berhasil dicatat ke LKPD!`, "success");
+                    const objName = e.data.obj || "Jangka Sorong";
+                    if (window.lkpdManager.addCaliperRow) {
+                        window.lkpdManager.addCaliperRow({
+                            object: objName,
+                            dimension: "Diameter Luar",
+                            su: `${e.data.su} cm`,
+                            sn: e.data.sn,
+                            total: `${e.data.total} cm`
+                        });
+                    } else if (window.lkpdManager.addMeasurement) {
+                        window.lkpdManager.addMeasurement("length", {
+                            obj: objName,
+                            su: e.data.su,
+                            sn: e.data.sn,
+                            total: e.data.total
+                        });
+                    }
+                    this.showToast(`✅ Data ${objName} (${e.data.total} cm) dicatat ke LKPD!`, "success");
+                }
+            }
+
+            if (e.data.type === "LOG_SPRING_TO_LKPD") {
+                if (window.lkpdManager) {
+                    const objName = e.data.object || e.data.objName || "Silinder Logam";
+                    if (window.lkpdManager.addSpringRow) {
+                        window.lkpdManager.addSpringRow({
+                            object: objName,
+                            force: e.data.force || "2.45 N",
+                            gravity: e.data.gravity || e.data.grav || "9.8 N/kg",
+                            formula: e.data.formula || "M = w / g",
+                            mass: e.data.mass || "250 g"
+                        });
+                    }
+                    this.showToast(`✅ Data Neraca Pegas (${objName}) dicatat ke LKPD!`, "success");
                 }
             }
         });

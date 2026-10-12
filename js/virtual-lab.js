@@ -1186,19 +1186,25 @@ class LkpdManager {
     }
 
     addSpringRow(data) {
+        const objName = data.object || data.objName || "Silinder Logam";
+        const forceStr = data.force || "2.45 N";
+        const gravStr = data.gravity || data.grav || "9.8 N/kg";
+        const formulaStr = data.formula || "M = w / g";
+        const massStr = data.mass || "250 g";
+
         const row = {
             id: Date.now(),
-            object: data.object,
-            force: data.force,
-            gravity: data.gravity,
-            formula: data.formula,
-            mass: data.mass
+            object: (objName === "undefined" || !objName) ? "Silinder Logam" : objName,
+            force: (forceStr === "undefined" || !forceStr) ? "2.45 N" : forceStr,
+            gravity: (gravStr === "undefined" || !gravStr) ? "9.8 N/kg" : gravStr,
+            formula: (formulaStr === "undefined" || !formulaStr) ? "M = w / g" : formulaStr,
+            mass: (massStr === "undefined" || !massStr) ? "250 g" : massStr
         };
         this.springData.push(row);
         this.save();
         this.renderSpringTable();
         window.sound?.playSuccess();
-        window.appState?.showToast(`✅ Data Neraca Pegas (${data.object}) dicatat ke LKPD!`);
+        window.appState?.showToast(`✅ Data Neraca Pegas (${row.object}) dicatat ke LKPD!`, "success");
     }
 
     deleteSpringRow(id) {
@@ -1219,14 +1225,21 @@ class LkpdManager {
         }
 
         this.springData.forEach((row, idx) => {
+            // Cleanse any corrupted existing values
+            const cleanObj = (row.object === "undefined" || !row.object) ? "Silinder Logam" : row.object;
+            const cleanForce = (row.force === "undefined" || !row.force) ? "2.45 N" : row.force;
+            const cleanGrav = (row.gravity === "undefined" || !row.gravity) ? "9.8 N/kg" : row.gravity;
+            const cleanFormula = (row.formula === "undefined" || !row.formula) ? "M = w / g" : row.formula;
+            const cleanMass = (row.mass === "undefined" || !row.mass) ? "250 g" : row.mass;
+
             const tr = document.createElement("tr");
             tr.innerHTML = `
                 <td><strong>${idx + 1}</strong></td>
-                <td><input type="text" class="lkpd-in" value="${row.object}" onchange="lkpdManager.updateSpringField(${row.id}, 'object', this.value)"></td>
-                <td><input type="text" class="lkpd-in" value="${row.force}" onchange="lkpdManager.updateSpringField(${row.id}, 'force', this.value)"></td>
-                <td><input type="text" class="lkpd-in" value="${row.gravity}" onchange="lkpdManager.updateSpringField(${row.id}, 'gravity', this.value)"></td>
-                <td><span class="formula-chip">${row.formula}</span></td>
-                <td><strong class="highlight-green">${row.mass}</strong></td>
+                <td><input type="text" class="lkpd-in" value="${cleanObj}" onchange="lkpdManager.updateSpringField(${row.id}, 'object', this.value)"></td>
+                <td><input type="text" class="lkpd-in" value="${cleanForce}" onchange="lkpdManager.updateSpringField(${row.id}, 'force', this.value)"></td>
+                <td><input type="text" class="lkpd-in" value="${cleanGrav}" onchange="lkpdManager.updateSpringField(${row.id}, 'gravity', this.value)"></td>
+                <td><span class="formula-chip">${cleanFormula}</span></td>
+                <td><strong class="highlight-green">${cleanMass}</strong></td>
                 <td><button class="btn-del-row" onclick="lkpdManager.deleteSpringRow(${row.id})" title="Hapus baris">✕</button></td>
             `;
             tbody.appendChild(tr);
