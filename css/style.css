@@ -98,10 +98,10 @@ h1, h2, h3, h4, .nav-app-name, .btn-game-primary, .adv-title, .score-num, .sign-
    ========================================================================== */
 @keyframes pulse-scale {
     0%, 100% {
-        transform: scale(1);
+        transform: scale(1) translateY(0);
     }
     50% {
-        transform: scale(1.035);
+        transform: scale(1.012) translateY(-2px);
     }
 }
 
@@ -1167,26 +1167,114 @@ h1, h2, h3, h4, .nav-app-name, .btn-game-primary, .adv-title, .score-num, .sign-
 }
 
 /* Neraca Pegas Layout */
+/* ==========================================================================
+   AUTHENTIC OLABS VIRTUAL LAB THEME (SPRING BALANCE & PENDULUM)
+   ========================================================================== */
+.olabs-card-frame {
+    background: #ffffff;
+    border: 3px solid #7c4a27;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+    overflow: hidden;
+    margin-bottom: 12px;
+}
+
+.olabs-frame-header {
+    background: linear-gradient(to right, #43240e, #633c1f);
+    padding: 10px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #381a07;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.olabs-header-left {
+    display: flex;
+    flex-direction: column;
+}
+
+.olabs-frame-title {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #fef08a;
+    letter-spacing: 0.5px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+}
+
+.olabs-frame-subtitle {
+    font-size: 0.75rem;
+    color: #fde68a;
+    font-weight: 600;
+}
+
+.olabs-frame-body {
+    background: #fdfbf7;
+    padding: 12px;
+}
+
+/* Neraca Pegas & Bandul Layout */
 .spring-flex-layout, .pendulum-flex-layout {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 16px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Responsive Simulation Canvases */
+#pendulum-canvas,
+#spring-canvas {
+    width: 100% !important;
+    max-width: 340px !important;
+    height: auto !important;
+    min-width: 0 !important;
+    display: block;
+    margin: 0 auto;
+    box-sizing: border-box;
+    border-radius: 8px;
+    background: #ffffff;
+    border: 1.5px solid #d6c0aa;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+#vernier-canvas {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    min-width: 0 !important;
+    display: block;
+    margin: 0 auto;
+    box-sizing: border-box;
+    border-radius: 8px;
+    background: #ffffff;
 }
 
 .spring-visual, .pendulum-visual {
-    background: #f8fafc;
-    border: 2px solid #cbd5e1;
-    border-radius: var(--radius-md);
+    background: #f5ede4;
+    border: 2px solid #d6c0aa;
+    border-radius: 10px;
     padding: 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0 !important;
+    align-self: start;
+    box-sizing: border-box;
+    overflow: hidden;
 }
 
 .spring-panel-controls, .pendulum-panel-controls {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0 !important;
+    box-sizing: border-box;
 }
 
 .grav-chips {
@@ -1214,16 +1302,34 @@ h1, h2, h3, h4, .nav-app-name, .btn-game-primary, .adv-title, .score-num, .sign-
     margin-top: 4px;
 }
 
-/* Bandul Stopwatch */
+/* Bandul Controls & Stopwatch */
+.olabs-control-group {
+    background: #f5ede4;
+    border: 1.5px solid #d6c0aa;
+    border-radius: 8px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.slider-box {
+    width: 100%;
+    box-sizing: border-box;
+}
+
 .slider-box label {
+    display: flex;
+    justify-content: space-between;
     font-size: 0.85rem;
     font-weight: 700;
-    display: block;
+    color: #451a03;
     margin-bottom: 4px;
 }
 
-.slider-box input {
+.slider-box input[type="range"] {
     width: 100%;
+    box-sizing: border-box;
     accent-color: #059669;
 }
 
@@ -1233,6 +1339,7 @@ h1, h2, h3, h4, .nav-app-name, .btn-game-primary, .adv-title, .score-num, .sign-
     border-radius: var(--radius-md);
     padding: 14px;
     text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .sw-time-display {
@@ -1253,6 +1360,8 @@ h1, h2, h3, h4, .nav-app-name, .btn-game-primary, .adv-title, .score-num, .sign-
     display: flex;
     justify-content: center;
     gap: 8px;
+    margin-top: 8px;
+    width: 100%;
 }
 
 .btn-game-sm {
@@ -1265,6 +1374,12 @@ h1, h2, h3, h4, .nav-app-name, .btn-game-primary, .adv-title, .score-num, .sign-
     color: white;
     box-shadow: 0 3px 0 #064e3b;
     cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.btn-game-sm:active {
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 #064e3b;
 }
 
 .btn-game-sm.sec {
@@ -1272,6 +1387,11 @@ h1, h2, h3, h4, .nav-app-name, .btn-game-primary, .adv-title, .score-num, .sign-
     border-color: #cbd5e1;
     color: var(--text-primary);
     box-shadow: 0 3px 0 #94a3b8;
+}
+
+.btn-game-sm.sec:active {
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 #94a3b8;
 }
 
 /* LKPD Table */
@@ -3138,23 +3258,27 @@ body:not(.on-cover) .jungle-ferns-bottom {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-evenly;
-    gap: clamp(8px, 1.8vh, 14px);
+    justify-content: center;
+    gap: clamp(10px, 2.2vh, 18px);
     width: 100%;
-    max-width: 580px;
+    max-width: 540px;
     height: 100%;
     max-height: 100dvh;
     margin: auto;
     position: relative;
     z-index: 3;
     overflow: hidden;
+    padding: 10px 16px;
+    box-sizing: border-box;
 }
 
 /* Grand Hanging Wooden Board with Swaying Ropes */
 .wood-signboard-grand {
-    width: 100%;
-    margin-bottom: 0;
+    width: 92%;
+    max-width: 480px;
+    margin: 0 auto;
     position: relative;
+    box-sizing: border-box;
 }
 
 .wood-signboard-grand .wood-rope {
@@ -3405,14 +3529,16 @@ body:not(.on-cover) .jungle-ferns-bottom {
         overflow: hidden !important;
     }
     .cover-stage-card {
-        gap: clamp(6px, 1.4vh, 10px);
-        justify-content: space-evenly;
+        gap: clamp(8px, 1.8vh, 12px);
+        justify-content: center;
         height: 100%;
         max-height: 100dvh;
+        padding: 6px 8px;
     }
     .wood-signboard-grand {
-        width: 100%;
-        margin-bottom: 0;
+        width: 90%;
+        max-width: 420px;
+        margin: 0 auto;
     }
     .wood-signboard-grand .wood-rope {
         top: -10px;
@@ -4890,26 +5016,71 @@ body.is-mobile-device .btn-orient-toggle:hover {
         border-radius: 6px;
     }
 
-    /* Domain Tabs (Horizontal Swipe) */
+    /* Domain Tabs (Clean 2x2 Grid on Mobile - No Cutoff) */
     .lab-tab-chips {
-        display: flex;
-        flex-wrap: nowrap;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        gap: 5px;
-        padding: 2px 2px 6px 2px;
-        margin-bottom: 6px;
-        scrollbar-width: none;
-    }
-    .lab-tab-chips::-webkit-scrollbar {
-        display: none;
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 6px !important;
+        margin-bottom: 8px !important;
+        padding: 0 !important;
+        overflow-x: visible !important;
     }
     .lab-chip-btn {
-        flex-shrink: 0;
-        padding: 5px 10px;
-        font-size: 0.75rem;
-        border-radius: 6px;
-        white-space: nowrap;
+        width: 100% !important;
+        padding: 7px 4px !important;
+        font-size: 0.74rem !important;
+        border-radius: 8px !important;
+        text-align: center !important;
+        white-space: nowrap !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Simulation Layouts on Mobile */
+    .spring-flex-layout, .pendulum-flex-layout {
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+    }
+
+    /* Panduan Praktikum Mobile Toolbar */
+    .guide-reader-header {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 6px !important;
+    }
+    .guide-reader-title {
+        text-align: center !important;
+        font-size: 0.86rem !important;
+    }
+    .guide-reader-nav {
+        width: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 6px !important;
+    }
+    .doc-zoom-toolbar {
+        margin: 0 auto !important;
+    }
+    .guide-nav-page-group {
+        display: flex !important;
+        width: 100% !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        gap: 4px !important;
+    }
+    .guide-nav-page-group .btn-tool-pill {
+        flex: 1 !important;
+        padding: 5px 6px !important;
+        font-size: 0.72rem !important;
+        text-align: center !important;
+        justify-content: center !important;
+    }
+    .guide-nav-page-group .guide-page-badge {
+        flex: 1.2 !important;
+        padding: 4px 6px !important;
+        font-size: 0.72rem !important;
+        text-align: center !important;
+        white-space: nowrap !important;
     }
 
     /* Clean Simulator Bar on Mobile */
