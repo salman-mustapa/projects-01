@@ -19,7 +19,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- CSS Stylesheet -->
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=2.5">
 </head>
 <body class="game-theme">
 
@@ -71,22 +71,30 @@
 
                 <!-- Action Buttons: Icon + Text on Desktop, Compact on Mobile -->
                 <button class="nav-action-btn" id="btn-toggle-sound" title="Pengaturan Efek Suara (On/Off)">
-                    <span class="nav-btn-icon" id="sound-icon-display">🔊</span>
+                    <span class="nav-btn-icon" id="sound-icon-display">
+                        <svg class="nav-svg-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                    </span>
                     <span class="btn-text-desktop">Suara: On</span>
                 </button>
 
                 <button class="nav-action-btn btn-install-action" id="btn-install-app" onclick="appState.openDownloadModal()" title="Unduh Materi & Pasang Web App">
-                    <span class="nav-btn-icon">📥</span>
+                    <span class="nav-btn-icon">
+                        <svg class="nav-svg-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    </span>
                     <span class="btn-text-desktop">Unduh App</span>
                 </button>
 
                 <button class="nav-action-btn btn-qr-action" id="btn-share-app" title="Bagikan & Scan Barcode QR">
-                    <span class="nav-btn-icon">📱</span>
+                    <span class="nav-btn-icon">
+                        <svg class="nav-svg-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                    </span>
                     <span class="btn-text-desktop">Bagi QR</span>
                 </button>
 
                 <button class="nav-action-btn btn-exit-action" id="btn-exit-app" onclick="appState.openExitModal()" title="Keluar / Ganti Identitas Siswa">
-                    <span class="nav-btn-icon">🚪</span>
+                    <span class="nav-btn-icon">
+                        <svg class="nav-svg-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                    </span>
                     <span class="btn-text-desktop">Ganti Siswa</span>
                 </button>
             </div>
@@ -141,7 +149,7 @@
                         <div class="cover-badge-row">
                             <span class="cover-pill">📏 Jangka Sorong</span>
                             <span class="cover-pill">⚖️ Neraca Pegas</span>
-                            <span class="cover-pill">⏱️ Bandul PhET</span>
+                            <span class="cover-pill">⏱️ Bandul OLabs</span>
                             <span class="cover-pill">🎯 Kuis HOTS</span>
                         </div>
 
@@ -403,41 +411,21 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-
-                    <!-- Panel 2: Neraca Pegas (Massa & Gaya Berat) -->
-                    <div class="lab-panel" id="panel-lab-spring">
-                        <div class="lab-content-box">
-                            <!-- Clean, Single-Row Simulator Controls -->
+                                          <!-- Clean, Single-Row Simulator Controls -->
                             <div class="sim-clean-bar">
                                 <div class="sim-mode-chips">
-                                    <button class="chip-btn active" id="btn-spring-mode-online" onclick="appState.switchSpringMode('online')">⚡ Simulasi OLabs</button>
-                                    <button class="chip-btn" id="btn-spring-mode-canvas" onclick="appState.switchSpringMode('canvas')">🔬 Simulasi Canvas</button>
+                                    <span class="sub-badge">⚖️ Simulasi Neraca Pegas & Hukum Hooke (OLabs)</span>
                                 </div>
                                 <div class="sim-actions-row">
                                     <button class="btn-tool-pill btn-orient-toggle" onclick="appState.toggleDeviceOrientation()" title="Putar Posisi Layar (Landscape / Portrait)">
                                         <span class="orient-icon">🔄</span> <span class="orient-text">Putar Layar</span>
                                     </button>
-                                    <button class="btn-tool-pill" onclick="appState.fullscreenSpringFrame()" title="Perbesar Layar Penuh">⛶ Layar Penuh</button>
                                     <button class="btn-tool-pill btn-olabs-direct" onclick="appState.openOLabsWindow('spring')" title="Buka Portal Resmi OLabs di Tab Baru">🌐 Web Resmi OLabs ↗</button>
                                 </div>
                             </div>
 
-                            <!-- View A: PhET Masses & Springs Embedded (Interactive In-App) -->
-                            <div id="spring-online-view" class="lab-subview active">
-                                <div class="sim-iframe-holder" id="spring-iframe-holder">
-                                    <iframe id="spring-inapp-frame" 
-                                            src="https://phet.colorado.edu/sims/html/masses-and-springs/latest/masses-and-springs_all.html" 
-                                            allow="fullscreen; autoplay" 
-                                            loading="lazy" 
-                                            title="PhET Masses and Springs Interactive Simulator">
-                                    </iframe>
-                                </div>
-                            </div>
-
-                            <!-- View B: Canvas Simulator (Offline Mode) -->
-                            <div id="spring-canvas-view" class="lab-subview" style="display: none;">
+                            <!-- In-App Interactive Canvas Simulator (Direct & Offline Ready) -->
+                            <div id="spring-canvas-view" class="lab-subview active" style="display: block;">
                                 <div class="sim-sub-bar">
                                     <div class="mode-toggle-chips">
                                         <span class="bar-lbl">Gravitasi:</span>
@@ -488,41 +476,32 @@
 
                                 <div class="online-hub-footer mt-3">
                                     <div class="hub-status-info">
-                                        <span>⚖️ <strong>Simulasi Mandiri (Offline):</strong> Neraca Pegas & Hukum Hooke</span>
-                                        <p>Simulasi berjalan mandiri secara offline! Mengukur gaya berat dan massa beban pada variasi gravitasi (Bumi, Bulan, Mars, Jupiter) serta pencatatan otomatis ke LKPD.</p>
+                                        <span>⚖️ <strong>Simulasi Mandiri:</strong> Neraca Pegas & Hukum Hooke OLabs</span>
+                                        <p>Simulasi interaktif langsung di aplikasi! Mengukur gaya berat dan massa beban pada variasi gravitasi (Bumi, Bulan, Mars, Jupiter) serta pencatatan otomatis ke LKPD.</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Panel 3: Bandul & Waktu (OLabs / In-App Interactive) -->
+                    <!-- Panel 3: Bandul & Waktu (OLabs In-App Interactive) -->
                     <div class="lab-panel" id="panel-lab-pendulum">
                         <div class="lab-content-box">
                             <!-- Clean, Single-Row Simulator Controls -->
                             <div class="sim-clean-bar">
                                 <div class="sim-mode-chips">
-                                    <button class="chip-btn active" id="btn-pendulum-mode-phet" onclick="appState.switchPendulumMode('phet')">⚡ Simulasi OLabs</button>
-                                    <button class="chip-btn" id="btn-pendulum-mode-canvas" onclick="appState.switchPendulumMode('canvas')">🔬 Simulasi Canvas</button>
+                                    <span class="sub-badge">⏱️ Simulasi Bandul Matematis & Waktu (OLabs)</span>
                                 </div>
                                 <div class="sim-actions-row">
                                     <button class="btn-tool-pill btn-orient-toggle" onclick="appState.toggleDeviceOrientation()" title="Putar Posisi Layar (Landscape / Portrait)">
                                         <span class="orient-icon">🔄</span> <span class="orient-text">Putar Layar</span>
                                     </button>
-                                    <button class="btn-tool-pill" onclick="appState.fullscreenPhetFrame()" title="Perbesar Layar Penuh">⛶ Layar Penuh</button>
                                     <button class="btn-tool-pill btn-olabs-direct" onclick="appState.openOLabsWindow('pendulum')" title="Buka Portal Resmi OLabs Simple Pendulum di Tab Baru">🌐 Web Resmi OLabs ↗</button>
                                 </div>
                             </div>
 
-                            <!-- View A: PhET Iframe Tersemat (Default Active, Completely In-App) -->
-                            <div id="pendulum-phet-view" class="lab-subview active">
-                                <div class="sim-iframe-holder" id="phet-iframe-holder">
-                                    <iframe id="phet-inapp-frame" src="https://phet.colorado.edu/sims/html/pendulum-lab/latest/pendulum-lab_all.html" allow="fullscreen; autoplay" loading="lazy" title="PhET Pendulum Lab Tersemat In-App"></iframe>
-                                </div>
-                            </div>
-
-                            <!-- View B: Canvas Simulator (Offline Mode) -->
-                            <div id="pendulum-canvas-view" class="lab-subview" style="display: none;">
+                            <!-- In-App Interactive Canvas Simulator -->
+                            <div id="pendulum-canvas-view" class="lab-subview active" style="display: block;">
                                 <div class="pendulum-flex-layout">
                                     <div class="pendulum-visual">
                                         <canvas id="pendulum-canvas" width="420" height="350"></canvas>
@@ -617,7 +596,7 @@
                                 </div>
                             </div>
 
-                            <!-- Table 3: Bandul PhET -->
+                            <!-- Table 3: Bandul OLabs -->
                             <div class="lkpd-section-block mt-4">
                                 <h4 class="lkpd-section-title">⏱️ Tabel 3: Praktikum Bandul (Pengukuran Waktu & Periode)</h4>
                                 <div class="table-wrap">
@@ -722,22 +701,22 @@
                         <button class="video-choice-card active" id="tab-video-caliper" onclick="appState.switchVideoTab('caliper')">
                             <span class="choice-icon">📏</span>
                             <div class="choice-info">
-                                <strong>1. Pengukuran Panjang</strong>
-                                <span class="choice-meta">Praktikum Jangka Sorong (OLabs)</span>
+                                <strong>1. Panjang</strong>
+                                <span class="choice-meta">Jangka Sorong</span>
                             </div>
                         </button>
                         <button class="video-choice-card" id="tab-video-spring" onclick="appState.switchVideoTab('spring')">
                             <span class="choice-icon">⚖️</span>
                             <div class="choice-info">
-                                <strong>2. Pengukuran Massa</strong>
-                                <span class="choice-meta">Praktikum Neraca Pegas (OLabs)</span>
+                                <strong>2. Massa</strong>
+                                <span class="choice-meta">Neraca Pegas</span>
                             </div>
                         </button>
                         <button class="video-choice-card" id="tab-video-pendulum" onclick="appState.switchVideoTab('pendulum')">
                             <span class="choice-icon">⏱️</span>
                             <div class="choice-info">
-                                <strong>3. Pengukuran Waktu</strong>
-                                <span class="choice-meta">Praktikum Bandul & Stopwatch</span>
+                                <strong>3. Waktu</strong>
+                                <span class="choice-meta">Bandul OLabs</span>
                             </div>
                         </button>
                     </div>
@@ -746,9 +725,9 @@
                     <div class="video-panel active" id="panel-video-caliper">
                         <div class="video-compact-box">
                             <div class="video-holder">
-                                <div class="video-iframe-wrap">
-                                    <iframe id="yt-player-caliper" src="https://www.youtube-nocookie.com/embed/gJPXI0_el-0?enablejsapi=1&rel=0&modestbranding=1" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen title="Praktikum Virtual Jangka Sorong OLabs"></iframe>
-                                </div>
+                                <video id="video-player-caliper" controls preload="metadata" poster="assets/guides/User_Guide_Praktikum_Virtual_Jangka_Sorong/page_01.jpg" playsinline style="width:100%; border-radius:12px; background:#000;">
+                                    <source src="Video Panduan Praktikum Pengukuran Panjang.mp4" type="video/mp4">
+                                </video>
                             </div>
                             <div class="video-points-card">
                                 <h4>📏 Panduan Praktikum Pengukuran Panjang (Jangka Sorong OLabs):</h4>
@@ -769,9 +748,9 @@
                     <div class="video-panel" id="panel-video-spring" style="display: none;">
                         <div class="video-compact-box">
                             <div class="video-holder">
-                                <div class="video-iframe-wrap">
-                                    <iframe id="yt-player-spring" src="https://www.youtube-nocookie.com/embed/pf17eIGw9Fk?enablejsapi=1&rel=0&modestbranding=1" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen title="Praktikum Virtual Neraca Pegas OLabs"></iframe>
-                                </div>
+                                <video id="video-player-spring" controls preload="metadata" poster="assets/guides/User_Guide_Praktikum_Virtual_Neraca_Pegas/page_01.jpg" playsinline style="width:100%; border-radius:12px; background:#000;">
+                                    <source src="Video Panduan Praktikum Pengukuran Massa.mp4" type="video/mp4">
+                                </video>
                             </div>
                             <div class="video-points-card">
                                 <h4>⚖️ Panduan Praktikum Pengukuran Massa (Neraca Pegas OLabs):</h4>
@@ -792,7 +771,7 @@
                     <div class="video-panel" id="panel-video-pendulum" style="display: none;">
                         <div class="video-compact-box">
                             <div class="video-holder">
-                                <video id="lab-video-player" controls preload="metadata" poster="assets/slides/slide_01.jpg">
+                                <video id="video-player-pendulum" controls preload="metadata" poster="assets/guides/User_Guide_Pengukuran_Waktu/page_01.jpg" playsinline style="width:100%; border-radius:12px; background:#000;">
                                     <source src="Video Panduan Praktikum Pengukuran Waktu.mp4" type="video/mp4">
                                 </video>
                             </div>
@@ -835,6 +814,12 @@
                             <div class="guide-reader-header">
                                 <span class="guide-reader-title">📏 Panduan Praktikum Jangka Sorong (OLabs)</span>
                                 <div class="guide-reader-nav">
+                                    <div class="doc-zoom-toolbar">
+                                        <button class="btn-zoom-tool" onclick="appState.zoomGuide('caliper', -0.15)" title="Perkecil">🔍 -</button>
+                                        <span class="zoom-level-badge" id="guide-zoom-level-caliper">100%</span>
+                                        <button class="btn-zoom-tool" onclick="appState.zoomGuide('caliper', 0.15)" title="Perbesar">🔍 +</button>
+                                        <button class="btn-zoom-tool" onclick="appState.zoomGuide('caliper', 0)" title="Reset Ukuran">🔄</button>
+                                    </div>
                                     <button class="btn-tool-pill" onclick="appState.prevGuidePage('caliper')">❮ Sebelumnya</button>
                                     <span class="guide-page-badge" id="badge-guide-caliper">Halaman 1 dari 5</span>
                                     <button class="btn-tool-pill" onclick="appState.nextGuidePage('caliper')">Selanjutnya ❯</button>
@@ -861,6 +846,12 @@
                             <div class="guide-reader-header">
                                 <span class="guide-reader-title">⚖️ Panduan Praktikum Neraca Pegas (OLabs)</span>
                                 <div class="guide-reader-nav">
+                                    <div class="doc-zoom-toolbar">
+                                        <button class="btn-zoom-tool" onclick="appState.zoomGuide('spring', -0.15)" title="Perkecil">🔍 -</button>
+                                        <span class="zoom-level-badge" id="guide-zoom-level-spring">100%</span>
+                                        <button class="btn-zoom-tool" onclick="appState.zoomGuide('spring', 0.15)" title="Perbesar">🔍 +</button>
+                                        <button class="btn-zoom-tool" onclick="appState.zoomGuide('spring', 0)" title="Reset Ukuran">🔄</button>
+                                    </div>
                                     <button class="btn-tool-pill" onclick="appState.prevGuidePage('spring')">❮ Sebelumnya</button>
                                     <span class="guide-page-badge" id="badge-guide-spring">Halaman 1 dari 5</span>
                                     <button class="btn-tool-pill" onclick="appState.nextGuidePage('spring')">Selanjutnya ❯</button>
@@ -887,6 +878,12 @@
                             <div class="guide-reader-header">
                                 <span class="guide-reader-title">⏱️ Panduan Praktikum Pengukuran Waktu & Bandul</span>
                                 <div class="guide-reader-nav">
+                                    <div class="doc-zoom-toolbar">
+                                        <button class="btn-zoom-tool" onclick="appState.zoomGuide('pendulum', -0.15)" title="Perkecil">🔍 -</button>
+                                        <span class="zoom-level-badge" id="guide-zoom-level-pendulum">100%</span>
+                                        <button class="btn-zoom-tool" onclick="appState.zoomGuide('pendulum', 0.15)" title="Perbesar">🔍 +</button>
+                                        <button class="btn-zoom-tool" onclick="appState.zoomGuide('pendulum', 0)" title="Reset Ukuran">🔄</button>
+                                    </div>
                                     <button class="btn-tool-pill" onclick="appState.prevGuidePage('pendulum')">❮ Sebelumnya</button>
                                     <span class="guide-page-badge" id="badge-guide-pendulum">Halaman 1 dari 9</span>
                                     <button class="btn-tool-pill" onclick="appState.nextGuidePage('pendulum')">Selanjutnya ❯</button>
@@ -917,10 +914,16 @@
                     <div class="inner-toolbar">
                         <button class="btn-back-pill" onclick="appState.navigateTo('dashboard')">⬅ Menu Utama</button>
                         <div class="modul-page-chip" id="modul-page-badge">Halaman 1 dari 11</div>
+                        <div class="doc-zoom-toolbar">
+                            <button class="btn-zoom-tool" onclick="appState.zoomModul(-0.15)" title="Perkecil Dokumen (Zoom Out)">🔍 -</button>
+                            <span class="zoom-level-badge" id="modul-zoom-level">100%</span>
+                            <button class="btn-zoom-tool" onclick="appState.zoomModul(0.15)" title="Perbesar Dokumen (Zoom In)">🔍 +</button>
+                            <button class="btn-zoom-tool" onclick="appState.zoomModul(0)" title="Reset Ukuran (100%)">🔄</button>
+                        </div>
                         <div class="toolbar-right-btns">
                             <button class="btn-tool-pill" onclick="appState.prevModulPage()">❮ Sebelumnya</button>
                             <button class="btn-tool-pill" onclick="appState.nextModulPage()">Selanjutnya ❯</button>
-                            <a href="Modul Ajar Pengukuran.pdf" download class="btn-tool-pill">📥 Unduh Dokumen PDF</a>
+                            <a href="Modul Ajar Pengukuran.pdf" download class="btn-tool-pill">📥 Unduh PDF</a>
                         </div>
                     </div>
 
@@ -1111,7 +1114,7 @@
             </div>
             <div class="modal-bottom cert-modal-bottom-row">
                 <button class="btn-dialog-cancel" id="btn-cert-back-home" onclick="document.getElementById('certificate-modal').classList.remove('active'); appState.navigateTo('dashboard');">🏠 Selesai & Kembali ke Beranda</button>
-                <button class="btn-game-primary" onclick="window.print()">🖨️ Cetak / Simpan sebagai PDF</button>
+                <button class="btn-game-primary" onclick="quizManager.printCertificateOnly()">🖨️ Cetak / Simpan sebagai PDF</button>
             </div>
         </div>
     </div>
@@ -1189,7 +1192,7 @@
                         <div class="kv-item"><strong>Fase / Kelas:</strong> Fase D / Kelas VII SMP</div>
                         <div class="kv-item"><strong>Materi Pokok:</strong> Pengukuran, Besaran & Satuan</div>
                         <div class="kv-item"><strong>Model Pembelajaran:</strong> Discovery Learning</div>
-                        <div class="kv-item"><strong>Simulasi Pendukung:</strong> Amrita OLabs & PhET Interactive</div>
+                        <div class="kv-item"><strong>Simulasi Pendukung:</strong> Amrita OLabs (Online Labs for Schools)</div>
                     </div>
                 </div>
             </div>
@@ -1266,7 +1269,7 @@
                             </a>
                             <a href="User Guide Pengukuran Waktu.pdf" download class="dl-file-item">
                                 <span class="file-icon">⏱️</span>
-                                <span class="file-name">User Guide Pengukuran Waktu (PhET)</span>
+                                <span class="file-name">User Guide Pengukuran Waktu (OLabs)</span>
                                 <span class="file-action">Unduh ⬇</span>
                             </a>
                             <a href="KUIS MATERI PENGUKURAN KELAS VII.pdf" download class="dl-file-item">
@@ -1285,11 +1288,11 @@
     </div>
 
     <!-- Scripts -->
-    <script src="js/qrcode.min.js"></script>
-    <script src="js/audio.js"></script>
-    <script src="js/virtual-lab.js"></script>
-    <script src="js/quiz.js"></script>
-    <script src="js/app.js"></script>
+    <script src="js/qrcode.min.js?v=2.5"></script>
+    <script src="js/audio.js?v=2.5"></script>
+    <script src="js/virtual-lab.js?v=2.5"></script>
+    <script src="js/quiz.js?v=2.5"></script>
+    <script src="js/app.js?v=2.5"></script>
     <!-- Toast Notification Popup -->
     <div id="app-toast" class="app-toast"></div>
 </body>

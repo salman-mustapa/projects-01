@@ -81,15 +81,15 @@ const QUIZ_DATA = [
         options: [
             { key: "A", text: "Menggunakan jangka sorong untuk membaca lama ayunan" },
             { key: "B", text: "Menggunakan neraca pegas untuk mengukur waktu" },
-            { key: "C", text: "Menggunakan stopwatch atau fitur pengukuran waktu pada simulasi PhET Pendulum Lab" },
+            { key: "C", text: "Menggunakan stopwatch atau fitur pengukuran waktu pada simulasi Bandul OLabs" },
             { key: "D", text: "Memperkirakan waktu tanpa alat atau simulasi" }
         ],
         answer: "C",
-        explanation: "Alat ukur besaran pokok waktu adalah stopwatch atau fitur timer terintegrasi pada simulasi PhET Pendulum Lab."
+        explanation: "Alat ukur besaran pokok waktu adalah stopwatch atau fitur timer terintegrasi pada simulasi Bandul OLabs."
     },
     {
         id: 8,
-        question: "Dalam PhET Pendulum Lab, waktu untuk 10 ayunan penuh tercatat 14,2 sekon. Periode (T) satu ayunan bandul tersebut adalah ....",
+        question: "Dalam simulasi praktikum Bandul OLabs, waktu untuk 10 ayunan penuh tercatat 14,2 sekon. Periode (T) satu ayunan bandul tersebut adalah ....",
         options: [
             { key: "A", text: "0,71 sekon" },
             { key: "B", text: "1,42 sekon" },
@@ -113,7 +113,7 @@ const QUIZ_DATA = [
     },
     {
         id: 10,
-        question: "Pernyataan Benar atau Salah: Saat hasil pengukuran dari jangka sorong OLabs, neraca pegas OLabs, atau stopwatch/PhET tidak sesuai dengan perkiraan, siswa boleh mengubah angka pada tabel agar hasilnya sesuai dengan perkiraan.",
+        question: "Pernyataan Benar atau Salah: Saat hasil pengukuran dari jangka sorong OLabs, neraca pegas OLabs, atau stopwatch/Bandul OLabs tidak sesuai dengan perkiraan, siswa boleh mengubah angka pada tabel agar hasilnya sesuai dengan perkiraan.",
         options: [
             { key: "A", text: "Benar" },
             { key: "B", text: "Salah" }
@@ -604,6 +604,22 @@ class QuizManager {
         }
 
         certModal.classList.add("active");
+    }
+
+    printCertificateOnly() {
+        window.sound?.playClick();
+        document.body.classList.add("printing-certificate-only");
+
+        requestAnimationFrame(() => {
+            window.print();
+        });
+
+        const cleanup = () => {
+            document.body.classList.remove("printing-certificate-only");
+            window.removeEventListener("afterprint", cleanup);
+        };
+        window.addEventListener("afterprint", cleanup);
+        setTimeout(cleanup, 2500);
     }
 }
 

@@ -834,7 +834,7 @@ class SpringBalanceSim {
 }
 
 // =============================================================================
-// 3. PENGUKURAN WAKTU & BANDUL SIMULATOR (PhET & Stopwatch)
+// 3. PENGUKURAN WAKTU & BANDUL SIMULATOR (OLabs & Stopwatch)
 // =============================================================================
 class PendulumLabSim {
     constructor() {

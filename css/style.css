@@ -266,6 +266,14 @@ h1, h2, h3, h4, .nav-app-name, .btn-game-primary, .adv-title, .score-num, .sign-
     justify-content: center;
 }
 
+.nav-svg-icon {
+    width: 17px;
+    height: 17px;
+    display: block;
+    stroke: currentColor;
+    flex-shrink: 0;
+}
+
 .nav-action-btn:hover,
 .nav-icon-btn:hover {
     background: #f8fafc;
@@ -2167,14 +2175,63 @@ h1, h2, h3, h4, .nav-app-name, .btn-game-primary, .adv-title, .score-num, .sign-
 
 @media (max-width: 768px) {
     .video-selection-deck {
-        grid-template-columns: 1fr;
-        gap: 8px;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 6px;
+        margin-bottom: 12px;
     }
     .video-choice-card {
-        padding: 10px 12px;
+        padding: 8px 4px;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        justify-content: center;
+        gap: 3px;
+        border-radius: 10px;
+        border-width: 1.5px;
+        min-width: 0;
+        box-sizing: border-box;
     }
     .video-choice-card .choice-icon {
-        font-size: 1.5rem;
+        font-size: 1.35rem;
+        line-height: 1;
+    }
+    .video-choice-card .choice-info {
+        width: 100%;
+        align-items: center;
+        text-align: center;
+    }
+    .video-choice-card .choice-info strong {
+        font-size: 0.74rem;
+        line-height: 1.15;
+        white-space: normal;
+        text-align: center;
+    }
+    .video-choice-card .choice-info .choice-meta {
+        font-size: 0.62rem;
+        line-height: 1.1;
+        margin-top: 1px;
+        text-align: center;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    .video-choice-card.active {
+        background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+        border-color: #059669;
+        box-shadow: 0 3px 0 #047857;
+    }
+    .video-compact-box {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    .video-holder video {
+        max-height: 38vh;
+        border-radius: 8px;
+    }
+    .video-points-card {
+        padding: 12px 14px;
     }
 }
 
@@ -2572,25 +2629,138 @@ h1, h2, h3, h4, .nav-app-name, .btn-game-primary, .adv-title, .score-num, .sign-
 }
 
 /* ==========================================================================
-   PRINT MEDIA QUERY
+   PRINT MEDIA QUERY - ISOLATED CERTIFICATE & LKPD PRINTING
    ========================================================================== */
 @media print {
+    @page {
+        size: landscape;
+        margin: 6mm;
+    }
+
     body {
-        background: white !important;
-    }
-    .app-navbar, .inner-toolbar, .modal-top, .modal-bottom, .btn-game-primary {
-        display: none !important;
-    }
-    .custom-modal-backdrop {
-        position: static !important;
-        background: none !important;
-        display: block !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+        margin: 0 !important;
         padding: 0 !important;
     }
-    .custom-modal-card {
+
+    /* Hide generic navigation and UI controls */
+    .app-navbar,
+    .inner-toolbar,
+    .modal-top,
+    .modal-bottom,
+    .cert-modal-bottom-row,
+    .btn-game-primary,
+    .btn-dialog-cancel,
+    .btn-tool-pill,
+    .btn-result-action,
+    .btn-check-ans,
+    .chip-btn,
+    .slide-arrow-btn,
+    .guide-frame-arrow,
+    .mobile-landscape-overlay,
+    .jungle-canopy-top,
+    .jungle-ferns-bottom,
+    .floating-nature-particles,
+    #confetti-canvas {
+        display: none !important;
+        visibility: hidden !important;
+    }
+
+    /* IF PRINTING CERTIFICATE:
+       Strictly hide the entire app wrapper, all screens, quiz results, reviews, and non-cert dialogs */
+    body.printing-certificate-only .app-viewport-wrapper,
+    body:has(#certificate-modal.active) .app-viewport-wrapper,
+    body.printing-certificate-only .app-screen,
+    body:has(#certificate-modal.active) .app-screen,
+    body.printing-certificate-only .quiz-review-container,
+    body:has(#certificate-modal.active) .quiz-review-container,
+    body.printing-certificate-only #quiz-result-state,
+    body:has(#certificate-modal.active) #quiz-result-state,
+    body.printing-certificate-only .quiz-result-view,
+    body:has(#certificate-modal.active) .quiz-result-view,
+    body.printing-certificate-only .custom-modal-backdrop:not(#certificate-modal),
+    body:has(#certificate-modal.active) .custom-modal-backdrop:not(#certificate-modal) {
+        display: none !important;
+        visibility: hidden !important;
+        height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+    }
+
+    /* Make Certificate Modal the ONLY visible printed document */
+    body.printing-certificate-only #certificate-modal,
+    body:has(#certificate-modal.active) #certificate-modal {
+        display: block !important;
+        visibility: visible !important;
+        position: static !important;
+        background: transparent !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+        box-shadow: none !important;
+    }
+
+    body.printing-certificate-only #certificate-modal .custom-modal-card,
+    body:has(#certificate-modal.active) #certificate-modal .custom-modal-card {
+        display: block !important;
+        visibility: visible !important;
+        position: static !important;
         box-shadow: none !important;
         border: none !important;
         padding: 0 !important;
+        margin: 0 auto !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        background: transparent !important;
+    }
+
+    body.printing-certificate-only #certificate-modal .certificate-canvas-wrap,
+    body:has(#certificate-modal.active) #certificate-modal .certificate-canvas-wrap {
+        display: flex !important;
+        visibility: visible !important;
+        justify-content: center !important;
+        align-items: center !important;
+        padding: 0 !important;
+        margin: 0 auto !important;
+        width: 100% !important;
+        background: transparent !important;
+    }
+
+    body.printing-certificate-only #certificate-modal .cert-gold-frame,
+    body:has(#certificate-modal.active) #certificate-modal .cert-gold-frame {
+        visibility: visible !important;
+        display: block !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        width: 96% !important;
+        max-width: 275mm !important;
+        min-height: 175mm !important;
+        margin: 0 auto !important;
+        box-shadow: none !important;
+        border: 8px double #b45309 !important;
+        background: #fffdfa !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    body.printing-certificate-only .cert-inner-content,
+    body:has(#certificate-modal.active) .cert-inner-content {
+        padding: 24px 28px !important;
+        border: 2px solid #b45309 !important;
+    }
+
+    body.printing-certificate-only .cert-main-title,
+    body:has(#certificate-modal.active) .cert-main-title {
+        font-size: 2.2rem !important;
+        color: #78350f !important;
+    }
+
+    body.printing-certificate-only .cert-name,
+    body:has(#certificate-modal.active) .cert-name {
+        font-size: 2.4rem !important;
+        color: #064e3b !important;
     }
 }
 
@@ -2884,21 +3054,26 @@ h1, h2, h3, h4, .nav-app-name, .btn-game-primary, .adv-title, .score-num, .sign-
     display: none;
     position: relative;
     width: 100%;
-    height: 100vh;
-    max-height: 100vh;
+    height: 100dvh;
+    max-height: 100dvh;
     overflow: hidden;
     box-sizing: border-box;
-    padding: 14px 20px;
+    padding: clamp(8px, 1.8vh, 16px) 16px;
     background: radial-gradient(ellipse 120% 85% at 50% 20%, #166534 0%, #14532d 30%, #064e3b 65%, #022c22 100%);
+    overscroll-behavior: none;
 }
 
 #screen-cover.active {
     display: flex !important;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: space-evenly;
     flex: 1;
-    min-height: 100vh;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    min-height: 100% !important;
+    overflow: hidden !important;
+    overscroll-behavior: none !important;
 }
 
 /* Atmospheric Sunbeams & Jungle Framing */
@@ -2963,13 +3138,16 @@ body:not(.on-cover) .jungle-ferns-bottom {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    gap: 14px;
+    justify-content: space-evenly;
+    gap: clamp(8px, 1.8vh, 14px);
     width: 100%;
-    max-width: 620px;
+    max-width: 580px;
+    height: 100%;
+    max-height: 100dvh;
     margin: auto;
     position: relative;
     z-index: 3;
+    overflow: hidden;
 }
 
 /* Grand Hanging Wooden Board with Swaying Ropes */
@@ -3221,37 +3399,115 @@ body:not(.on-cover) .jungle-ferns-bottom {
 
 @media (max-width: 640px) {
     #screen-cover {
-        padding: 10px 14px;
+        padding: clamp(6px, 1.5vh, 10px) 12px !important;
+        height: 100dvh !important;
+        max-height: 100dvh !important;
+        overflow: hidden !important;
+    }
+    .cover-stage-card {
+        gap: clamp(6px, 1.4vh, 10px);
+        justify-content: space-evenly;
+        height: 100%;
+        max-height: 100dvh;
+    }
+    .wood-signboard-grand {
+        width: 100%;
+        margin-bottom: 0;
+    }
+    .wood-signboard-grand .wood-rope {
+        top: -10px;
+        height: 20px;
     }
     .wood-signboard-grand .wood-plank {
-        padding: 14px 18px;
+        padding: clamp(6px, 1.2vh, 10px) 12px;
+        border-radius: 14px;
+        box-shadow: 0 5px 0 #290e02, 0 12px 24px rgba(0, 0, 0, 0.45);
+    }
+    .wood-signboard-grand .sign-tag {
+        font-size: clamp(0.62rem, 2vw, 0.7rem);
+        padding: 2px 8px;
+        margin-bottom: 2px;
     }
     .wood-signboard-grand .sign-title {
-        font-size: 1.65rem;
+        font-size: clamp(1.28rem, 4.2vw, 1.5rem);
+        margin: 2px 0 3px;
+        line-height: 1.1;
+    }
+    .sign-ribbon-sub {
+        padding: 2px 10px;
+        border-radius: 6px;
     }
     .sign-ribbon-sub span {
-        font-size: 0.75rem;
+        font-size: clamp(0.65rem, 2vw, 0.74rem);
     }
     .cover-content-hub {
-        padding: 12px 16px;
-        gap: 10px;
+        padding: clamp(8px, 1.5vh, 12px) 12px;
+        gap: clamp(5px, 1.2vh, 8px);
+        border-radius: 14px;
+    }
+    .cover-badge-row {
+        gap: 4px;
+    }
+    .cover-pill {
+        font-size: clamp(0.65rem, 1.8vw, 0.72rem);
+        padding: 2px 7px;
     }
     .cover-teaser-text {
-        font-size: 0.82rem;
+        font-size: clamp(0.7rem, 2vw, 0.78rem);
+        line-height: 1.32;
+        max-width: 95%;
     }
     .btn-grand-play {
-        padding: 12px 18px;
-        gap: 12px;
+        padding: clamp(8px, 1.4vh, 11px) 14px;
+        gap: 10px;
+        border-radius: 12px;
+        max-width: 360px;
+        box-shadow: 0 5px 0 #064e3b, 0 10px 20px rgba(16, 185, 129, 0.35);
+    }
+    .play-icon-triangle {
+        width: 34px;
+        height: 34px;
+        font-size: 1rem;
     }
     .play-text-primary {
-        font-size: 1.05rem;
+        font-size: clamp(0.9rem, 2.8vw, 1rem);
     }
     .play-text-sub {
-        font-size: 0.7rem;
+        font-size: clamp(0.6rem, 1.8vw, 0.68rem);
+    }
+    .cover-aux-links {
+        gap: 4px;
     }
     .btn-aux-pill {
+        padding: 4px 8px;
+        font-size: clamp(0.66rem, 1.9vw, 0.72rem);
+    }
+}
+
+@media (max-height: 680px) {
+    #screen-cover {
+        padding: 4px 8px !important;
+    }
+    .cover-stage-card {
+        gap: 4px;
+        justify-content: space-evenly;
+    }
+    .wood-signboard-grand .wood-plank {
+        padding: 4px 10px;
+    }
+    .wood-signboard-grand .sign-title {
+        font-size: 1.25rem;
+    }
+    .cover-content-hub {
+        padding: 6px 10px;
+        gap: 4px;
+    }
+    .cover-teaser-text {
+        font-size: 0.72rem;
+        line-height: 1.2;
+    }
+    .btn-grand-play {
         padding: 6px 12px;
-        font-size: 0.75rem;
     }
 }
 
@@ -3833,52 +4089,98 @@ body:not(.on-cover) .jungle-ferns-bottom {
 /* ==========================================================================
    ENHANCED IN-APP MODUL AJAR & PANDUAN PRAKTIKUM READERS
    ========================================================================== */
+/* Document Zoom & Scale Toolbar */
+.doc-zoom-toolbar {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    background: #f1f5f9;
+    padding: 2px 6px;
+    border-radius: var(--radius-pill);
+    border: 1px solid #cbd5e1;
+}
+
+.btn-zoom-tool {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #334155;
+    font-size: 0.74rem;
+    font-weight: 700;
+    padding: 3px 7px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+.btn-zoom-tool:hover {
+    background: var(--brand-primary);
+    color: #ffffff;
+    border-color: var(--brand-primary);
+}
+
+.zoom-level-badge {
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: #1e293b;
+    min-width: 38px;
+    text-align: center;
+}
+
 .modul-cinema-card {
     background: #ffffff;
     border: 2px solid #cbd5e1;
     border-radius: var(--radius-md);
-    padding: 16px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    padding: 10px 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
 }
 
 .modul-display-frame {
     position: relative;
-    background: #0f172a;
+    background: #1e293b;
     border-radius: var(--radius-md);
-    overflow: hidden;
+    overflow: auto;
     display: flex;
     justify-content: center;
-    align-items: center;
-    min-height: 480px;
-    max-height: 720px;
-    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.4);
+    align-items: flex-start;
+    padding: 12px;
+    height: clamp(260px, 46vh, 440px);
+    box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.3);
+    scrollbar-width: thin;
 }
 
 .modul-display-frame img {
     max-width: 100%;
-    max-height: 700px;
+    max-height: 100%;
+    width: auto;
+    height: auto;
     object-fit: contain;
     border-radius: 4px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+    transition: transform 0.2s ease;
+    transform-origin: top center;
 }
 
 .modul-thumb-strip {
     display: flex;
-    gap: 10px;
+    gap: 8px;
     overflow-x: auto;
-    padding: 12px 4px 4px 4px;
+    padding: 8px 4px 2px 4px;
     scrollbar-width: thin;
 }
 
 .modul-thumb-item {
-    flex: 0 0 75px;
+    flex: 0 0 54px;
     display: flex;
     flex-direction: column;
     align-items: center;
     cursor: pointer;
     border: 2px solid transparent;
     border-radius: 6px;
-    padding: 3px;
+    padding: 2px;
     background: #f8fafc;
     transition: transform 0.15s, border-color 0.15s;
 }
@@ -3897,16 +4199,16 @@ body:not(.on-cover) .jungle-ferns-bottom {
 
 .modul-thumb-item img {
     width: 100%;
-    height: 95px;
+    height: 52px;
     object-fit: cover;
     border-radius: 4px;
 }
 
 .modul-thumb-item span {
-    font-size: 0.72rem;
+    font-size: 0.68rem;
     font-weight: 700;
     color: #475569;
-    margin-top: 4px;
+    margin-top: 2px;
 }
 
 /* COMPACT VIEWPORT-ADAPTIVE USER GUIDE READER (ZERO SCROLL FIT) */
@@ -3954,12 +4256,14 @@ body:not(.on-cover) .jungle-ferns-bottom {
     background: #f8fafc;
     border: 1px solid #e2e8f0;
     border-radius: var(--radius-md);
-    overflow: hidden;
+    overflow: auto;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
+    padding: 10px;
     height: clamp(260px, 46vh, 440px);
     box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.04);
+    scrollbar-width: thin;
 }
 
 .guide-img-display-frame img {
@@ -3970,6 +4274,8 @@ body:not(.on-cover) .jungle-ferns-bottom {
     object-fit: contain;
     border-radius: 4px;
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.07);
+    transition: transform 0.2s ease;
+    transform-origin: top center;
 }
 
 .guide-frame-arrow {
@@ -4251,10 +4557,24 @@ body:not(.on-cover) .jungle-ferns-bottom {
 
 
 /* Zero scroll on cover screen */
+html:has(#screen-cover.active),
+body:has(#screen-cover.active),
+body.game-theme.on-cover {
+    height: 100% !important;
+    max-height: 100dvh !important;
+    overflow: hidden !important;
+    overscroll-behavior: none !important;
+    touch-action: pan-x pinch-zoom;
+}
+
 .app-viewport-wrapper:has(#screen-cover.active),
 body.game-theme.on-cover .app-viewport-wrapper {
     padding: 0 !important;
     max-width: 100% !important;
+    height: 100% !important;
+    max-height: 100dvh !important;
+    overflow: hidden !important;
+    overscroll-behavior: none !important;
 }
 
 /* ==========================================================================
@@ -4539,6 +4859,13 @@ body.is-mobile-device .btn-orient-toggle:hover {
         display: inline-flex !important;
         font-size: 0.95rem;
         line-height: 1;
+        align-items: center;
+        justify-content: center;
+    }
+    .nav-action-btn .nav-svg-icon {
+        width: 16px;
+        height: 16px;
+        display: block;
     }
 
     /* Virtual Lab Inner Stage & Toolbar */

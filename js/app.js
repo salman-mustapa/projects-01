@@ -13,8 +13,10 @@ class AppState {
         this.deferredPrompt = null;
         this.modulPage = 1;
         this.totalModulPages = 11;
+        this.modulZoom = 1.0;
         this.guidePages = { caliper: 1, spring: 1, pendulum: 1 };
         this.guideTotals = { caliper: 5, spring: 5, pendulum: 9 };
+        this.guideZoom = { caliper: 1.0, spring: 1.0, pendulum: 1.0 };
     }
 
     init() {
@@ -475,12 +477,19 @@ class AppState {
     updateSoundBtn() {
         const iconEl = document.getElementById("sound-icon-display");
         const textEl = document.querySelector("#btn-toggle-sound .btn-text-desktop");
+        const coverSound = document.getElementById("cover-sound-icon");
+        const muted = window.sound.isMuted();
+
         if (iconEl) {
-            const muted = window.sound.isMuted();
-            iconEl.textContent = muted ? "🔇" : "🔊";
-            if (textEl) {
-                textEl.textContent = muted ? "Suara: Off" : "Suara: On";
-            }
+            iconEl.innerHTML = muted
+                ? `<svg class="nav-svg-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>`
+                : `<svg class="nav-svg-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>`;
+        }
+        if (textEl) {
+            textEl.textContent = muted ? "Suara: Off" : "Suara: On";
+        }
+        if (coverSound) {
+            coverSound.textContent = muted ? "🔇 Suara: Off" : "🔊 Suara: On";
         }
     }
 
@@ -633,26 +642,17 @@ class AppState {
     }
 
     pauseAllMedia() {
-        // Pause local HTML5 video if playing
-        const localVideo = document.getElementById("lab-video-player");
-        if (localVideo && !localVideo.paused) {
-            localVideo.pause();
-        }
-
-        // PostMessage pause to all YouTube embeds
-        const iframes = [
-            document.getElementById("yt-player-caliper"),
-            document.getElementById("yt-player-spring")
+        // Pause all native HTML5 measurement videos
+        const videoIds = [
+            "video-player-caliper",
+            "video-player-spring",
+            "video-player-pendulum",
+            "lab-video-player"
         ];
-        iframes.forEach(iframe => {
-            if (iframe && iframe.contentWindow) {
-                try {
-                    iframe.contentWindow.postMessage(JSON.stringify({
-                        event: "command",
-                        func: "pauseVideo",
-                        args: ""
-                    }), "*");
-                } catch (e) {}
+        videoIds.forEach(id => {
+            const vid = document.getElementById(id);
+            if (vid && !vid.paused) {
+                vid.pause();
             }
         });
     }
@@ -682,7 +682,7 @@ class AppState {
         }, 50);
     }
 
-    // --- SUB-SIMULATOR TOGGLES (CANVAS vs EMBEDDED OLABS / PHET) ---
+    // --- SUB-SIMULATOR TOGGLES (CANVAS vs EMBEDDED OLABS) ---
     switchCaliperMode(mode) {
         window.sound?.playClick();
         const btnOlabs = document.getElementById("btn-caliper-mode-olabs");
@@ -834,52 +834,10 @@ class AppState {
         window.open(url, "OLabsSimulationWindow", "width=1100,height=750,scrollbars=yes,resizable=yes");
     }
 
-    // --- SUB-SIMULATOR TOGGLES (CANVAS vs EMBEDDED PHET) ---
+    // --- SUB-SIMULATOR TOGGLES (CANVAS vs OLABS) ---
     switchPendulumMode(mode) {
         window.sound?.playClick();
-        const btnPhet = document.getElementById("btn-pendulum-mode-phet");
-        const btnCanvas = document.getElementById("btn-pendulum-mode-canvas");
-        const viewPhet = document.getElementById("pendulum-phet-view");
-        const viewCanvas = document.getElementById("pendulum-canvas-view");
-
-        if (mode === "phet") {
-            if (btnPhet) btnPhet.classList.add("active");
-            if (btnCanvas) btnCanvas.classList.remove("active");
-            if (viewPhet) { viewPhet.style.display = "block"; viewPhet.classList.add("active"); }
-            if (viewCanvas) { viewCanvas.style.display = "none"; viewCanvas.classList.remove("active"); }
-        } else {
-            if (btnCanvas) btnCanvas.classList.add("active");
-            if (btnPhet) btnPhet.classList.remove("active");
-            if (viewCanvas) { viewCanvas.style.display = "block"; viewCanvas.classList.add("active"); }
-            if (viewPhet) { viewPhet.style.display = "none"; viewPhet.classList.remove("active"); }
-            setTimeout(() => window.pendulumSim?.draw(), 50);
-        }
-    }
-
-    reloadPhetFrame() {
-        window.sound?.playClick();
-        const frame = document.getElementById("phet-inapp-frame");
-        if (frame) {
-            const currentSrc = frame.src;
-            frame.src = "about:blank";
-            setTimeout(() => { frame.src = currentSrc; }, 100);
-        }
-    }
-
-    fullscreenPhetFrame() {
-        window.sound?.playClick();
-        const holder = document.getElementById("phet-iframe-holder");
-        if (!holder) return;
-
-        if (!document.fullscreenElement) {
-            if (holder.requestFullscreen) {
-                holder.requestFullscreen();
-            } else if (holder.webkitRequestFullscreen) {
-                holder.webkitRequestFullscreen();
-            }
-        } else {
-            if (document.exitFullscreen) document.exitFullscreen();
-        }
+        setTimeout(() => window.pendulumSim?.draw(), 50);
     }
 
     // --- MODUL AJAR 11-PAGE VIEWER ---
@@ -940,6 +898,30 @@ class AppState {
             this.modulPage = page;
             window.sound?.playClick();
             this.updateModulViewer();
+        }
+    }
+
+    zoomModul(delta) {
+        window.sound?.playClick();
+        if (delta === 0) {
+            this.modulZoom = 1.0;
+        } else {
+            this.modulZoom = Math.min(2.5, Math.max(0.6, Math.round((this.modulZoom + delta) * 10) / 10));
+        }
+        const img = document.getElementById("img-modul-current");
+        const levelBadge = document.getElementById("modul-zoom-level");
+        if (img) {
+            img.style.transform = `scale(${this.modulZoom})`;
+            if (this.modulZoom > 1.0) {
+                img.style.maxWidth = "none";
+                img.style.maxHeight = "none";
+            } else {
+                img.style.maxWidth = "100%";
+                img.style.maxHeight = "100%";
+            }
+        }
+        if (levelBadge) {
+            levelBadge.textContent = `${Math.round(this.modulZoom * 100)}%`;
         }
     }
 
@@ -1029,6 +1011,30 @@ class AppState {
             this.guidePages[guideKey] = page;
             window.sound?.playClick();
             this.updateGuideViewer(guideKey);
+        }
+    }
+
+    zoomGuide(guideKey, delta) {
+        window.sound?.playClick();
+        if (delta === 0) {
+            this.guideZoom[guideKey] = 1.0;
+        } else {
+            this.guideZoom[guideKey] = Math.min(2.5, Math.max(0.6, Math.round((this.guideZoom[guideKey] + delta) * 10) / 10));
+        }
+        const img = document.getElementById(`img-guide-${guideKey}`);
+        const levelBadge = document.getElementById(`guide-zoom-level-${guideKey}`);
+        if (img) {
+            img.style.transform = `scale(${this.guideZoom[guideKey]})`;
+            if (this.guideZoom[guideKey] > 1.0) {
+                img.style.maxWidth = "none";
+                img.style.maxHeight = "none";
+            } else {
+                img.style.maxWidth = "100%";
+                img.style.maxHeight = "100%";
+            }
+        }
+        if (levelBadge) {
+            levelBadge.textContent = `${Math.round(this.guideZoom[guideKey] * 100)}%`;
         }
     }
 
