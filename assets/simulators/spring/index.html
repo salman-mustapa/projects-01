@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OLabs Spring Balance Simulator (HTML5 In-App Edition)</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #5c3a21;
+            background: linear-gradient(135deg, #452613 0%, #2e1708 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            padding: 8px;
+        }
+
+        .olabs-sim-container {
+            width: 100%;
+            max-width: 960px;
+            height: 100%;
+            max-height: 540px;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 4px solid #7c4a27;
+        }
+
+        /* Top Header (OLabs Style) */
+        .olabs-top-header {
+            background: #543319;
+            background: linear-gradient(to right, #43240e, #633c1f);
+            color: #ffffff;
+            padding: 8px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #381a07;
+            flex-shrink: 0;
+        }
+
+        .olabs-sim-title {
+            font-size: 1.15rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            color: #fef08a;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
+        }
+
+        .olabs-lc-tag {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid #ca8a04;
+            color: #fef08a;
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        /* Main Workspace: Left Sidebar + Simulator Stage */
+        .olabs-stage-body {
+            flex: 1;
+            display: flex;
+            background: #fdfbf7;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Left Controls Sidebar */
+        .olabs-sidebar {
+            width: 190px;
+            background: #f5ede4;
+            border-right: 2px solid #e2d2c1;
+            padding: 10px 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex-shrink: 0;
+            overflow-y: auto;
+        }
+
+        .sidebar-title {
+            font-size: 0.78rem;
+            font-weight: 800;
+            color: #5c3a21;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
+            text-align: center;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .form-label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #451a03;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 4px 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border: 1.5px solid #d6c0aa;
+            border-radius: 4px;
+            background: #ffffff;
+            color: #1e293b;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .obj-select-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5px;
+            margin-top: 2px;
+        }
+
+        .obj-btn {
+            background: #ffffff;
+            border: 1.5px solid #d6c0aa;
+            border-radius: 6px;
+            padding: 5px 3px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .obj-btn:hover {
+            border-color: #92542a;
+            background: #fffbf5;
+            transform: translateY(-1px);
+        }
+
+        .obj-btn.active {
+            border-color: #b45309;
+            background: #fef3c7;
+            box-shadow: 0 0 0 2px rgba(180, 83, 9, 0.3);
+        }
+
+        .obj-icon {
+            font-size: 1.2rem;
+            display: block;
+        }
+
+        .obj-label {
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: #451a03;
+            text-align: center;
+            line-height: 1.1;
+        }
+
+        .btn-olabs-reset {
+            margin-top: auto;
+            background: linear-gradient(to bottom, #f3f4f6, #e5e7eb);
+            border: 1.5px solid #9ca3af;
+            border-radius: 4px;
+            padding: 6px 10px;
+            font-size: 0.76rem;
+            font-weight: 700;
+            color: #374151;
+            cursor: pointer;
+            text-align: center;
+            box-shadow: 0 2px 2px rgba(0,0,0,0.1);
+            transition: all 0.15s;
+        }
+
+        .btn-olabs-reset:hover {
+            background: #e5e7eb;
+            color: #111827;
+        }
+
+        /* Center Canvas Simulation Stage */
+        .olabs-center-stage {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background: #ffffff;
+            overflow: hidden;
+        }
+
+        .canvas-wrapper {
+            flex: 1;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle at center, #ffffff 60%, #f7f3ec 100%);
+            overflow: hidden;
+        }
+
+        #spring-canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        /* Magnifier HUD Overlay (Top-Right like OLabs) */
+        .olabs-magnifier-box {
+            position: absolute;
+            top: 10px;
+            right: 14px;
+            width: 210px;
+            height: 220px;
+            background: #ffffff;
+            border: 2px solid #78350f;
+            border-radius: 6px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            z-index: 5;
+        }
+
+        .magnifier-header {
+            background: #78350f;
+            color: #fef08a;
+            font-size: 0.72rem;
+            font-weight: 800;
+            padding: 4px 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #zoom-canvas {
+            flex: 1;
+            width: 100%;
+            height: 100%;
+            background: #fefefd;
+            display: block;
+        }
+
+        /* Bottom Readout & Control Bar */
+        .olabs-bottom-bar {
+            background: #f7ede2;
+            border-top: 2px solid #e5d5c5;
+            padding: 6px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .readout-chips {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            font-size: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .r-tag {
+            color: #78350f;
+            font-weight: 700;
+        }
+
+        .r-val {
+            color: #0f172a;
+            font-weight: 800;
+            background: #ffffff;
+            padding: 2px 7px;
+            border-radius: 4px;
+            border: 1px solid #cbd5e1;
+            margin-left: 2px;
+        }
+
+        .r-total {
+            color: #15803d;
+            background: #dcfce7;
+            border-color: #86efac;
+            font-size: 0.88rem;
+        }
+
+        .btn-log-lkpd {
+            background: #15803d;
+            border: 1.5px solid #166534;
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 0.76rem;
+            padding: 5px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            box-shadow: 0 2px 0 #14532d;
+            transition: all 0.15s;
+        }
+
+        .btn-log-lkpd:hover {
+            background: #166534;
+            transform: translateY(-1px);
+        }
+
+        /* Bottom Footer */
+        .olabs-footer-note {
+            background: #452613;
+            color: #fef08a;
+            font-size: 0.68rem;
+            text-align: center;
+            padding: 4px 8px;
+            letter-spacing: 0.3px;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 680px) {
+            body { padding: 0; }
+            .olabs-sim-container {
+                border-width: 2px;
+                border-radius: 4px;
+                max-height: 100vh;
+                height: 100vh;
+            }
+            .olabs-top-header { padding: 4px 8px; }
+            .olabs-sim-title { font-size: 0.9rem; }
+            .olabs-lc-tag { font-size: 0.68rem; padding: 2px 6px; }
+            .olabs-stage-body { flex-direction: column; }
+            .olabs-sidebar {
+                width: 100%;
+                max-height: 110px;
+                flex-direction: row;
+                flex-wrap: wrap;
+                padding: 6px;
+                gap: 6px;
+                border-right: none;
+                border-bottom: 2px solid #e2d2c1;
+            }
+            .form-group { flex: 1; min-width: 120px; }
+            .obj-select-grid {
+                display: flex;
+                flex: 2;
+                overflow-x: auto;
+                gap: 4px;
+            }
+            .obj-btn { min-width: 52px; padding: 4px; }
+            .btn-olabs-reset { display: none; }
+            .olabs-magnifier-box {
+                width: 130px;
+                height: 140px;
+                top: 4px;
+                right: 4px;
+            }
+            .olabs-bottom-bar { padding: 4px 8px; font-size: 0.72rem; }
+            .readout-chips { gap: 6px; }
+            .r-val { padding: 1px 4px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="olabs-sim-container">
+        <!-- Top OLabs Mahogany Header -->
+        <header class="olabs-top-header">
+            <span class="olabs-sim-title">Spring Balance (Determination of Mass & Density)</span>
+            <span class="olabs-lc-tag">AMRITA OLABS • SIMULATOR</span>
+        </header>
+
+        <!-- Main Workspace -->
+        <main class="olabs-stage-body">
+            <!-- Left Controls Sidebar -->
+            <aside class="olabs-sidebar">
+                <span class="sidebar-title">Solution Controls</span>
+                
+                <div class="form-group">
+                    <label class="form-label" for="sel-env">Select Environment:</label>
+                    <select class="form-select" id="sel-env" onchange="springApp.setGravity(this.value)">
+                        <option value="9.8" selected>Earth (9.8 m/s²)</option>
+                        <option value="1.6">Moon (1.6 m/s²)</option>
+                        <option value="3.7">Mars (3.7 m/s²)</option>
+                        <option value="24.8">Jupiter (24.8 m/s²)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Gantung Objek Uji:</label>
+                    <div class="obj-select-grid">
+                        <button class="obj-btn active" data-obj="cylinder" onclick="springApp.setObject('cylinder')">
+                            <span class="obj-icon">🥫</span>
+                            <span class="obj-label">Silinder 250g</span>
+                        </button>
+                        <button class="obj-btn" data-obj="lock" onclick="springApp.setObject('lock')">
+                            <span class="obj-icon">🔒</span>
+                            <span class="obj-label">Balok 150g</span>
+                        </button>
+                        <button class="obj-btn" data-obj="wood" onclick="springApp.setObject('wood')">
+                            <span class="obj-icon">🪵</span>
+                            <span class="obj-label">Kayu 75g</span>
+                        </button>
+                        <button class="obj-btn" data-obj="stone" onclick="springApp.setObject('stone')">
+                            <span class="obj-icon">🪨</span>
+                            <span class="obj-label">Batu 120g</span>
+                        </button>
+                        <button class="obj-btn" data-obj="sphere" onclick="springApp.setObject('sphere')">
+                            <span class="obj-icon">🏐</span>
+                            <span class="obj-label">Beban 200g</span>
+                        </button>
+                        <button class="obj-btn" data-obj="none" onclick="springApp.setObject('none')">
+                            <span class="obj-icon">❌</span>
+                            <span class="obj-label">Lepas</span>
+                        </button>
+                    </div>
+                </div>
+
+                <button class="btn-olabs-reset" onclick="springApp.reset()">🔄 Reset Alat</button>
+            </aside>
+
+            <!-- Center Stage -->
+            <section class="olabs-center-stage">
+                <div class="canvas-wrapper">
+                    <canvas id="spring-canvas" width="600" height="420"></canvas>
+
+                    <!-- Magnifier HUD Box (Spring Scale Dual Dial) -->
+                    <div class="olabs-magnifier-box">
+                        <div class="magnifier-header">
+                            <span>SPRING SCALE ZOOM</span>
+                            <span id="mag-indicator">0 N</span>
+                        </div>
+                        <canvas id="zoom-canvas" width="210" height="195"></canvas>
+                    </div>
+                </div>
+
+                <!-- Bottom Readout Bar -->
+                <footer class="olabs-bottom-bar">
+                    <div class="readout-chips">
+                        <div><span class="r-tag">Massa Objek:</span><span class="r-val" id="r-mass">250 g (0.25 kg)</span></div>
+                        <div><span class="r-tag">Gravitasi (g):</span><span class="r-val" id="r-grav">9.8 N/kg</span></div>
+                        <div><span class="r-tag">Gaya Berat (w):</span><span class="r-val r-total" id="r-force">2.45 N</span></div>
+                    </div>
+                    <button class="btn-log-lkpd" onclick="springApp.logToLkpd()">📥 Catat ke LKPD</button>
+                </footer>
+            </section>
+        </main>
+
+        <!-- Footer Notice -->
+        <footer class="olabs-footer-note">
+            Developed by Amrita University Funded by Ministry of Electronics and Information Technology || OLabs Physics Simulation Edition
+        </footer>
+    </div>
+
+    <script>
+        const OBJECTS = {
+            none:     { name: "Tanpa Beban", massKg: 0.00,  massG: 0,   color: "transparent", shape: "none" },
+            cylinder: { name: "Silinder Logam", massKg: 0.25,  massG: 250, color: "#94a3b8", shape: "cylinder" },
+            lock:     { name: "Balok Besi",  massKg: 0.15,  massG: 150, color: "#d97706", shape: "lock" },
+            wood:     { name: "Balok Kayu",  massKg: 0.075, massG: 75,  color: "#b45309", shape: "wood" },
+            stone:    { name: "Batu Alami",  massKg: 0.12,  massG: 120, color: "#64748b", shape: "stone" },
+            sphere:   { name: "Beban Gantung", massKg: 0.20,  massG: 200, color: "#475569", shape: "sphere" }
+        };
+
+        class SpringOlabsSimulator {
+            constructor() {
+                this.canvas = document.getElementById("spring-canvas");
+                this.ctx = this.canvas.getContext("2d");
+                this.zoomCanvas = document.getElementById("zoom-canvas");
+                this.zoomCtx = this.zoomCanvas.getContext("2d");
+
+                this.gravity = 9.8;
+                this.currentObjKey = "cylinder";
+                this.currentObj = OBJECTS["cylinder"];
+
+                this.springY = 0;
+                this.targetY = 0;
+                this.velocity = 0;
+
+                this.init();
+            }
+
+            init() {
+                this.calculateTarget();
+                this.animate();
+            }
+
+            setGravity(gVal) {
+                this.gravity = parseFloat(gVal);
+                this.calculateTarget();
+            }
+
+            setObject(key) {
+                this.currentObjKey = key;
+                this.currentObj = OBJECTS[key] || OBJECTS["none"];
+                
+                document.querySelectorAll(".obj-btn").forEach(b => {
+                    b.classList.toggle("active", b.getAttribute("data-obj") === key);
+                });
+
+                this.calculateTarget();
+            }
+
+            calculateTarget() {
+                const force = this.currentObj.massKg * this.gravity; // in Newtons
+                // Scale: 2.5 Newtons = 120 pixels displacement
+                this.targetY = Math.min((force / 2.5) * 120, 150);
+                this.updateReadouts(force);
+            }
+
+            updateReadouts(force) {
+                const rMass = document.getElementById("r-mass");
+                const rGrav = document.getElementById("r-grav");
+                const rForce = document.getElementById("r-force");
+                const magInd = document.getElementById("mag-indicator");
+
+                if (rMass) rMass.textContent = `${this.currentObj.massG} g (${this.currentObj.massKg.toFixed(3)} kg)`;
+                if (rGrav) rGrav.textContent = `${this.gravity.toFixed(1)} N/kg`;
+                if (rForce) rForce.textContent = `${force.toFixed(2)} N`;
+                if (magInd) magInd.textContent = `${force.toFixed(2)} N (${this.currentObj.massG}g)`;
+            }
+
+            reset() {
+                document.getElementById("sel-env").value = "9.8";
+                this.gravity = 9.8;
+                this.setObject("cylinder");
+            }
+
+            logToLkpd() {
+                const force = (this.currentObj.massKg * this.gravity).toFixed(2);
+                const mass = this.currentObj.massG;
+                try {
+                    if (window.parent && window.parent.lkpdManager) {
+                        window.parent.lkpdManager.addSpringRow({
+                            objName: this.currentObj.name,
+                            force: `${force} N`,
+                            grav: `${this.gravity.toFixed(1)} N/kg`,
+                            formula: `m = w / g = ${force} ÷ ${this.gravity.toFixed(1)}`,
+                            mass: `${mass} g`
+                        });
+                        if (window.parent.appState) {
+                            window.parent.appState.showToast(`✅ Data ${this.currentObj.name} dicatat ke LKPD!`);
+                        }
+                    }
+                } catch (e) {
+                    console.log("LKPD Log call:", e);
+                }
+            }
+
+            animate() {
+                // Spring damping physics
+                const k = 14;
+                const damping = 0.82;
+                const force = -k * (this.springY - this.targetY);
+                this.velocity = (this.velocity + force * 0.016) * damping;
+                this.springY += this.velocity;
+
+                this.drawMain();
+                this.drawZoom();
+
+                requestAnimationFrame(() => this.animate());
+            }
+
+            drawMain() {
+                const c = this.ctx;
+                const w = this.canvas.width;
+                const h = this.canvas.height;
+                c.clearRect(0, 0, w, h);
+
+                const centerX = 240;
+                const topY = 40;
+
+                // 1. Lab Stand (Statif Besi Kuningan Elegan)
+                c.save();
+                // Heavy metallic base
+                const gradBase = c.createLinearGradient(centerX - 130, h - 25, centerX + 110, h - 25);
+                gradBase.addColorStop(0, "#334155");
+                gradBase.addColorStop(0.5, "#475569");
+                gradBase.addColorStop(1, "#1e293b");
+                c.fillStyle = gradBase;
+                c.fillRect(centerX - 130, h - 28, 240, 20);
+                c.strokeStyle = "#0f172a";
+                c.lineWidth = 1.5;
+                c.strokeRect(centerX - 130, h - 28, 240, 20);
+
+                // Vertical Rod (Stainless steel)
+                const gradRod = c.createLinearGradient(centerX - 110, 0, centerX - 96, 0);
+                gradRod.addColorStop(0, "#94a3b8");
+                gradRod.addColorStop(0.5, "#f1f5f9");
+                gradRod.addColorStop(1, "#64748b");
+                c.fillStyle = gradRod;
+                c.fillRect(centerX - 108, topY - 20, 14, h - topY - 8);
+
+                // Top Clamp & Horizontal Arm
+                c.fillStyle = "#334155";
+                c.fillRect(centerX - 114, topY - 24, 26, 22);
+                c.fillStyle = gradRod;
+                c.fillRect(centerX - 95, topY - 18, 105, 10);
+                // Hanging pin
+                c.fillStyle = "#d97706";
+                c.beginPath();
+                c.arc(centerX, topY - 13, 5, 0, Math.PI * 2);
+                c.fill();
+                c.restore();
+
+                // 2. Hanging Ring & Spring Scale Body (Khas Kuning OLabs Amrita)
+                c.save();
+                // Top Hook
+                c.strokeStyle = "#475569";
+                c.lineWidth = 2.5;
+                c.beginPath();
+                c.arc(centerX, topY - 3, 7, 0, Math.PI * 2);
+                c.stroke();
+
+                // Upper Yellow Casing
+                const caseW = 46;
+                const caseH = 175;
+                const caseX = centerX - caseW / 2;
+                const caseY = topY + 8;
+
+                // Golden yellow body
+                const gradCase = c.createLinearGradient(caseX, caseY, caseX + caseW, caseY);
+                gradCase.addColorStop(0, "#ca8a04");
+                gradCase.addColorStop(0.2, "#fde047");
+                gradCase.addColorStop(0.8, "#facc15");
+                gradCase.addColorStop(1, "#a16207");
+                c.fillStyle = gradCase;
+                c.strokeStyle = "#713f12";
+                c.lineWidth = 2;
+                c.beginPath();
+                c.roundRect(caseX, caseY, caseW, caseH, 6);
+                c.fill();
+                c.stroke();
+
+                // Amrita Red Label
+                c.fillStyle = "#b91c1c";
+                c.fillRect(caseX + 6, caseY + 6, caseW - 12, 14);
+                c.fillStyle = "#ffffff";
+                c.font = "bold 8px 'Segoe UI', sans-serif";
+                c.textAlign = "center";
+                c.fillText("AMRITA", centerX, caseY + 16);
+
+                // Slot window for scale
+                c.fillStyle = "#ffffff";
+                c.strokeStyle = "#a16207";
+                c.lineWidth = 1.5;
+                c.fillRect(caseX + 11, caseY + 24, caseW - 22, 140);
+                c.strokeRect(caseX + 11, caseY + 24, caseW - 22, 140);
+
+                // Scale graduations in slot
+                c.fillStyle = "#1e293b";
+                c.lineWidth = 1;
+                for (let i = 0; i <= 10; i++) {
+                    const ty = caseY + 28 + i * 13;
+                    c.beginPath();
+                    c.moveTo(caseX + 13, ty);
+                    c.lineTo(caseX + 22, ty);
+                    c.stroke();
+
+                    c.beginPath();
+                    c.moveTo(caseX + caseW - 13, ty);
+                    c.lineTo(caseX + caseW - 22, ty);
+                    c.stroke();
+                }
+
+                // 3. Red Pointer Plate (Menunjukkan Nilai Terukur)
+                const pointerY = caseY + 28 + this.springY * 0.9;
+                c.fillStyle = "#dc2626";
+                c.beginPath();
+                c.moveTo(caseX + 8, pointerY);
+                c.lineTo(caseX + caseW - 8, pointerY);
+                c.lineTo(caseX + caseW - 14, pointerY + 3);
+                c.lineTo(caseX + 14, pointerY + 3);
+                c.closePath();
+                c.fill();
+
+                // Bottom Rod extending from casing
+                const bottomRodY = caseY + caseH;
+                const hookY = bottomRodY + 12 + this.springY * 0.9;
+
+                c.strokeStyle = "#475569";
+                c.lineWidth = 3;
+                c.beginPath();
+                c.moveTo(centerX, bottomRodY);
+                c.lineTo(centerX, hookY);
+                c.stroke();
+
+                // Bottom Hook Loop
+                c.beginPath();
+                c.arc(centerX, hookY + 8, 8, -Math.PI * 0.4, Math.PI * 1.3);
+                c.stroke();
+                c.restore();
+
+                // 4. Hanging Object
+                if (this.currentObj.shape !== "none") {
+                    c.save();
+                    const objTopY = hookY + 18;
+                    
+                    // Object Hook Ring
+                    c.strokeStyle = "#334155";
+                    c.lineWidth = 2;
+                    c.beginPath();
+                    c.arc(centerX, objTopY - 5, 5, 0, Math.PI * 2);
+                    c.stroke();
+
+                    // Render Object based on shape
+                    c.fillStyle = this.currentObj.color;
+                    c.strokeStyle = "#1e293b";
+                    c.lineWidth = 1.5;
+
+                    if (this.currentObj.shape === "cylinder") {
+                        c.beginPath();
+                        c.roundRect(centerX - 20, objTopY, 40, 56, 4);
+                        c.fill();
+                        c.stroke();
+                        c.fillStyle = "#ffffff";
+                        c.font = "bold 9px sans-serif";
+                        c.textAlign = "center";
+                        c.fillText("250g", centerX, objTopY + 32);
+                    } else if (this.currentObj.shape === "lock") {
+                        c.beginPath();
+                        c.roundRect(centerX - 18, objTopY + 8, 36, 42, 6);
+                        c.fill();
+                        c.stroke();
+                        c.fillStyle = "#ffffff";
+                        c.font = "bold 9px sans-serif";
+                        c.textAlign = "center";
+                        c.fillText("150g", centerX, objTopY + 32);
+                    } else if (this.currentObj.shape === "wood") {
+                        c.fillRect(centerX - 16, objTopY, 32, 40);
+                        c.strokeRect(centerX - 16, objTopY, 32, 40);
+                        c.fillStyle = "#ffffff";
+                        c.font = "bold 9px sans-serif";
+                        c.textAlign = "center";
+                        c.fillText("75g", centerX, objTopY + 24);
+                    } else if (this.currentObj.shape === "stone") {
+                        c.beginPath();
+                        c.ellipse(centerX, objTopY + 24, 22, 26, 0.2, 0, Math.PI * 2);
+                        c.fill();
+                        c.stroke();
+                        c.fillStyle = "#ffffff";
+                        c.font = "bold 9px sans-serif";
+                        c.textAlign = "center";
+                        c.fillText("120g", centerX, objTopY + 26);
+                    } else if (this.currentObj.shape === "sphere") {
+                        c.beginPath();
+                        c.arc(centerX, objTopY + 22, 22, 0, Math.PI * 2);
+                        c.fill();
+                        c.stroke();
+                        c.fillStyle = "#ffffff";
+                        c.font = "bold 9px sans-serif";
+                        c.textAlign = "center";
+                        c.fillText("200g", centerX, objTopY + 25);
+                    }
+                    c.restore();
+                }
+            }
+
+            drawZoom() {
+                const zc = this.zoomCtx;
+                const zw = this.zoomCanvas.width;
+                const zh = this.zoomCanvas.height;
+                zc.clearRect(0, 0, zw, zh);
+
+                // Background
+                zc.fillStyle = "#fefefe";
+                zc.fillRect(0, 0, zw, zh);
+
+                // Amrita Header Plate
+                zc.fillStyle = "#7f1d1d";
+                zc.fillRect(10, 8, zw - 20, 20);
+                zc.fillStyle = "#fef08a";
+                zc.font = "bold 11px sans-serif";
+                zc.textAlign = "center";
+                zc.fillText("• AMRITA SPRING SCALE •", zw / 2, 22);
+
+                // Column Titles
+                zc.font = "bold 9px sans-serif";
+                zc.fillStyle = "#451a03";
+                zc.textAlign = "left";
+                zc.fillText("GRAMS (g)", 24, 42);
+                zc.textAlign = "right";
+                zc.fillText("NEWTONS (N)", zw - 24, 42);
+
+                // Center Guide Track
+                zc.fillStyle = "#f8fafc";
+                zc.fillRect(zw / 2 - 14, 48, 28, zh - 56);
+                zc.strokeStyle = "#cbd5e1";
+                zc.strokeRect(zw / 2 - 14, 48, 28, zh - 56);
+
+                // Scale ticks: 0 to 250 grams & 0 to 2.5 Newtons
+                const startY = 56;
+                const scaleLen = zh - 76;
+                const maxGram = 250;
+                const maxNewton = 2.5;
+
+                zc.lineWidth = 1;
+                zc.font = "bold 9px monospace";
+
+                for (let g = 0; g <= maxGram; g += 25) {
+                    const y = startY + (g / maxGram) * scaleLen;
+                    const n = (g / 100).toFixed(2);
+
+                    // Left Gram tick
+                    zc.strokeStyle = "#0284c7";
+                    zc.beginPath();
+                    zc.moveTo(zw / 2 - 14, y);
+                    zc.lineTo(zw / 2 - 24, y);
+                    zc.stroke();
+                    zc.fillStyle = "#0369a1";
+                    zc.textAlign = "right";
+                    zc.fillText(g.toString(), zw / 2 - 28, y + 3);
+
+                    // Right Newton tick
+                    zc.strokeStyle = "#b45309";
+                    zc.beginPath();
+                    zc.moveTo(zw / 2 + 14, y);
+                    zc.lineTo(zw / 2 + 24, y);
+                    zc.stroke();
+                    zc.fillStyle = "#92400e";
+                    zc.textAlign = "left";
+                    zc.fillText(n, zw / 2 + 28, y + 3);
+                }
+
+                // Dual Red Indicator Needle
+                const force = this.currentObj.massKg * this.gravity;
+                const normForce = Math.min(Math.max(force / maxNewton, 0), 1);
+                const indY = startY + normForce * scaleLen;
+
+                zc.save();
+                zc.fillStyle = "#dc2626";
+                zc.strokeStyle = "#991b1b";
+                zc.lineWidth = 1.5;
+
+                // Red indicator needle spanning across both columns
+                zc.beginPath();
+                zc.moveTo(18, indY);
+                zc.lineTo(zw - 18, indY);
+                zc.stroke();
+
+                // Center triangle pointer
+                zc.beginPath();
+                zc.moveTo(zw / 2 - 8, indY - 4);
+                zc.lineTo(zw / 2 + 8, indY - 4);
+                zc.lineTo(zw / 2, indY + 5);
+                zc.closePath();
+                zc.fill();
+                zc.stroke();
+                zc.restore();
+            }
+        }
+
+        const springApp = new SpringOlabsSimulator();
+    </script>
+</body>
+</html>

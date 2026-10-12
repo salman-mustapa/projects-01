@@ -782,21 +782,21 @@ class AppState {
 
     switchSpringMode(mode) {
         window.sound?.playClick();
-        const btnOnline = document.getElementById("btn-spring-mode-online");
+        const btnOlabs = document.getElementById("btn-spring-mode-olabs") || document.getElementById("btn-spring-mode-online");
         const btnCanvas = document.getElementById("btn-spring-mode-canvas");
-        const viewOnline = document.getElementById("spring-online-view");
+        const viewOlabs = document.getElementById("spring-olabs-view") || document.getElementById("spring-online-view");
         const viewCanvas = document.getElementById("spring-canvas-view");
 
-        if (mode === "online") {
-            if (btnOnline) btnOnline.classList.add("active");
+        if (mode === "olabs" || mode === "online") {
+            if (btnOlabs) btnOlabs.classList.add("active");
             if (btnCanvas) btnCanvas.classList.remove("active");
-            if (viewOnline) { viewOnline.style.display = "block"; viewOnline.classList.add("active"); }
+            if (viewOlabs) { viewOlabs.style.display = "block"; viewOlabs.classList.add("active"); }
             if (viewCanvas) { viewCanvas.style.display = "none"; viewCanvas.classList.remove("active"); }
         } else {
             if (btnCanvas) btnCanvas.classList.add("active");
-            if (btnOnline) btnOnline.classList.remove("active");
+            if (btnOlabs) btnOlabs.classList.remove("active");
             if (viewCanvas) { viewCanvas.style.display = "block"; viewCanvas.classList.add("active"); }
-            if (viewOnline) { viewOnline.style.display = "none"; viewOnline.classList.remove("active"); }
+            if (viewOlabs) { viewOlabs.style.display = "none"; viewOlabs.classList.remove("active"); }
             setTimeout(() => window.springSim?.draw(), 50);
         }
     }
@@ -829,15 +829,53 @@ class AppState {
         if (type === "spring") {
             url = "https://www.olabs.edu.in/?sub=1&brch=1&sim=2&cnt=4";
         } else if (type === "pendulum") {
-            url = "http://amrita.olabs.edu.in/?sub=1&brch=5&sim=159&cnt=4";
+            url = "https://phet.colorado.edu/sims/html/pendulum-lab/latest/pendulum-lab_all.html";
         }
-        window.open(url, "OLabsSimulationWindow", "width=1100,height=750,scrollbars=yes,resizable=yes");
+        window.open(url, "SimulationWindow", "width=1100,height=750,scrollbars=yes,resizable=yes");
     }
 
-    // --- SUB-SIMULATOR TOGGLES (CANVAS vs OLABS) ---
+    // --- SUB-SIMULATOR TOGGLES (CANVAS vs PHET) ---
     switchPendulumMode(mode) {
         window.sound?.playClick();
-        setTimeout(() => window.pendulumSim?.draw(), 50);
+        const btnPhet = document.getElementById("btn-pendulum-mode-phet");
+        const btnCanvas = document.getElementById("btn-pendulum-mode-canvas");
+        const viewPhet = document.getElementById("pendulum-phet-view");
+        const viewCanvas = document.getElementById("pendulum-canvas-view");
+
+        if (mode === "phet") {
+            if (btnPhet) btnPhet.classList.add("active");
+            if (btnCanvas) btnCanvas.classList.remove("active");
+            if (viewPhet) { viewPhet.style.display = "block"; viewPhet.classList.add("active"); }
+            if (viewCanvas) { viewCanvas.style.display = "none"; viewCanvas.classList.remove("active"); }
+        } else {
+            if (btnCanvas) btnCanvas.classList.add("active");
+            if (btnPhet) btnPhet.classList.remove("active");
+            if (viewCanvas) { viewCanvas.style.display = "block"; viewCanvas.classList.add("active"); }
+            if (viewPhet) { viewPhet.style.display = "none"; viewPhet.classList.remove("active"); }
+            setTimeout(() => window.pendulumSim?.draw(), 50);
+        }
+    }
+
+    reloadPhetFrame() {
+        window.sound?.playClick();
+        const frame = document.getElementById("phet-inapp-frame");
+        if (frame) {
+            const currentSrc = frame.src;
+            frame.src = "about:blank";
+            setTimeout(() => { frame.src = currentSrc; }, 100);
+        }
+    }
+
+    fullscreenPhetFrame() {
+        window.sound?.playClick();
+        const holder = document.getElementById("phet-iframe-holder");
+        if (!holder) return;
+        if (!document.fullscreenElement) {
+            if (holder.requestFullscreen) holder.requestFullscreen();
+            else if (holder.webkitRequestFullscreen) holder.webkitRequestFullscreen();
+        } else {
+            if (document.exitFullscreen) document.exitFullscreen();
+        }
     }
 
     // --- MODUL AJAR 11-PAGE VIEWER ---
