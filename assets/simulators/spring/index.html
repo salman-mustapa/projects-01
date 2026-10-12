@@ -170,24 +170,55 @@
             text-align: center;
             line-height: 1.15;
         }
+        .obj-card.obj-card-release {
+            border-color: #fca5a5;
+            background: #fffafa;
+        }
+        .obj-card.obj-card-release:hover {
+            border-color: #ef4444;
+            background: #fef2f2;
+        }
+        .obj-card.obj-card-release.active {
+            border-color: #dc2626;
+            background: #fee2e2;
+            box-shadow: 0 0 0 2px rgba(220, 38, 38, .2);
+        }
         .obj-card.full { grid-column: 1 / -1; flex-direction: row; gap: 6px; padding: 5px 6px; }
+
+        .btn-reset-mobile {
+            display: none;
+        }
 
         .btn-reset {
             margin-top: auto;
-            background: linear-gradient(#f4f4f5, #d9d9dc);
-            border: 1.5px solid #a1a1aa;
-            border-radius: 5px;
-            padding: 7px 8px;
-            font-size: .76rem;
-            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            background: linear-gradient(180deg, #fffbeb 0%, #fef3c7 40%, #fde68a 100%);
+            border: 1.5px solid #d97706;
+            border-radius: 7px;
+            padding: 8px 10px;
+            font-size: .78rem;
+            font-weight: 800;
             font-family: inherit;
-            color: #374151;
+            color: #92400e;
             cursor: pointer;
             text-align: center;
-            box-shadow: 0 1px 2px rgba(0,0,0,.08);
-            transition: all .15s;
+            box-shadow: 0 2px 4px rgba(217, 119, 6, .18), 0 1px 2px rgba(0, 0, 0, .05);
+            transition: all .16s ease;
         }
-        .btn-reset:hover { background: linear-gradient(#fafafa, #e4e4e7); }
+        .btn-reset:hover {
+            background: linear-gradient(180deg, #fef3c7 0%, #fde68a 50%, #fcd34d 100%);
+            border-color: #b45309;
+            color: #78350f;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(217, 119, 6, .26);
+        }
+        .btn-reset:active {
+            transform: translateY(1px);
+            box-shadow: 0 1px 2px rgba(217, 119, 6, .15);
+        }
 
         /* ---------- Simulator Stage ---------- */
         .stage {
@@ -551,16 +582,25 @@
             }
 
             .btn-reset-mobile {
-                padding: 4px 8px;
-                font-size: .7rem;
-                font-weight: 700;
-                background: #f4f4f5;
-                border: 1.5px solid #a1a1aa;
-                border-radius: 5px;
+                display: inline-flex !important;
+                align-items: center;
+                justify-content: center;
+                gap: 4px;
+                padding: 5px 10px;
+                font-size: .72rem;
+                font-weight: 800;
+                font-family: inherit;
+                background: linear-gradient(180deg, #fffbeb 0%, #fef3c7 40%, #fde68a 100%);
+                border: 1.5px solid #d97706;
+                border-radius: 6px;
+                color: #92400e;
                 cursor: pointer;
                 white-space: nowrap;
                 flex-shrink: 0;
+                box-shadow: 0 1px 3px rgba(217, 119, 6, .18);
+                transition: all .15s ease;
             }
+            .btn-reset-mobile:active { transform: translateY(1px); }
 
             /* Horizontal Scrollable Object Strip */
             .side-obj-label {
@@ -570,7 +610,7 @@
                 margin-top: 1px;
             }
 
-            .obj-strip-wrap {
+            .obj-grid, .obj-strip-wrap {
                 display: flex;
                 gap: 5px;
                 overflow-x: auto;
@@ -578,7 +618,7 @@
                 -webkit-overflow-scrolling: touch;
             }
 
-            .obj-card, .obj-card.full {
+            .obj-card, .obj-card.full, .obj-card.obj-card-release {
                 flex: 0 0 auto;
                 flex-direction: row;
                 align-items: center;
@@ -700,7 +740,7 @@
 
             <div class="fg" style="margin-top: 2px;">
                 <label class="side-obj-label">Gantung Objek Uji:</label>
-                <div class="obj-strip-wrap">
+                <div class="obj-grid">
                     <button class="obj-card active" data-obj="cylinder" onclick="springApp.setObject('cylinder')">
                         <span class="ico">🥫</span>
                         <span class="lbl">Silinder 250g</span>
@@ -721,7 +761,7 @@
                         <span class="ico">🏐</span>
                         <span class="lbl">Beban 200g</span>
                     </button>
-                    <button class="obj-card full" data-obj="none" onclick="springApp.setObject('none')">
+                    <button class="obj-card obj-card-release" data-obj="none" onclick="springApp.setObject('none')">
                         <span class="ico">❌</span>
                         <span class="lbl">Lepas Beban</span>
                     </button>
@@ -977,29 +1017,12 @@
                 mass: `${mass} g`
             };
 
-            let handled = false;
-            try {
-                if (window.parent && window.parent.lkpdManager && window.parent.lkpdManager.addSpringRow) {
-                    window.parent.lkpdManager.addSpringRow(payload);
-                    handled = true;
-                }
-                if (window.parent && window.parent.appState && window.parent.appState.showToast) {
-                    window.parent.appState.showToast(`✅ Data ${this.currentObj.name} (${force} N) dicatat ke LKPD!`);
-                }
-            } catch (e) {
-                console.log("Parent direct call note:", e);
-            }
-
-            try {
-                if (window.parent && window.parent !== window) {
-                    window.parent.postMessage(payload, "*");
-                    handled = true;
-                }
-            } catch (e) {
-                console.log("PostMessage note:", e);
-            }
-
-            if (!handled) {
+            // If embedded in iframe, dispatch via postMessage ONLY to prevent duplicate logging
+            if (window.parent && window.parent !== window) {
+                window.parent.postMessage(payload, "*");
+            } else if (window.lkpdManager && window.lkpdManager.addSpringRow) {
+                window.lkpdManager.addSpringRow(payload);
+            } else {
                 alert(`✅ Data Neraca Pegas (${this.currentObj.name}: ${force} N) berhasil dicatat ke LKPD!`);
             }
         }

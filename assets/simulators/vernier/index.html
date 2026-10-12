@@ -94,17 +94,34 @@
 
         .btn-reset {
             margin-top: auto;
-            padding: 7px 8px;
-            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            background: linear-gradient(180deg, #fffbeb 0%, #fef3c7 40%, #fde68a 100%);
+            border: 1.5px solid #d97706;
+            border-radius: 7px;
+            padding: 8px 10px;
             font-size: .78rem;
+            font-weight: 800;
             font-family: inherit;
-            color: #374151;
-            background: linear-gradient(#f4f4f5, #d9d9dc);
-            border: 1.5px solid #a1a1aa;
-            border-radius: 5px;
+            color: #92400e;
             cursor: pointer;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(217, 119, 6, .18), 0 1px 2px rgba(0, 0, 0, .05);
+            transition: all .16s ease;
         }
-        .btn-reset:hover { background: linear-gradient(#fafafa, #e4e4e7); }
+        .btn-reset:hover {
+            background: linear-gradient(180deg, #fef3c7 0%, #fde68a 50%, #fcd34d 100%);
+            border-color: #b45309;
+            color: #78350f;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(217, 119, 6, .26);
+        }
+        .btn-reset:active {
+            transform: translateY(1px);
+            box-shadow: 0 1px 2px rgba(217, 119, 6, .15);
+        }
 
         /* ---------- Stage ---------- */
         .stage {
@@ -210,10 +227,42 @@
         }
         .btn-toggle-reveal:hover { background: #fef3c7; }
 
-        .ctrl { display: flex; align-items: center; gap: 8px; flex: 1 1 320px; justify-content: flex-end; min-width: 0; }
-        .slider-group { display: flex; align-items: center; gap: 6px; flex: 1 1 180px; min-width: 0; }
-        .slider-group input[type=range] { flex: 1 1 100px; min-width: 60px; accent-color: #ea580c; height: 22px; }
-        .action-group { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+        .ctrl {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1 1 auto;
+            justify-content: flex-end;
+            min-width: 0;
+        }
+        .slider-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex: 0 0 auto;
+            min-width: 215px;
+        }
+        .slider-group .sbtn {
+            flex-shrink: 0;
+            white-space: nowrap;
+        }
+        .slider-group input[type=range] {
+            width: 95px;
+            flex: 0 0 95px;
+            accent-color: #ea580c;
+            height: 22px;
+        }
+        .action-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+        .action-group .sbtn,
+        .action-group .lkpd {
+            flex-shrink: 0;
+            white-space: nowrap;
+        }
 
         .sbtn {
             background: #fff;
@@ -243,6 +292,35 @@
         }
         .lkpd:hover { background: #166534; }
         .lkpd:active { transform: translateY(1px); box-shadow: none; }
+
+        /* Wrap bar into 2 clean spacious rows on medium screens so controls never squeeze */
+        @media (max-width: 980px) and (min-width: 681px) {
+            .bar {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 6px;
+                padding: 6px 12px;
+            }
+            .reads {
+                width: 100%;
+                justify-content: space-between;
+                border-bottom: 1px dashed #d6c7b3;
+                padding-bottom: 4px;
+            }
+            .ctrl {
+                width: 100%;
+                justify-content: space-between;
+                gap: 10px;
+            }
+            .slider-group {
+                flex: 1 1 auto;
+                max-width: 320px;
+            }
+            .slider-group input[type=range] {
+                flex: 1 1 auto;
+                width: auto;
+            }
+        }
 
         .ftr {
             flex: 0 0 auto;
@@ -338,8 +416,22 @@
             .objs { display: flex; gap: 4px; }
             .obj, .obj.free { flex-direction: row; gap: 4px; padding: 3px 7px; white-space: nowrap; border-radius: 6px; }
             .obj svg, .obj.free svg { width: 22px; height: 22px; }
-            .obj span { font-size: .66rem; }
-            .btn-reset { margin: 0 0 0 auto; padding: 5px 10px; font-size: .7rem; flex-shrink: 0; }
+            .btn-reset {
+                margin: 0 0 0 auto;
+                display: inline-flex;
+                align-items: center;
+                gap: 4px;
+                padding: 5px 10px;
+                font-size: .72rem;
+                font-weight: 800;
+                background: linear-gradient(180deg, #fffbeb 0%, #fef3c7 40%, #fde68a 100%);
+                border: 1.5px solid #d97706;
+                border-radius: 6px;
+                color: #92400e;
+                flex-shrink: 0;
+                box-shadow: 0 1px 3px rgba(217, 119, 6, .18);
+            }
+            .btn-reset:active { transform: translateY(1px); }
             .hdr { padding: 4px 10px; }
             .hdr h1 { font-size: .92rem; }
             .hdr .lc { font-size: .66rem; padding: 1px 6px; }
@@ -392,7 +484,7 @@
                     <span>Tanpa benda</span>
                 </button>
             </div>
-            <button class="btn-reset" onclick="resetSim()">Reset</button>
+            <button class="btn-reset" onclick="resetSim()">🔄 Reset Alat</button>
         </aside>
 
         <main class="stage" id="stage">

@@ -1192,6 +1192,16 @@ class LkpdManager {
         const formulaStr = data.formula || "M = w / g";
         const massStr = data.mass || "250 g";
 
+        // Anti-duplicate protection: ignore identical row if submitted within 1200ms
+        const now = Date.now();
+        if (this._lastSpringLog && 
+            (now - this._lastSpringLog.time < 1200) &&
+            this._lastSpringLog.object === objName &&
+            this._lastSpringLog.force === forceStr) {
+            return;
+        }
+        this._lastSpringLog = { time: now, object: objName, force: forceStr };
+
         const row = {
             id: Date.now(),
             object: (objName === "undefined" || !objName) ? "Silinder Logam" : objName,
