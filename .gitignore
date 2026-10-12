@@ -8,7 +8,15 @@ __pycache__/
 *.bat
 *.cmd
 *.log
+
+# Voice notes & audio recordings (WhatsApp voice notes, temporary audio drafts)
+# Note: Video panduan praktikum (.mp4) tetap disimpan & terlacak di repository
 *.ogg
+*.m4a
+*.aac
+*.wav
+*.wma
+WhatsApp*
 
 # OS generated files
 .DS_Store

@@ -49,9 +49,9 @@ flowchart TD
 Setiap domain pengukuran dilengkapi sistem **Dual-Mode** (seperti yang terdapat pada PhET Bandul):
 
 #### A. Pengukuran Panjang (Jangka Sorong)
-1. **Mode 1: 🌐 Simulasi OLabs In-App Edition (Tersemat 100% di Iframe)**:
-   - Tersemat langsung di dalam iframe aplikasi tanpa blank screen dan 100% interaktif di semua Web Hosting maupun lokal!
-   - **Tampilan & Fitur Identik OLabs**: Desain papan kerja bertekstur, jangka sorong baja presisi, menu objek uji (*Sphere, Iron block, Beaker, Cylinder, Manual Drag*), HUD Kaca Pembesar Zoom (*Vernier Coincidence* dengan garis merah berimpit), pembacaan M.S.R (SU) & V.S.R (SN), tombol gerak mikro ±0.01 cm, serta tombol **"Catat ke LKPD"** yang otomatis mengirim data pengukuran ke lembar kerja siswa.
+1. **Mode 1: 🌐 Simulasi Amrita OLabs In-App Edition (`assets/simulators/vernier/index.html`)**:
+   - Tersemat langsung di dalam iframe aplikasi tanpa blank screen dan 100% interaktif di semua Web Hosting maupun server lokal!
+   - **Tampilan & Fitur Identik OLabs**: Desain papan kerja bertekstur kayu mahoni, jangka sorong baja presisi, menu objek uji (*Sphere, Iron block, Beaker, Cylinder, Tanpa benda*), HUD Kaca Pembesar Zoom (*Vernier Coincidence* dengan garis merah berimpit), pembacaan M.S.R (SU) & V.S.R (SN), tombol stepper mikro adaptif `[◀ -0.01]` dan `[+0.01 ▶]` yang leluasa tanpa tertutup tombol lain, tombol **`🔄 Reset Alat`** bergaya amber 3D, serta tombol **"📥 Log to LKPD"** yang otomatis mengirim data pengukuran ke Tabel 1 LKPD digital siswa.
    - Tersedia tombol cepat beralih ke **Portal Resmi OLabs (olabs.edu.in)** dengan bantuan jendela interaktif.
 2. **Mode 2: 🔬 Simulasi Canvas Interaktif (100% Offline & LKPD)**:
    - Mengukur 3 dimensi: **Diameter Luar**, **Diameter Dalam**, dan **Kedalaman**.
@@ -59,10 +59,12 @@ Setiap domain pengukuran dilengkapi sistem **Dual-Mode** (seperti yang terdapat 
    - Kotak **Kaca Pembesar Skala Nonius** untuk melihat garis berimpit dengan presisi 0,01 cm.
    - Tombol **"Catat Hasil ke LKPD Digital"** untuk mentransfer data langsung ke tabel lembar kerja.
 
-#### B. Pengukuran Massa & Gaya (Neraca Pegas)
-1. **Mode 1: 🌐 Simulasi PhET / OLabs (Tersemat In-App)**:
-   - Terintegrasi simulator **PhET Masses & Springs** (HTML5 resmi tanpa pemblokiran frame) untuk menguji konstanta pegas, gaya regangan, dan osilasi massa.
-   - Tersedia tombol cepat membuka **OLabs Helical Spring Balance**.
+#### B. Pengukuran Massa & Gaya Berat (Neraca Pegas)
+1. **Mode 1: 🌐 Simulasi Amrita OLabs In-App Edition (`assets/simulators/spring/index.html`)**:
+   - **Tampilan & Fitur Identik OLabs**: Papan instrumen laboratorium, tiang neraca pegas heliks dengan indikator jarum penunjuk merah ganda (satuan Newton dan Gram).
+   - **Grid Objek Uji 2 Kolom ("Pas 2")**: 6 objek tertata simetris 2 kolom x 3 baris (*Silinder 250g, Balok 150g, Kayu 75g, Batu 120g, Beban 200g, dan Lepas Beban*) bebas scrollbar vertikal.
+   - **Pengatur Gravitasi Lingkungan**: Simulasi gravitasi Bumi (9,8 m/s²), Bulan (1,6 m/s²), Mars (3,7 m/s²), dan Jupiter (24,8 m/s²).
+   - **Tombol Estetik & Presisi LKPD**: Tombol **`🔄 Reset Alat`** bergaya gradasi emas/amber, fitur kunci/buka nilai terbaca, modal uji pembacaan skala, dan tombol **`📥 Catat ke LKPD`** berdispat tunggal aman (*anti-duplicate protection*).
 2. **Mode 2: 🔬 Simulasi Neraca Pegas Canvas (Offline)**:
    - Gantungkan beban uji (Silinder 250g, Kunci 60g, Balok 120g, Batu 320g).
    - Pengatur percepatan gravitasi planet: **Bumi (9,8 N/kg)**, **Bulan (1,6 N/kg)**, **Mars (3,7 N/kg)**, dan **Jupiter (24,8 N/kg)**.
@@ -75,8 +77,14 @@ Setiap domain pengukuran dilengkapi sistem **Dual-Mode** (seperti yang terdapat 
    - Gerak harmonik bandul 60 FPS dengan stopwatch digital dan pendeteksi otomatis 10 ayunan untuk menghitung periode $T = t / n$.
 
 #### D. Lembar LKPD Digital Terintegrasi
-- 3 Tabel praktikum otomatis: Pengukuran Panjang, Massa & Gaya, serta Waktu & Periode.
-- Siswa dapat mengisi analisis data, kesimpulan, dan mencetak laporan praktikum beridentitas resmi guru/sekolah.
+- 3 Tabel praktikum otomatis: Pengukuran Panjang, Massa & Gaya Berat, serta Waktu & Periode.
+- Dilengkapi sistem proteksi anti-duplicate debounce (1200ms) untuk mencegah data ganda.
+- Siswa dapat mengedit data langsung, menghapus baris, mengisi analisis, dan mencetak laporan praktikum berformat PDF.
+
+#### E. Fitur Berbagi QR Code Cepat (Scan Kamera HP)
+- Dilengkapi generator QR Code berstandar **ISO/IEC 18004** dengan margin 4 modul aman.
+- Langsung terbaca sebagai tautan link aktif di kamera smartphone (Google Lens, iPhone Camera, WhatsApp Scanner).
+- Dilengkapi tombol salin link dan unduh QR sebagai gambar PNG.
 
 ---
 
@@ -158,39 +166,48 @@ Jika Anda ingin menjalankan aplikasi di jaringan komputer laboratorium sekolah s
 
 | Simulator | Mode Tersemat (In-App) | Mode Canvas (Offline) | Keterangan Akses |
 | :--- | :---: | :---: | :--- |
+| **OLabs Vernier Calipers** | ✅ 100% Tersemat (In-App HTML5 Edition) + Opsi Portal Resmi | ✅ Ada (Magnifier + 6 Objek) | Berjalan 100% mulus di iframe aplikasi pada Web Hosting maupun offline tanpa blank screen! Terhubung ke LKPD Tabel 1. |
+| **OLabs Spring Balance** | ✅ 100% Tersemat (In-App HTML5 Edition) + Opsi Portal Resmi | ✅ Ada (Gravitasi Planet) | Grid 2 kolom ("pas 2") 6 objek uji, simulasi 4 gravitasi planet, tombol reset amber 3D, dan pencatatan terproteksi ke LKPD Tabel 2. |
 | **PhET Pendulum Lab** | ✅ 100% Tersemat | ✅ Ada (Stopwatch 10 Ayunan) | Server PhET University of Colorado mengizinkan cross-origin embedding resmi. |
-| **PhET Masses & Springs** | ✅ 100% Tersemat | ✅ Ada (Gravitasi Planet) | Simulasi resmi HTML5 berjalan mulus langsung di dalam aplikasi. |
-| **OLabs Vernier Calipers** | ✅ 100% Tersemat (In-App HTML5 Edition) + Opsi Portal Resmi | ✅ Ada (Magnifier + 6 Objek) | Berjalan 100% mulus di iframe aplikasi pada Web Hosting maupun offline tanpa blank screen! Tersedia tombol cepat ke portal resmi. Pada Docker, Nginx Proxy mem-bypass batasan olabs.edu.in secara otomatis. |
 
 ---
 
 ## 📂 Struktur Repositori
 
 ```text
-├── index.html                   # Entry point aplikasi utama (Responsive & Zero-Scroll)
-├── manifest.json                # Web App Manifest untuk PWA
-├── sw.js                        # Service Worker untuk caching offline
-├── Dockerfile                   # Docker image berbasis Nginx Alpine
-├── docker-compose.yml           # Konfigurasi container Docker lokal (Port 8080)
-├── nginx.conf                   # Konfigurasi Nginx produksi & OLabs reverse-proxy
+├── index.html                                        # Entry point aplikasi utama (Responsive & Zero-Scroll, v=3.2)
+├── manifest.json                                     # Web App Manifest untuk PWA
+├── sw.js                                             # Service Worker untuk caching offline PWA
+├── Dockerfile                                        # Docker image berbasis Nginx Alpine
+├── docker-compose.yml                                # Konfigurasi container Docker lokal (Port 8080)
+├── nginx.conf                                        # Konfigurasi Nginx produksi & OLabs reverse-proxy
 ├── css/
-│   └── style.css                # Desain visual game, background alam, tema kayu, responsif
+│   └── style.css                                     # Desain visual game, background alam, tema kayu, responsif
 ├── js/
-│   ├── app.js                   # Navigasi layar, modal siswa, sub-simulator switch, PWA, audio
-│   ├── virtual-lab.js           # Engine simulasi Jangka Sorong, Neraca Pegas, & LKPD Digital
-│   ├── quiz.js                  # Engine kuis HOTS acak, umpan balik instan & sertifikat
-│   ├── audio.js                 # Efek suara interaktif Web Audio API sintetis
-│   └── qrcode.min.js            # Generator QR Code otomatis
+│   ├── app.js                                        # Navigasi layar, modal siswa, sub-simulator switch, PWA, audio
+│   ├── virtual-lab.js                                # Engine simulasi Jangka Sorong, Neraca Pegas, & LKPD Digital
+│   ├── quiz.js                                       # Engine kuis HOTS acak, umpan balik instan & sertifikat
+│   ├── audio.js                                      # Efek suara interaktif Web Audio API sintetis
+│   └── qrcode.min.js                                 # Generator QR Code resmi standar ISO/IEC 18004
 ├── assets/
-│   ├── slides/                  # 16 Slide bahan ajar visual
-│   └── modul/                   # 11 Halaman modul ajar Kurikulum Merdeka
-├── Video Panduan Praktikum Pengukuran Waktu.mp4
-├── Modul Ajar Pengukuran.pdf
-├── Bahan Ajar Pengukuran.pdf
-├── User Guide Praktikum Virtual Jangka Sorong.pdf
-├── User Guide Praktikum Virtual Neraca Pegas.pdf
-├── User Guide Pengukuran Waktu.pdf
-└── KUIS MATERI PENGUKURAN KELAS VII.pdf
+│   ├── simulators/                                   # Simulator Laboratorium Virtual OLabs HTML5 In-App
+│   │   ├── vernier/index.html                        # Simulator Jangka Sorong Amrita OLabs HTML5
+│   │   └── spring/index.html                         # Simulator Neraca Pegas Amrita OLabs HTML5
+│   ├── slides/                                       # 16 Slide bahan ajar visual interaktif
+│   ├── modul/                                        # 11 Halaman modul ajar Kurikulum Merdeka
+│   ├── guides/                                       # Halaman buku panduan operasional praktikum
+│   └── icons/                                        # Ikon aplikasi PWA (maskable)
+├── Video Konsep Aplikasi.mp4                         # Video pengantar konsep aplikasi
+├── Video Panduan Praktikum Pengukuran Panjang.mp4   # Video panduan Jangka Sorong
+├── Video Panduan Praktikum Pengukuran Massa.mp4     # Video panduan Neraca Pegas
+├── Video Panduan Praktikum Pengukuran Waktu.mp4     # Video panduan Bandul & Waktu
+├── Modul Ajar Pengukuran.pdf                         # Dokumen Modul Ajar Kurikulum Merdeka resmi
+├── Bahan Ajar Pengukuran.pdf                         # Dokumen Bahan Ajar Canva resmi
+├── User Guide Praktikum Virtual Jangka Sorong.pdf   # Buku panduan Jangka Sorong (OLabs)
+├── User Guide Praktikum Virtual Neraca Pegas.pdf     # Buku panduan Neraca Pegas (OLabs)
+├── User Guide Pengukuran Waktu.pdf                   # Buku panduan Pengukuran Waktu (PhET)
+├── Panduan_Lengkap_Media_Pembelajaran_IPA.pdf        # Buku panduan komprehensif media pembelajaran
+└── KUIS MATERI PENGUKURAN KELAS VII.pdf              # Naskah bank soal kuis penalaran HOTS
 ```
 
 ---
