@@ -3,877 +3,764 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OLabs Spring Balance Simulator (HTML5 In-App Edition)</title>
+    <title>Determination of Density of Solid - Spring Balance (OLabs Style)</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        html, body { height: 100%; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #2b1708;
+            display: flex;
+            justify-content: center;
+            overflow: hidden;
             user-select: none;
             -webkit-user-select: none;
         }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #5c3a21;
-            background: linear-gradient(135deg, #452613 0%, #2e1708 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            width: 100vw;
-            overflow: hidden;
-            padding: 8px;
-        }
-
-        .olabs-sim-container {
+        .sim {
             width: 100%;
-            max-width: 960px;
+            max-width: 1000px;
             height: 100%;
-            max-height: 540px;
-            background: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+            background: #fff;
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            border: 4px solid #7c4a27;
+            position: relative;
         }
 
-        /* Top Header (OLabs Style) */
-        .olabs-top-header {
-            background: #543319;
-            background: linear-gradient(to right, #43240e, #633c1f);
-            color: #ffffff;
-            padding: 8px 16px;
+        /* ---------- Header ---------- */
+        .hdr {
+            flex: 0 0 auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 2px solid #381a07;
-            flex-shrink: 0;
-        }
-
-        .olabs-sim-title {
-            font-size: 1.15rem;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-            color: #fef08a;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
-        }
-
-        .olabs-lc-tag {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid #ca8a04;
-            color: #fef08a;
-            padding: 3px 10px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            font-weight: 700;
-        }
-
-        /* Main Workspace: Left Sidebar + Simulator Stage */
-        .olabs-stage-body {
-            flex: 1;
-            display: flex;
-            background: #fdfbf7;
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* Left Controls Sidebar */
-        .olabs-sidebar {
-            width: 190px;
-            background: #f5ede4;
-            border-right: 2px solid #e2d2c1;
-            padding: 10px 8px;
-            display: flex;
-            flex-direction: column;
             gap: 8px;
-            flex-shrink: 0;
-            overflow-y: auto;
+            padding: 7px 14px;
+            background: repeating-linear-gradient(90deg, #3b2412 0 3px, #46301c 3px 6px);
+            border-bottom: 2px solid #1f1207;
         }
+        .hdr h1 { font-size: 1.1rem; font-weight: 800; color: #fcd79b; letter-spacing: .3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .hdr .env-tag { font-size: .72rem; font-weight: 700; color: #fde68a; background: rgba(0,0,0,.35); border: 1px solid #a16207; padding: 2px 9px; border-radius: 4px; white-space: nowrap; }
 
-        .sidebar-title {
-            font-size: 0.78rem;
-            font-weight: 800;
-            color: #5c3a21;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 2px;
-            text-align: center;
+        .mtabs { display: none; flex: 0 0 auto; background: #ece8e1; border-bottom: 2px solid #d2c5b3; }
+        .mtabs button {
+            flex: 1; padding: 7px 4px; font-family: inherit; font-weight: 800; font-size: .76rem;
+            color: #5b4630; background: transparent; border: 0; border-bottom: 3px solid transparent; cursor: pointer;
         }
+        .sim[data-tab="sim"] .mtabs button[data-t="sim"],
+        .sim[data-tab="form"] .mtabs button[data-t="form"] { color: #c2410c; border-bottom-color: #ea580c; background: #fff; }
 
-        .form-group {
+        /* ---------- Body ---------- */
+        .body { flex: 1 1 auto; min-height: 0; display: flex; }
+
+        .ctl {
+            flex: 0 0 188px;
+            background: #ece8e1;
+            border-right: 3px solid #d2c5b3;
+            padding: 9px 10px;
             display: flex;
             flex-direction: column;
-            gap: 3px;
+            gap: 5px;
+            overflow-y: auto;
+            font-size: .74rem;
+            color: #3f2c1a;
         }
-
-        .form-label {
-            font-size: 0.72rem;
-            font-weight: 700;
-            color: #451a03;
-        }
-
-        .form-select {
+        .ctl .box-t { font-weight: 800; font-size: .76rem; }
+        .ctl label.lbl { font-weight: 600; margin-top: 2px; }
+        .ctl select, .ctl input[type=text] {
             width: 100%;
             padding: 4px 6px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            border: 1.5px solid #d6c0aa;
+            font-size: .78rem;
+            font-family: inherit;
+            border: 1.5px solid #b9a98f;
             border-radius: 4px;
-            background: #ffffff;
-            color: #1e293b;
-            cursor: pointer;
-            outline: none;
+            background: #fff;
+            color: #222;
+            user-select: text;
+            -webkit-user-select: text;
         }
-
-        .obj-select-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 5px;
-            margin-top: 2px;
-        }
-
-        .obj-btn {
-            background: #ffffff;
-            border: 1.5px solid #d6c0aa;
-            border-radius: 6px;
-            padding: 5px 3px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 3px;
-            cursor: pointer;
-            transition: all 0.15s ease;
-        }
-
-        .obj-btn:hover {
-            border-color: #92542a;
-            background: #fffbf5;
-            transform: translateY(-1px);
-        }
-
-        .obj-btn.active {
-            border-color: #b45309;
-            background: #fef3c7;
-            box-shadow: 0 0 0 2px rgba(180, 83, 9, 0.3);
-        }
-
-        .obj-icon {
-            font-size: 1.2rem;
-            display: block;
-        }
-
-        .obj-label {
-            font-size: 0.68rem;
-            font-weight: 700;
-            color: #451a03;
-            text-align: center;
-            line-height: 1.1;
-        }
-
-        .btn-olabs-reset {
-            margin-top: auto;
-            background: linear-gradient(to bottom, #f3f4f6, #e5e7eb);
-            border: 1.5px solid #9ca3af;
-            border-radius: 4px;
-            padding: 6px 10px;
-            font-size: 0.76rem;
-            font-weight: 700;
-            color: #374151;
-            cursor: pointer;
-            text-align: center;
-            box-shadow: 0 2px 2px rgba(0,0,0,0.1);
-            transition: all 0.15s;
-        }
-
-        .btn-olabs-reset:hover {
-            background: #e5e7eb;
-            color: #111827;
-        }
-
-        /* Center Canvas Simulation Stage */
-        .olabs-center-stage {
+        .ctl input:disabled { background: #e7e3dc; color: #8b8274; cursor: not-allowed; }
+        .ctl input.ok { border-color: #16a34a; background: #f0fdf4; }
+        .ctl input.bad { border-color: #dc2626; background: #fef2f2; }
+        .ctl input:focus, .ctl select:focus { outline: 2px solid #fb923c; border-color: #ea580c; }
+        .ctl .row2 { display: flex; gap: 5px; margin-top: 5px; }
+        .btn {
             flex: 1;
+            padding: 6px 6px;
+            font-family: inherit;
+            font-weight: 700;
+            font-size: .76rem;
+            color: #333;
+            background: linear-gradient(#f6f6f6, #d6d6d8);
+            border: 1.5px solid #9a9aa0;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn:hover { background: linear-gradient(#fff, #e3e3e6); }
+        .btn.go { color: #fff; background: linear-gradient(#22a559, #15803d); border-color: #166534; }
+        .btn.go:hover { background: linear-gradient(#2dbd68, #16883f); }
+        .fb { min-height: 2.4em; font-weight: 700; font-size: .72rem; line-height: 1.35; }
+        .fb.ok { color: #15803d; }
+        .fb.bad { color: #b91c1c; }
+        .note { font-size: .7rem; color: #5b4630; margin-top: 2px; }
+        .ctl .spacer { flex: 1; }
+
+        /* ---------- Stage ---------- */
+        .stage {
+            flex: 1 1 auto;
+            min-width: 0;
             display: flex;
             flex-direction: column;
+            background: linear-gradient(180deg, #5d5b3d 0%, #8b896f 34%, #c2c2bb 72%, #e3e3df 100%);
             position: relative;
-            background: #ffffff;
-            overflow: hidden;
         }
+        .msel { display: none; gap: 5px; padding: 5px 6px; background: #ece8e1; border-bottom: 2px solid #d2c5b3; }
+        .msel select { flex: 1; min-width: 0; padding: 4px; font-size: .72rem; font-family: inherit; border: 1.5px solid #b9a98f; border-radius: 4px; background: #fff; }
+        .msel .btn { flex: 0 0 auto; padding: 4px 8px; font-size: .7rem; }
 
-        .canvas-wrapper {
-            flex: 1;
+        .view { flex: 1 1 auto; min-height: 0; display: flex; padding: 8px 8px 4px; gap: 8px; }
+        .scene-wrap { flex: 1 1 0; min-width: 0; position: relative; }
+        .zoom-wrap {
+            flex: 0 0 clamp(150px, 42%, 300px);
             position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: radial-gradient(circle at center, #ffffff 60%, #f7f3ec 100%);
+            border: 3px solid #4a4a44;
+            border-radius: 5px;
+            background: #1b1b19;
+            box-shadow: 0 6px 16px rgba(0,0,0,.35), inset 0 0 0 2px rgba(255,255,255,.55);
             overflow: hidden;
         }
-
-        #spring-canvas {
-            display: block;
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
+        canvas.fill { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+        .stage-msg {
+            position: absolute; left: 8px; right: 8px; top: 6px; z-index: 3;
+            text-align: center; font-size: .7rem; font-weight: 800; color: #fff;
+            background: rgba(185, 28, 28, .92); border-radius: 5px; padding: 3px 6px; display: none;
         }
+        .stage-msg.on { display: block; }
 
-        /* Magnifier HUD Overlay (Top-Right like OLabs) */
-        .olabs-magnifier-box {
-            position: absolute;
-            top: 10px;
-            right: 14px;
-            width: 210px;
-            height: 220px;
-            background: #ffffff;
-            border: 2px solid #78350f;
-            border-radius: 6px;
-            box-shadow: 0 4px 14px rgba(0,0,0,0.25);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            z-index: 5;
-        }
-
-        .magnifier-header {
-            background: #78350f;
-            color: #fef08a;
-            font-size: 0.72rem;
-            font-weight: 800;
-            padding: 4px 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        #zoom-canvas {
-            flex: 1;
-            width: 100%;
-            height: 100%;
-            background: #fefefd;
-            display: block;
-        }
-
-        /* Bottom Readout & Control Bar */
-        .olabs-bottom-bar {
-            background: #f7ede2;
-            border-top: 2px solid #e5d5c5;
-            padding: 6px 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 6px;
-            flex-shrink: 0;
-        }
-
-        .readout-chips {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            font-size: 0.8rem;
-            flex-wrap: wrap;
-        }
-
-        .r-tag {
-            color: #78350f;
-            font-weight: 700;
-        }
-
-        .r-val {
-            color: #0f172a;
-            font-weight: 800;
-            background: #ffffff;
-            padding: 2px 7px;
-            border-radius: 4px;
-            border: 1px solid #cbd5e1;
-            margin-left: 2px;
-        }
-
-        .r-total {
-            color: #15803d;
-            background: #dcfce7;
-            border-color: #86efac;
-            font-size: 0.88rem;
-        }
-
-        .btn-log-lkpd {
-            background: #15803d;
-            border: 1.5px solid #166534;
-            color: #ffffff;
-            font-weight: 800;
-            font-size: 0.76rem;
-            padding: 5px 12px;
-            border-radius: 4px;
+        .tray { flex: 0 0 auto; display: flex; justify-content: center; gap: 10px; padding: 4px 8px 8px; }
+        .slot {
+            width: clamp(44px, 9vw, 66px);
+            aspect-ratio: 1;
+            padding: 0;
+            border: 2px solid transparent;
+            background: #b4b4ac;
             cursor: pointer;
-            box-shadow: 0 2px 0 #14532d;
-            transition: all 0.15s;
+            position: relative;
+            transition: transform .12s, box-shadow .12s, border-color .12s;
+        }
+        .slot canvas { width: 100%; height: 100%; display: block; }
+        .slot:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,.3); }
+        .slot.active { border-color: #ea580c; box-shadow: 0 0 0 2px rgba(234,88,12,.3); background: #d4cfc4; }
+        .slot:focus-visible { outline: 3px solid #2563eb; outline-offset: 1px; }
+
+        .ftr {
+            flex: 0 0 auto;
+            background: linear-gradient(#ff8a1f, #f97316);
+            color: #fff; font-size: .64rem; line-height: 1.3; padding: 4px 12px;
+            border-top: 5px solid #3b2412;
         }
 
-        .btn-log-lkpd:hover {
-            background: #166534;
-            transform: translateY(-1px);
-        }
-
-        /* Bottom Footer */
-        .olabs-footer-note {
-            background: #452613;
-            color: #fef08a;
-            font-size: 0.68rem;
-            text-align: center;
-            padding: 4px 8px;
-            letter-spacing: 0.3px;
-            flex-shrink: 0;
-        }
-
+        /* ---------- Responsive ---------- */
         @media (max-width: 680px) {
-            body { padding: 0; }
-            .olabs-sim-container {
-                border-width: 2px;
-                border-radius: 4px;
-                max-height: 100vh;
-                height: 100vh;
-            }
-            .olabs-top-header { padding: 4px 8px; }
-            .olabs-sim-title { font-size: 0.9rem; }
-            .olabs-lc-tag { font-size: 0.68rem; padding: 2px 6px; }
-            .olabs-stage-body { flex-direction: column; }
-            .olabs-sidebar {
-                width: 100%;
-                max-height: 110px;
-                flex-direction: row;
-                flex-wrap: wrap;
-                padding: 6px;
-                gap: 6px;
-                border-right: none;
-                border-bottom: 2px solid #e2d2c1;
-            }
-            .form-group { flex: 1; min-width: 120px; }
-            .obj-select-grid {
-                display: flex;
-                flex: 2;
-                overflow-x: auto;
-                gap: 4px;
-            }
-            .obj-btn { min-width: 52px; padding: 4px; }
-            .btn-olabs-reset { display: none; }
-            .olabs-magnifier-box {
-                width: 130px;
-                height: 140px;
-                top: 4px;
-                right: 4px;
-            }
-            .olabs-bottom-bar { padding: 4px 8px; font-size: 0.72rem; }
-            .readout-chips { gap: 6px; }
-            .r-val { padding: 1px 4px; }
+            .hdr { padding: 4px 10px; }
+            .hdr h1 { font-size: .86rem; }
+            .hdr .env-tag { display: none; }
+            .mtabs { display: flex; }
+            .body { flex-direction: column; }
+            .ctl { flex: 1 1 auto; border-right: 0; font-size: .8rem; padding: 10px 12px 32px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+            .ctl select, .ctl input[type=text] { font-size: .9rem; padding: 6px 8px; }
+            .btn { padding: 8px 6px; font-size: .82rem; }
+            .msel { display: flex; }
+            .sim[data-tab="sim"] .ctl { display: none; }
+            .sim[data-tab="form"] .stage { display: none; }
+            .view { padding: 5px 5px 2px; gap: 5px; }
+            .zoom-wrap { flex-basis: 50%; }
+            .tray { gap: 6px; padding: 3px 6px 6px; }
+            .slot { width: clamp(40px, 15vw, 58px); }
+            .ftr { font-size: .56rem; padding: 3px 8px; border-top-width: 3px; }
+        }
+        @media (max-height: 430px) and (min-width: 681px) {
+            .ctl { flex-basis: 168px; padding: 6px 8px; gap: 3px; }
+            .ftr { display: none; }
         }
     </style>
 </head>
 <body>
-
-    <div class="olabs-sim-container">
-        <!-- Top OLabs Mahogany Header -->
-        <header class="olabs-top-header">
-            <span class="olabs-sim-title">Spring Balance (Determination of Mass & Density)</span>
-            <span class="olabs-lc-tag">AMRITA OLABS • SIMULATOR</span>
-        </header>
-
-        <!-- Main Workspace -->
-        <main class="olabs-stage-body">
-            <!-- Left Controls Sidebar -->
-            <aside class="olabs-sidebar">
-                <span class="sidebar-title">Solution Controls</span>
-                
-                <div class="form-group">
-                    <label class="form-label" for="sel-env">Select Environment:</label>
-                    <select class="form-select" id="sel-env" onchange="springApp.setGravity(this.value)">
-                        <option value="9.8" selected>Earth (9.8 m/s²)</option>
-                        <option value="1.6">Moon (1.6 m/s²)</option>
-                        <option value="3.7">Mars (3.7 m/s²)</option>
-                        <option value="24.8">Jupiter (24.8 m/s²)</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Gantung Objek Uji:</label>
-                    <div class="obj-select-grid">
-                        <button class="obj-btn active" data-obj="cylinder" onclick="springApp.setObject('cylinder')">
-                            <span class="obj-icon">🥫</span>
-                            <span class="obj-label">Silinder 250g</span>
-                        </button>
-                        <button class="obj-btn" data-obj="lock" onclick="springApp.setObject('lock')">
-                            <span class="obj-icon">🔒</span>
-                            <span class="obj-label">Balok 150g</span>
-                        </button>
-                        <button class="obj-btn" data-obj="wood" onclick="springApp.setObject('wood')">
-                            <span class="obj-icon">🪵</span>
-                            <span class="obj-label">Kayu 75g</span>
-                        </button>
-                        <button class="obj-btn" data-obj="stone" onclick="springApp.setObject('stone')">
-                            <span class="obj-icon">🪨</span>
-                            <span class="obj-label">Batu 120g</span>
-                        </button>
-                        <button class="obj-btn" data-obj="sphere" onclick="springApp.setObject('sphere')">
-                            <span class="obj-icon">🏐</span>
-                            <span class="obj-label">Beban 200g</span>
-                        </button>
-                        <button class="obj-btn" data-obj="none" onclick="springApp.setObject('none')">
-                            <span class="obj-icon">❌</span>
-                            <span class="obj-label">Lepas</span>
-                        </button>
-                    </div>
-                </div>
-
-                <button class="btn-olabs-reset" onclick="springApp.reset()">🔄 Reset Alat</button>
-            </aside>
-
-            <!-- Center Stage -->
-            <section class="olabs-center-stage">
-                <div class="canvas-wrapper">
-                    <canvas id="spring-canvas" width="600" height="420"></canvas>
-
-                    <!-- Magnifier HUD Box (Spring Scale Dual Dial) -->
-                    <div class="olabs-magnifier-box">
-                        <div class="magnifier-header">
-                            <span>SPRING SCALE ZOOM</span>
-                            <span id="mag-indicator">0 N</span>
-                        </div>
-                        <canvas id="zoom-canvas" width="210" height="195"></canvas>
-                    </div>
-                </div>
-
-                <!-- Bottom Readout Bar -->
-                <footer class="olabs-bottom-bar">
-                    <div class="readout-chips">
-                        <div><span class="r-tag">Massa Objek:</span><span class="r-val" id="r-mass">250 g (0.25 kg)</span></div>
-                        <div><span class="r-tag">Gravitasi (g):</span><span class="r-val" id="r-grav">9.8 N/kg</span></div>
-                        <div><span class="r-tag">Gaya Berat (w):</span><span class="r-val r-total" id="r-force">2.45 N</span></div>
-                    </div>
-                    <button class="btn-log-lkpd" onclick="springApp.logToLkpd()">📥 Catat ke LKPD</button>
-                </footer>
-            </section>
-        </main>
-
-        <!-- Footer Notice -->
-        <footer class="olabs-footer-note">
-            Developed by Amrita University Funded by Ministry of Electronics and Information Technology || OLabs Physics Simulation Edition
-        </footer>
+<div class="sim" id="sim" data-tab="sim">
+    <div class="hdr">
+        <h1>Determination of Density of Solid</h1>
+        <div class="env-tag" id="env-tag">g = 9.8 m/s&sup2;</div>
     </div>
 
-    <script>
-        const OBJECTS = {
-            none:     { name: "Tanpa Beban", massKg: 0.00,  massG: 0,   color: "transparent", shape: "none" },
-            cylinder: { name: "Silinder Logam", massKg: 0.25,  massG: 250, color: "#94a3b8", shape: "cylinder" },
-            lock:     { name: "Balok Besi",  massKg: 0.15,  massG: 150, color: "#d97706", shape: "lock" },
-            wood:     { name: "Balok Kayu",  massKg: 0.075, massG: 75,  color: "#b45309", shape: "wood" },
-            stone:    { name: "Batu Alami",  massKg: 0.12,  massG: 120, color: "#64748b", shape: "stone" },
-            sphere:   { name: "Beban Gantung", massKg: 0.20,  massG: 200, color: "#475569", shape: "sphere" }
-        };
+    <div class="mtabs">
+        <button data-t="sim" onclick="setTab('sim')">&#128300; Simulasi</button>
+        <button data-t="form" onclick="setTab('form')">&#128221; Isian &amp; Cek</button>
+    </div>
 
-        class SpringOlabsSimulator {
-            constructor() {
-                this.canvas = document.getElementById("spring-canvas");
-                this.ctx = this.canvas.getContext("2d");
-                this.zoomCanvas = document.getElementById("zoom-canvas");
-                this.zoomCtx = this.zoomCanvas.getContext("2d");
+    <div class="body">
+        <aside class="ctl" id="ctl">
+            <div class="box-t">Solution Controls</div>
+            <label class="lbl" for="env">Select Environment</label>
+            <select id="env">
+                <option value="9.8">Earth (9.8m/s&sup2;)</option>
+                <option value="1.6">Moon (1.6m/s&sup2;)</option>
+                <option value="3.7">Mars (3.7m/s&sup2;)</option>
+                <option value="24.8">Jupiter (24.8m/s&sup2;)</option>
+            </select>
+            <label class="lbl" for="test">Select type of test</label>
+            <select id="test">
+                <option value="mass">Find Mass</option>
+                <option value="vol">Find Volume</option>
+            </select>
+            <div class="box-t" style="margin-top:4px">Enter the readings:</div>
+            <label class="lbl" for="in-gm">Gravitational Mass (in g):</label>
+            <input type="text" id="in-gm" inputmode="decimal" autocomplete="off">
+            <label class="lbl" for="in-m">Mass of Object, m(g):</label>
+            <input type="text" id="in-m" inputmode="decimal" autocomplete="off">
+            <label class="lbl" for="in-v">Volume (in ml):</label>
+            <input type="text" id="in-v" inputmode="decimal" autocomplete="off">
+            <label class="lbl" for="in-d">Density (g/cc):</label>
+            <input type="text" id="in-d" inputmode="decimal" autocomplete="off">
+            <div class="row2">
+                <button class="btn" onclick="checkAnswer()">Check</button>
+                <button class="btn go" id="btn-log" onclick="logToLkpd()">&#128229; LKPD</button>
+            </div>
+            <div class="fb" id="fb"></div>
+            <div class="note">1cubic centimetre=1ml</div>
+            <div class="spacer"></div>
+            <button class="btn" style="flex:none" onclick="resetSim()">Reset</button>
+        </aside>
 
-                this.gravity = 9.8;
-                this.currentObjKey = "cylinder";
-                this.currentObj = OBJECTS["cylinder"];
+        <main class="stage" id="stage">
+            <div class="msel">
+                <select id="env2" aria-label="Environment">
+                    <option value="9.8">Earth 9.8</option>
+                    <option value="1.6">Moon 1.6</option>
+                    <option value="3.7">Mars 3.7</option>
+                    <option value="24.8">Jupiter 24.8</option>
+                </select>
+                <select id="test2" aria-label="Type of test">
+                    <option value="mass">Find Mass</option>
+                    <option value="vol">Find Volume</option>
+                </select>
+                <button class="btn go" onclick="logToLkpd()">&#128229; LKPD</button>
+            </div>
+            <div class="view">
+                <div class="scene-wrap">
+                    <div class="stage-msg" id="stage-msg"></div>
+                    <canvas class="fill" id="sc" aria-label="Simulasi neraca pegas"></canvas>
+                </div>
+                <div class="zoom-wrap"><canvas class="fill" id="zc" aria-label="Lensa pembesar skala"></canvas></div>
+            </div>
+            <div class="tray" id="tray"></div>
+        </main>
+    </div>
 
-                this.springY = 0;
-                this.targetY = 0;
-                this.velocity = 0;
+    <div class="ftr">Developed based on Amrita University OLabs standard &middot; Interactive HTML5 Virtual Lab Edition</div>
+</div>
 
-                this.init();
-            }
+<script>
+(function () {
+    "use strict";
 
-            init() {
-                this.calculateTarget();
-                this.animate();
-            }
+    const DPR = Math.min(window.devicePixelRatio || 1, 2);
+    const G0 = 9.8;              // kalibrasi skala (gram) pada gravitasi bumi
+    const MAXG = 250;            // batas skala (gram)
+    const V0 = 40;               // volume air awal (ml)
 
-            setGravity(gVal) {
-                this.gravity = parseFloat(gVal);
-                this.calculateTarget();
-            }
+    const OBJ = {
+        cyl:    { name: "Silinder Aluminium", m: 54,  v: 20, h: 56, label: "Silinder" },
+        lock:   { name: "Gembok Kuningan",    m: 170, v: 20, h: 54, label: "Gembok" },
+        wood:   { name: "Balok Kayu",         m: 30,  v: 50, h: 56, label: "Kayu" },
+        stone:  { name: "Batu",               m: 130, v: 50, h: 44, label: "Batu" },
+        sphere: { name: "Bola Besi",          m: 235, v: 30, h: 58, label: "Bola besi" }
+    };
+    const ORDER = ["cyl", "lock", "wood", "stone", "sphere"];
 
-            setObject(key) {
-                this.currentObjKey = key;
-                this.currentObj = OBJECTS[key] || OBJECTS["none"];
-                
-                document.querySelectorAll(".obj-btn").forEach(b => {
-                    b.classList.toggle("active", b.getAttribute("data-obj") === key);
-                });
+    const st = {
+        env: 9.8, test: "mass", obj: "cyl",
+        p: 0, pv: 0, pT: 0,             // posisi penunjuk (0..1)
+        lvl: V0, lvlT: V0,              // level air (ml)
+        dropY: 0, dropV: 0, dropping: false, dropT: 0,
+        tries: 0
+    };
 
-                this.calculateTarget();
-            }
+    const sc = document.getElementById("sc"), c = sc.getContext("2d");
+    const zc = document.getElementById("zc"), z = zc.getContext("2d");
+    const $ = id => document.getElementById(id);
+    const num = s => parseFloat(String(s).trim().replace(",", "."));
+    const reading = () => (st.obj ? OBJ[st.obj].m * st.env / G0 : 0);
+    const overload = () => reading() > MAXG + 0.001;
 
-            calculateTarget() {
-                const force = this.currentObj.massKg * this.gravity; // in Newtons
-                // Scale: 2.5 Newtons = 120 pixels displacement
-                this.targetY = Math.min((force / 2.5) * 120, 150);
-                this.updateReadouts(force);
-            }
+    /* =============== Gambar benda (dipakai ulang di tray, gantungan, gelas) =============== */
+    function drawObj(g, key, cx, top, h) {
+        g.save();
+        g.lineJoin = "round";
+        g.lineCap = "round";
+        if (key === "cyl") {
+            const w = h * 0.52, x = cx - w / 2, ry = w * 0.16;
+            const gr = g.createLinearGradient(x, 0, x + w, 0);
+            gr.addColorStop(0, "#4b4c52"); gr.addColorStop(.3, "#d6d8db"); gr.addColorStop(.62, "#8d9096"); gr.addColorStop(1, "#37383d");
+            g.fillStyle = gr;
+            g.fillRect(x, top + ry, w, h - 2 * ry);
+            g.beginPath(); g.ellipse(cx, top + h - ry, w / 2, ry, 0, 0, Math.PI * 2); g.fill();
+            g.fillStyle = "#c9cbcf";
+            g.beginPath(); g.ellipse(cx, top + ry, w / 2, ry, 0, 0, Math.PI * 2); g.fill();
+            g.strokeStyle = "rgba(0,0,0,.35)"; g.lineWidth = 1;
+            g.stroke();
+        } else if (key === "lock") {
+            const w = h * 0.8, x = cx - w / 2, by = top + h * 0.4, bh = h * 0.6;
+            g.strokeStyle = "#9aa0a8"; g.lineWidth = Math.max(2, h * 0.09);
+            g.beginPath();
+            g.moveTo(cx - w * 0.28, by + 2); g.lineTo(cx - w * 0.28, by - h * 0.12);
+            g.arc(cx, by - h * 0.12, w * 0.28, Math.PI, 0);
+            g.lineTo(cx + w * 0.28, by + 2);
+            g.stroke();
+            const gr = g.createLinearGradient(0, by, 0, by + bh);
+            gr.addColorStop(0, "#f9b13c"); gr.addColorStop(.5, "#e0861a"); gr.addColorStop(1, "#a85a0c");
+            g.fillStyle = gr;
+            g.beginPath();
+            if (g.roundRect) g.roundRect(x, by, w, bh, h * 0.1); else g.rect(x, by, w, bh);
+            g.fill();
+            g.strokeStyle = "rgba(90,40,0,.6)"; g.lineWidth = 1; g.stroke();
+            g.fillStyle = "#4a2606";
+            g.beginPath(); g.arc(cx, by + bh * 0.42, h * 0.06, 0, Math.PI * 2); g.fill();
+            g.fillRect(cx - h * 0.02, by + bh * 0.42, h * 0.04, bh * 0.28);
+        } else if (key === "wood") {
+            const w = h * 0.74, x = cx - w / 2, ry = w * 0.18;
+            const gr = g.createLinearGradient(x, 0, x + w, 0);
+            gr.addColorStop(0, "#7a5230"); gr.addColorStop(.35, "#d3a971"); gr.addColorStop(.7, "#a87a48"); gr.addColorStop(1, "#6b4526");
+            g.fillStyle = gr;
+            g.fillRect(x, top + ry, w, h - 2 * ry);
+            g.beginPath(); g.ellipse(cx, top + h - ry, w / 2, ry, 0, 0, Math.PI * 2); g.fill();
+            g.strokeStyle = "rgba(60,35,15,.45)"; g.lineWidth = 1;
+            for (let i = 1; i < 5; i++) { g.beginPath(); g.moveTo(x + w * i / 5, top + ry); g.lineTo(x + w * i / 5 + (i % 2 ? 2 : -2), top + h - ry); g.stroke(); }
+            g.fillStyle = "#e9c796";
+            g.beginPath(); g.ellipse(cx, top + ry, w / 2, ry, 0, 0, Math.PI * 2); g.fill();
+            g.strokeStyle = "rgba(120,80,40,.7)";
+            g.beginPath(); g.ellipse(cx, top + ry, w * 0.3, ry * 0.6, 0, 0, Math.PI * 2); g.stroke();
+            g.beginPath(); g.ellipse(cx, top + ry, w * 0.14, ry * 0.3, 0, 0, Math.PI * 2); g.stroke();
+        } else if (key === "stone") {
+            const w = h * 1.15;
+            const pts = [[-.45, .55], [-.38, .2], [-.12, .02], [.2, .08], [.45, .32], [.5, .66], [.3, .95], [-.1, 1], [-.4, .88]];
+            const gr = g.createLinearGradient(cx - w / 2, top, cx + w / 2, top + h);
+            gr.addColorStop(0, "#9a9a9c"); gr.addColorStop(.5, "#56565a"); gr.addColorStop(1, "#2e2e31");
+            g.fillStyle = gr;
+            g.beginPath();
+            pts.forEach((p, i) => { const px = cx + p[0] * w, py = top + p[1] * h; i ? g.lineTo(px, py) : g.moveTo(px, py); });
+            g.closePath(); g.fill();
+            g.strokeStyle = "rgba(0,0,0,.4)"; g.lineWidth = 1; g.stroke();
+            g.fillStyle = "rgba(255,255,255,.18)";
+            g.beginPath(); g.moveTo(cx - w * .3, top + h * .25); g.lineTo(cx + w * .05, top + h * .12); g.lineTo(cx - w * .02, top + h * .4); g.closePath(); g.fill();
+        } else if (key === "sphere") {
+            const r = h * 0.4, cy = top + h * 0.6;
+            g.strokeStyle = "#8a8f96"; g.lineWidth = Math.max(1.6, h * 0.045);
+            g.beginPath(); g.arc(cx, top + h * 0.1, h * 0.085, 0, Math.PI * 2); g.stroke();
+            const gr = g.createRadialGradient(cx - r * .35, cy - r * .38, r * .08, cx, cy, r);
+            gr.addColorStop(0, "#ffffff"); gr.addColorStop(.3, "#c9ced3"); gr.addColorStop(.7, "#6d737a"); gr.addColorStop(1, "#262a2f");
+            g.fillStyle = gr;
+            g.beginPath(); g.arc(cx, cy, r, 0, Math.PI * 2); g.fill();
+        }
+        g.restore();
+    }
 
-            updateReadouts(force) {
-                const rMass = document.getElementById("r-mass");
-                const rGrav = document.getElementById("r-grav");
-                const rForce = document.getElementById("r-force");
-                const magInd = document.getElementById("mag-indicator");
+    /* =============== Ukuran kanvas =============== */
+    function fit(cv) {
+        const w = Math.max(10, Math.round(cv.clientWidth * DPR)), h = Math.max(10, Math.round(cv.clientHeight * DPR));
+        if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; }
+    }
 
-                if (rMass) rMass.textContent = `${this.currentObj.massG} g (${this.currentObj.massKg.toFixed(3)} kg)`;
-                if (rGrav) rGrav.textContent = `${this.gravity.toFixed(1)} N/kg`;
-                if (rForce) rForce.textContent = `${force.toFixed(2)} N`;
-                if (magInd) magInd.textContent = `${force.toFixed(2)} N (${this.currentObj.massG}g)`;
-            }
+    /* =============== Scene: Find Mass (stand + neraca pegas) =============== */
+    const DW = 360, DH = 340;
 
-            reset() {
-                document.getElementById("sel-env").value = "9.8";
-                this.gravity = 9.8;
-                this.setObject("cylinder");
-            }
+    function rr(g, x, y, w, h, r) { g.beginPath(); if (g.roundRect) g.roundRect(x, y, w, h, r); else g.rect(x, y, w, h); }
 
-            logToLkpd() {
-                const force = (this.currentObj.massKg * this.gravity).toFixed(2);
-                const mass = this.currentObj.massG;
-                const payload = {
-                    type: "LOG_SPRING_TO_LKPD",
-                    object: this.currentObj.name,
-                    objName: this.currentObj.name,
-                    force: `${force} N`,
-                    gravity: `${this.gravity.toFixed(1)} N/kg`,
-                    grav: `${this.gravity.toFixed(1)} N/kg`,
-                    formula: `m = w / g = ${force} ÷ ${this.gravity.toFixed(1)}`,
-                    mass: `${mass} g`
-                };
-                try {
-                    let handled = false;
-                    if (window.parent && window.parent.lkpdManager && window.parent.lkpdManager.addSpringRow) {
-                        window.parent.lkpdManager.addSpringRow(payload);
-                        handled = true;
-                    }
-                    if (window.parent && window.parent !== window) {
-                        window.parent.postMessage(payload, "*");
-                        handled = true;
-                    }
-                    if (!handled) {
-                        alert(`✅ Data Neraca Pegas (${this.currentObj.name}: ${force} N) dicatat ke LKPD!`);
-                    }
-                } catch (e) {
-                    if (window.parent && window.parent !== window) {
-                        window.parent.postMessage(payload, "*");
-                    }
-                }
-            }
+    function sceneMass(g) {
+        // alas kayu
+        g.fillStyle = "#6b4a2b"; g.fillRect(40, 312, 180, 14);
+        g.fillStyle = "#a07445";
+        g.beginPath(); g.moveTo(40, 312); g.lineTo(220, 312); g.lineTo(250, 300); g.lineTo(70, 300); g.closePath(); g.fill();
+        g.fillStyle = "#4e341d";
+        g.beginPath(); g.moveTo(220, 312); g.lineTo(250, 300); g.lineTo(250, 314); g.lineTo(220, 326); g.closePath(); g.fill();
+        // tiang
+        let gr = g.createLinearGradient(85, 0, 96, 0);
+        gr.addColorStop(0, "#6b4a22"); gr.addColorStop(.45, "#e0b673"); gr.addColorStop(1, "#6b4a22");
+        g.fillStyle = gr; g.fillRect(85, 44, 10, 262);
+        // klem + lengan
+        g.fillStyle = "#5c4a36"; rr(g, 80, 36, 20, 24, 3); g.fill();
+        gr = g.createLinearGradient(0, 38, 0, 50);
+        gr.addColorStop(0, "#e0b673"); gr.addColorStop(.5, "#a97a3a"); gr.addColorStop(1, "#5c3f18");
+        g.fillStyle = gr; g.fillRect(96, 38, 160, 10);
+        g.fillStyle = "#c79a55"; g.beginPath(); g.arc(256, 43, 6, 0, Math.PI * 2); g.fill();
 
-            animate() {
-                // Spring damping physics
-                const k = 14;
-                const damping = 0.82;
-                const force = -k * (this.springY - this.targetY);
-                this.velocity = (this.velocity + force * 0.016) * damping;
-                this.springY += this.velocity;
+        const ext = st.p * 14;
+        // gantungan (loop)
+        g.strokeStyle = "#b9bec6"; g.lineWidth = 3;
+        g.beginPath(); g.moveTo(198, 40); g.lineTo(198, 74); g.moveTo(212, 40); g.lineTo(212, 74); g.stroke();
+        g.beginPath(); g.moveTo(198, 40); g.quadraticCurveTo(205, 30, 212, 40); g.stroke();
 
-                this.drawMain();
-                this.drawZoom();
+        // badan neraca
+        gr = g.createLinearGradient(178, 0, 232, 0);
+        gr.addColorStop(0, "#d7a812"); gr.addColorStop(.35, "#fbe36b"); gr.addColorStop(.7, "#eec22a"); gr.addColorStop(1, "#b88a0a");
+        g.fillStyle = gr; rr(g, 178, 70, 54, 120, 6); g.fill();
+        g.strokeStyle = "#8a6a08"; g.lineWidth = 1; g.stroke();
+        gr = g.createLinearGradient(0, 70, 0, 100);
+        gr.addColorStop(0, "#c0242b"); gr.addColorStop(1, "#7d1218");
+        g.fillStyle = gr; rr(g, 178, 70, 54, 30, 6); g.fill();
+        g.fillStyle = "#f5b6b0"; g.font = "bold 7px Arial"; g.textAlign = "center"; g.textBaseline = "middle";
+        g.fillText("AMRITA", 205, 82);
+        g.fillStyle = "#fff"; g.fillRect(181, 101, 48, 14);
+        g.fillStyle = "#111"; g.font = "bold 5.5px Arial"; g.fillText("SPRING SCALE", 205, 108);
+        // slot hitam + tick
+        g.fillStyle = "#101010"; rr(g, 201, 120, 8, 58, 3); g.fill();
+        g.strokeStyle = "#333"; g.lineWidth = .8;
+        for (let i = 0; i <= 10; i++) {
+            const yy = 122 + i * 5.2;
+            g.beginPath(); g.moveTo(192, yy); g.lineTo(198, yy); g.moveTo(212, yy); g.lineTo(218, yy); g.stroke();
+        }
+        const iy = 122 + Math.min(st.p, 1) * 52;
+        g.strokeStyle = "#e11d2a"; g.lineWidth = 1.6;
+        g.beginPath(); g.moveTo(193, iy); g.lineTo(217, iy); g.stroke();
+        g.fillStyle = "#e11d2a";
+        g.beginPath(); g.moveTo(190, iy); g.lineTo(196, iy - 2.5); g.lineTo(196, iy + 2.5); g.fill();
+        g.beginPath(); g.moveTo(220, iy); g.lineTo(214, iy - 2.5); g.lineTo(214, iy + 2.5); g.fill();
+        // tutup bawah + tali + objek
+        g.fillStyle = "#8e9299"; rr(g, 192, 190, 26, 9, 2); g.fill();
+        const strapEnd = 198 + 16 + ext;
+        g.fillStyle = "#f4f4f2"; g.fillRect(201, 199, 8, 16 + ext);
+        g.strokeStyle = "#cfcfcc"; g.lineWidth = 1; g.strokeRect(201, 199, 8, 16 + ext);
+        g.strokeStyle = "#8a8f96"; g.lineWidth = 1.5;
+        if (st.obj) {
+            const o = OBJ[st.obj];
+            g.beginPath(); g.moveTo(205, strapEnd); g.lineTo(205, strapEnd + 5); g.stroke();
+            drawObj(g, st.obj, 205, strapEnd + 4, o.h);
+        } else {
+            g.beginPath(); g.arc(205, strapEnd + 4, 4, 0, Math.PI * 2); g.stroke();
+        }
+    }
 
-                requestAnimationFrame(() => this.animate());
-            }
+    /* =============== Scene: Find Volume (gelas ukur) =============== */
+    const BY0 = 306, BYP = 2.2;                 // y(ml) = BY0 - ml*BYP
+    const yMl = ml => BY0 - ml * BYP;
 
-            drawMain() {
-                const c = this.ctx;
-                const w = this.canvas.width;
-                const h = this.canvas.height;
-                c.clearRect(0, 0, w, h);
+    function sceneVol(g) {
+        const cx = 160, w = 138, x0 = cx - w / 2, x1 = cx + w / 2, rim = 66;
+        // bayangan alas
+        g.fillStyle = "rgba(0,0,0,.16)";
+        g.beginPath(); g.ellipse(cx, BY0 + 6, w / 2 + 8, 8, 0, 0, Math.PI * 2); g.fill();
 
-                const centerX = 240;
-                const topY = 40;
+        // air
+        const ly = yMl(st.lvl);
+        let gr = g.createLinearGradient(0, ly, 0, BY0);
+        gr.addColorStop(0, "rgba(206,228,240,.62)"); gr.addColorStop(1, "rgba(150,190,215,.55)");
+        g.fillStyle = gr; g.fillRect(x0 + 2, ly, w - 4, BY0 - ly);
+        g.fillStyle = "rgba(235,246,252,.75)";
+        g.beginPath(); g.ellipse(cx, ly, w / 2 - 2, 4.5, 0, 0, Math.PI * 2); g.fill();
 
-                // 1. Lab Stand (Statif Besi Kuningan Elegan)
-                c.save();
-                // Heavy metallic base
-                const gradBase = c.createLinearGradient(centerX - 130, h - 25, centerX + 110, h - 25);
-                gradBase.addColorStop(0, "#334155");
-                gradBase.addColorStop(0.5, "#475569");
-                gradBase.addColorStop(1, "#1e293b");
-                c.fillStyle = gradBase;
-                c.fillRect(centerX - 130, h - 28, 240, 20);
-                c.strokeStyle = "#0f172a";
-                c.lineWidth = 1.5;
-                c.strokeRect(centerX - 130, h - 28, 240, 20);
-
-                // Vertical Rod (Stainless steel)
-                const gradRod = c.createLinearGradient(centerX - 110, 0, centerX - 96, 0);
-                gradRod.addColorStop(0, "#94a3b8");
-                gradRod.addColorStop(0.5, "#f1f5f9");
-                gradRod.addColorStop(1, "#64748b");
-                c.fillStyle = gradRod;
-                c.fillRect(centerX - 108, topY - 20, 14, h - topY - 8);
-
-                // Top Clamp & Horizontal Arm
-                c.fillStyle = "#334155";
-                c.fillRect(centerX - 114, topY - 24, 26, 22);
-                c.fillStyle = gradRod;
-                c.fillRect(centerX - 95, topY - 18, 105, 10);
-                // Hanging pin
-                c.fillStyle = "#d97706";
-                c.beginPath();
-                c.arc(centerX, topY - 13, 5, 0, Math.PI * 2);
-                c.fill();
-                c.restore();
-
-                // 2. Hanging Ring & Spring Scale Body (Khas Kuning OLabs Amrita)
-                c.save();
-                // Top Hook
-                c.strokeStyle = "#475569";
-                c.lineWidth = 2.5;
-                c.beginPath();
-                c.arc(centerX, topY - 3, 7, 0, Math.PI * 2);
-                c.stroke();
-
-                // Upper Yellow Casing
-                const caseW = 46;
-                const caseH = 175;
-                const caseX = centerX - caseW / 2;
-                const caseY = topY + 8;
-
-                // Golden yellow body
-                const gradCase = c.createLinearGradient(caseX, caseY, caseX + caseW, caseY);
-                gradCase.addColorStop(0, "#ca8a04");
-                gradCase.addColorStop(0.2, "#fde047");
-                gradCase.addColorStop(0.8, "#facc15");
-                gradCase.addColorStop(1, "#a16207");
-                c.fillStyle = gradCase;
-                c.strokeStyle = "#713f12";
-                c.lineWidth = 2;
-                c.beginPath();
-                c.roundRect(caseX, caseY, caseW, caseH, 6);
-                c.fill();
-                c.stroke();
-
-                // Amrita Red Label
-                c.fillStyle = "#b91c1c";
-                c.fillRect(caseX + 6, caseY + 6, caseW - 12, 14);
-                c.fillStyle = "#ffffff";
-                c.font = "bold 8px 'Segoe UI', sans-serif";
-                c.textAlign = "center";
-                c.fillText("AMRITA", centerX, caseY + 16);
-
-                // Slot window for scale
-                c.fillStyle = "#ffffff";
-                c.strokeStyle = "#a16207";
-                c.lineWidth = 1.5;
-                c.fillRect(caseX + 11, caseY + 24, caseW - 22, 140);
-                c.strokeRect(caseX + 11, caseY + 24, caseW - 22, 140);
-
-                // Scale graduations in slot
-                c.fillStyle = "#1e293b";
-                c.lineWidth = 1;
-                for (let i = 0; i <= 10; i++) {
-                    const ty = caseY + 28 + i * 13;
-                    c.beginPath();
-                    c.moveTo(caseX + 13, ty);
-                    c.lineTo(caseX + 22, ty);
-                    c.stroke();
-
-                    c.beginPath();
-                    c.moveTo(caseX + caseW - 13, ty);
-                    c.lineTo(caseX + caseW - 22, ty);
-                    c.stroke();
-                }
-
-                // 3. Red Pointer Plate (Menunjukkan Nilai Terukur)
-                const pointerY = caseY + 28 + this.springY * 0.9;
-                c.fillStyle = "#dc2626";
-                c.beginPath();
-                c.moveTo(caseX + 8, pointerY);
-                c.lineTo(caseX + caseW - 8, pointerY);
-                c.lineTo(caseX + caseW - 14, pointerY + 3);
-                c.lineTo(caseX + 14, pointerY + 3);
-                c.closePath();
-                c.fill();
-
-                // Bottom Rod extending from casing
-                const bottomRodY = caseY + caseH;
-                const hookY = bottomRodY + 12 + this.springY * 0.9;
-
-                c.strokeStyle = "#475569";
-                c.lineWidth = 3;
-                c.beginPath();
-                c.moveTo(centerX, bottomRodY);
-                c.lineTo(centerX, hookY);
-                c.stroke();
-
-                // Bottom Hook Loop
-                c.beginPath();
-                c.arc(centerX, hookY + 8, 8, -Math.PI * 0.4, Math.PI * 1.3);
-                c.stroke();
-                c.restore();
-
-                // 4. Hanging Object
-                if (this.currentObj.shape !== "none") {
-                    c.save();
-                    const objTopY = hookY + 18;
-                    
-                    // Object Hook Ring
-                    c.strokeStyle = "#334155";
-                    c.lineWidth = 2;
-                    c.beginPath();
-                    c.arc(centerX, objTopY - 5, 5, 0, Math.PI * 2);
-                    c.stroke();
-
-                    // Render Object based on shape
-                    c.fillStyle = this.currentObj.color;
-                    c.strokeStyle = "#1e293b";
-                    c.lineWidth = 1.5;
-
-                    if (this.currentObj.shape === "cylinder") {
-                        c.beginPath();
-                        c.roundRect(centerX - 20, objTopY, 40, 56, 4);
-                        c.fill();
-                        c.stroke();
-                        c.fillStyle = "#ffffff";
-                        c.font = "bold 9px sans-serif";
-                        c.textAlign = "center";
-                        c.fillText("250g", centerX, objTopY + 32);
-                    } else if (this.currentObj.shape === "lock") {
-                        c.beginPath();
-                        c.roundRect(centerX - 18, objTopY + 8, 36, 42, 6);
-                        c.fill();
-                        c.stroke();
-                        c.fillStyle = "#ffffff";
-                        c.font = "bold 9px sans-serif";
-                        c.textAlign = "center";
-                        c.fillText("150g", centerX, objTopY + 32);
-                    } else if (this.currentObj.shape === "wood") {
-                        c.fillRect(centerX - 16, objTopY, 32, 40);
-                        c.strokeRect(centerX - 16, objTopY, 32, 40);
-                        c.fillStyle = "#ffffff";
-                        c.font = "bold 9px sans-serif";
-                        c.textAlign = "center";
-                        c.fillText("75g", centerX, objTopY + 24);
-                    } else if (this.currentObj.shape === "stone") {
-                        c.beginPath();
-                        c.ellipse(centerX, objTopY + 24, 22, 26, 0.2, 0, Math.PI * 2);
-                        c.fill();
-                        c.stroke();
-                        c.fillStyle = "#ffffff";
-                        c.font = "bold 9px sans-serif";
-                        c.textAlign = "center";
-                        c.fillText("120g", centerX, objTopY + 26);
-                    } else if (this.currentObj.shape === "sphere") {
-                        c.beginPath();
-                        c.arc(centerX, objTopY + 22, 22, 0, Math.PI * 2);
-                        c.fill();
-                        c.stroke();
-                        c.fillStyle = "#ffffff";
-                        c.font = "bold 9px sans-serif";
-                        c.textAlign = "center";
-                        c.fillText("200g", centerX, objTopY + 25);
-                    }
-                    c.restore();
-                }
-            }
-
-            drawZoom() {
-                const zc = this.zoomCtx;
-                const zw = this.zoomCanvas.width;
-                const zh = this.zoomCanvas.height;
-                zc.clearRect(0, 0, zw, zh);
-
-                // Background
-                zc.fillStyle = "#fefefe";
-                zc.fillRect(0, 0, zw, zh);
-
-                // Amrita Header Plate
-                zc.fillStyle = "#7f1d1d";
-                zc.fillRect(10, 8, zw - 20, 20);
-                zc.fillStyle = "#fef08a";
-                zc.font = "bold 11px sans-serif";
-                zc.textAlign = "center";
-                zc.fillText("• AMRITA SPRING SCALE •", zw / 2, 22);
-
-                // Column Titles
-                zc.font = "bold 9px sans-serif";
-                zc.fillStyle = "#451a03";
-                zc.textAlign = "left";
-                zc.fillText("GRAMS (g)", 24, 42);
-                zc.textAlign = "right";
-                zc.fillText("NEWTONS (N)", zw - 24, 42);
-
-                // Center Guide Track
-                zc.fillStyle = "#f8fafc";
-                zc.fillRect(zw / 2 - 14, 48, 28, zh - 56);
-                zc.strokeStyle = "#cbd5e1";
-                zc.strokeRect(zw / 2 - 14, 48, 28, zh - 56);
-
-                // Scale ticks: 0 to 250 grams & 0 to 2.5 Newtons
-                const startY = 56;
-                const scaleLen = zh - 76;
-                const maxGram = 250;
-                const maxNewton = 2.5;
-
-                zc.lineWidth = 1;
-                zc.font = "bold 9px monospace";
-
-                for (let g = 0; g <= maxGram; g += 25) {
-                    const y = startY + (g / maxGram) * scaleLen;
-                    const n = (g / 100).toFixed(2);
-
-                    // Left Gram tick
-                    zc.strokeStyle = "#0284c7";
-                    zc.beginPath();
-                    zc.moveTo(zw / 2 - 14, y);
-                    zc.lineTo(zw / 2 - 24, y);
-                    zc.stroke();
-                    zc.fillStyle = "#0369a1";
-                    zc.textAlign = "right";
-                    zc.fillText(g.toString(), zw / 2 - 28, y + 3);
-
-                    // Right Newton tick
-                    zc.strokeStyle = "#b45309";
-                    zc.beginPath();
-                    zc.moveTo(zw / 2 + 14, y);
-                    zc.lineTo(zw / 2 + 24, y);
-                    zc.stroke();
-                    zc.fillStyle = "#92400e";
-                    zc.textAlign = "left";
-                    zc.fillText(n, zw / 2 + 28, y + 3);
-                }
-
-                // Dual Red Indicator Needle
-                const force = this.currentObj.massKg * this.gravity;
-                const normForce = Math.min(Math.max(force / maxNewton, 0), 1);
-                const indY = startY + normForce * scaleLen;
-
-                zc.save();
-                zc.fillStyle = "#dc2626";
-                zc.strokeStyle = "#991b1b";
-                zc.lineWidth = 1.5;
-
-                // Red indicator needle spanning across both columns
-                zc.beginPath();
-                zc.moveTo(18, indY);
-                zc.lineTo(zw - 18, indY);
-                zc.stroke();
-
-                // Center triangle pointer
-                zc.beginPath();
-                zc.moveTo(zw / 2 - 8, indY - 4);
-                zc.lineTo(zw / 2 + 8, indY - 4);
-                zc.lineTo(zw / 2, indY + 5);
-                zc.closePath();
-                zc.fill();
-                zc.stroke();
-                zc.restore();
-            }
+        // benda di dalam air
+        if (st.obj && st.test === "vol") {
+            const o = OBJ[st.obj], hh = Math.min(o.h * 0.72, 44);
+            const restY = BY0 - hh - 1;
+            const y = st.dropping ? st.dropY : restY;
+            drawObj(g, st.obj, cx, y, hh);
         }
 
-        const springApp = new SpringOlabsSimulator();
-    </script>
+        // badan gelas (kaca)
+        g.strokeStyle = "rgba(60,70,80,.85)"; g.lineWidth = 2;
+        g.beginPath();
+        g.moveTo(x0 - 8, rim - 2); g.quadraticCurveTo(x0 - 2, rim + 2, x0, rim + 8);
+        g.lineTo(x0, BY0 - 6); g.quadraticCurveTo(x0, BY0, x0 + 8, BY0);
+        g.lineTo(x1 - 8, BY0); g.quadraticCurveTo(x1, BY0, x1, BY0 - 6);
+        g.lineTo(x1, rim + 8); g.stroke();
+        g.strokeStyle = "rgba(90,100,110,.9)"; g.lineWidth = 2.5;
+        g.beginPath(); g.ellipse(cx, rim + 8, w / 2, 5, 0, 0, Math.PI * 2); g.stroke();
+        g.fillStyle = "rgba(255,255,255,.28)";
+        g.fillRect(x0 + 6, rim + 14, 8, BY0 - rim - 26);
+
+        // skala ml
+        g.strokeStyle = "#22262b"; g.fillStyle = "#22262b";
+        g.font = "bold 9px Arial"; g.textAlign = "right"; g.textBaseline = "middle";
+        for (let ml = 0; ml <= 100; ml += 5) {
+            const y = yMl(ml), major = ml % 20 === 0, mid = ml % 10 === 0;
+            g.lineWidth = major ? 1.8 : 1.1;
+            const len = major ? 22 : mid ? 15 : 9;
+            g.beginPath(); g.moveTo(x1 - 2, y); g.lineTo(x1 - 2 - len, y); g.stroke();
+            if (major) g.fillText(String(ml), x1 - 28, y);
+        }
+    }
+
+    /* =============== Lensa zoom: skala neraca =============== */
+    function zoomMass() {
+        const W = zc.width, H = zc.height, u = Math.min(H / 300, W / 200);
+        z.setTransform(1, 0, 0, 1, 0, 0);
+        z.clearRect(0, 0, W, H);
+        let gr = z.createLinearGradient(0, 0, W, 0);
+        gr.addColorStop(0, "#c9a014"); gr.addColorStop(.25, "#f6dc5c"); gr.addColorStop(.75, "#efce3a"); gr.addColorStop(1, "#b98f0c");
+        z.fillStyle = gr; z.fillRect(0, 0, W, H);
+        // header merah
+        gr = z.createLinearGradient(0, 0, 0, H * .2);
+        gr.addColorStop(0, "#b3202a"); gr.addColorStop(1, "#7a1017");
+        z.fillStyle = gr; z.fillRect(W * .06, H * .035, W * .88, H * .15);
+        z.fillStyle = "#f3b0aa"; z.textAlign = "center"; z.textBaseline = "middle";
+        z.font = "800 " + Math.round(20 * u) + "px 'Segoe UI', Arial, sans-serif";
+        z.fillText("\u25C6 AMRITA \u25C6", W / 2, H * .11);
+        // label putih
+        z.fillStyle = "#f7f4ec"; z.fillRect(W * .06, H * .2, W * .88, H * .13);
+        z.fillStyle = "#101010";
+        z.font = "800 " + Math.round(19 * u) + "px 'Segoe UI', Arial, sans-serif";
+        z.fillText("SPRING SCALE", W / 2, H * .265);
+        z.font = "800 " + Math.round(11 * u) + "px 'Segoe UI', Arial, sans-serif";
+        z.textAlign = "left"; z.fillText("GRAMS", W * .1, H * .365);
+        z.textAlign = "right"; z.fillText("NEWTONS", W * .9, H * .365);
+
+        const y0 = H * .43, y1 = H * .93, sx = W / 2, sw = W * .095;
+        // slot
+        gr = z.createLinearGradient(sx - sw / 2, 0, sx + sw / 2, 0);
+        gr.addColorStop(0, "#000"); gr.addColorStop(.5, "#2b2b2b"); gr.addColorStop(1, "#000");
+        z.fillStyle = gr; rr(z, sx - sw / 2, y0 - 6 * u, sw, y1 - y0 + 12 * u, sw / 2); z.fill();
+        // tick
+        z.fillStyle = "#111"; z.strokeStyle = "#1a1a1a"; z.textBaseline = "middle";
+        const fs = Math.round(12 * u);
+        z.font = "700 " + fs + "px 'Segoe UI', Arial, sans-serif";
+        for (let g5 = 0; g5 <= MAXG; g5 += 5) {
+            const y = y0 + (g5 / MAXG) * (y1 - y0), major = g5 % 25 === 0;
+            z.lineWidth = Math.max(1, (major ? 2.2 : 1.1) * u);
+            const L = major ? W * .09 : W * .05;
+            z.beginPath(); z.moveTo(sx - sw / 2 - 5 * u, y); z.lineTo(sx - sw / 2 - 5 * u - L, y);
+            z.moveTo(sx + sw / 2 + 5 * u, y); z.lineTo(sx + sw / 2 + 5 * u + L, y); z.stroke();
+            if (major) {
+                z.textAlign = "right"; z.fillText(String(g5), sx - sw / 2 - 5 * u - L - 4 * u, y);
+                z.textAlign = "left"; z.fillText((g5 / 100).toFixed(2).replace(/0$/, "").replace(/\.$/, ".0") === "0.0" ? "0" : (g5 / 100).toFixed(2), sx + sw / 2 + 5 * u + L + 4 * u, y);
+            }
+        }
+        // penunjuk merah
+        const py = y0 + Math.min(st.p, 1) * (y1 - y0);
+        z.strokeStyle = "#e0121f"; z.fillStyle = "#e0121f"; z.lineWidth = Math.max(2, 2.6 * u);
+        const ah = 7 * u;
+        z.beginPath(); z.moveTo(sx - W * .17, py); z.lineTo(sx + W * .17, py); z.stroke();
+        z.beginPath(); z.moveTo(sx - W * .21, py); z.lineTo(sx - W * .17, py - ah); z.lineTo(sx - W * .17, py + ah); z.closePath(); z.fill();
+        z.beginPath(); z.moveTo(sx + W * .21, py); z.lineTo(sx + W * .17, py - ah); z.lineTo(sx + W * .17, py + ah); z.closePath(); z.fill();
+        if (overload()) {
+            z.fillStyle = "rgba(185,28,28,.92)"; z.fillRect(0, H * .92, W, H * .08);
+            z.fillStyle = "#fff"; z.textAlign = "center"; z.font = "800 " + Math.round(11 * u) + "px 'Segoe UI', Arial, sans-serif";
+            z.fillText("MELEBIHI BATAS 250 g", W / 2, H * .96);
+        }
+    }
+
+    /* =============== Lensa zoom: skala volume =============== */
+    function zoomVol() {
+        const W = zc.width, H = zc.height, u = Math.min(H / 300, W / 200);
+        z.setTransform(1, 0, 0, 1, 0, 0);
+        z.clearRect(0, 0, W, H);
+        let gr = z.createLinearGradient(0, 0, 0, H);
+        gr.addColorStop(0, "#77765a"); gr.addColorStop(1, "#aaa992");
+        z.fillStyle = gr; z.fillRect(0, 0, W, H);
+
+        const RANGE = 50;
+        let lo = st.lvl - RANGE / 2;
+        lo = Math.max(-5, Math.min(lo, 105 - RANGE));
+        const hi = lo + RANGE;
+        const yOf = ml => H - ((ml - lo) / RANGE) * H;
+        const ys = yOf(st.lvl);
+
+        // air
+        gr = z.createLinearGradient(0, ys, 0, H);
+        gr.addColorStop(0, "rgba(230,238,244,.5)"); gr.addColorStop(1, "rgba(200,215,228,.42)");
+        z.fillStyle = gr; z.fillRect(0, ys, W, H - ys);
+
+        // skala
+        const sx = W * .34;
+        z.strokeStyle = "#1f1f1f"; z.fillStyle = "#2c2c2c";
+        z.lineWidth = Math.max(1.5, 2.4 * u);
+        z.beginPath(); z.moveTo(sx, Math.max(0, yOf(Math.min(hi, 100)))); z.lineTo(sx, Math.min(H, yOf(Math.max(lo, 0)))); z.stroke();
+        z.textAlign = "left"; z.textBaseline = "middle";
+        z.font = "700 " + Math.round(26 * u) + "px 'Segoe UI', Arial, sans-serif";
+        for (let ml = Math.ceil(lo / 2) * 2; ml <= Math.min(hi, 100); ml += 2) {
+            if (ml < 0) continue;
+            const y = yOf(ml), major = ml % 20 === 0, mid = ml % 10 === 0;
+            const L = (major ? .26 : mid ? .17 : .08) * W;
+            z.lineWidth = Math.max(1, (major ? 4.2 : mid ? 2.6 : 1.3) * u);
+            z.beginPath(); z.moveTo(sx - L / 2, y); z.lineTo(sx + L / 2, y); z.stroke();
+            if (major) z.fillText(String(ml), sx + L / 2 + 8 * u, y);
+        }
+
+        // meniskus
+        z.fillStyle = "rgba(255,255,255,.33)";
+        z.strokeStyle = "rgba(40,40,40,.65)";
+        z.lineWidth = Math.max(1.4, 2 * u);
+        z.beginPath(); z.ellipse(W / 2, ys, W * .47, Math.max(5, 11 * u), 0, 0, Math.PI * 2); z.fill(); z.stroke();
+    }
+
+    /* =============== Render & animasi =============== */
+    function render() {
+        fit(sc); fit(zc);
+        const W = sc.width, H = sc.height;
+        c.setTransform(1, 0, 0, 1, 0, 0);
+        c.clearRect(0, 0, W, H);
+        const s = Math.min(W / DW, H / DH);
+        c.setTransform(s, 0, 0, s, (W - DW * s) / 2, (H - DH * s) / 2);
+        if (st.test === "mass") { sceneMass(c); zoomMass(); } else { sceneVol(c); zoomVol(); }
+        const msg = $("stage-msg");
+        const ov = st.test === "mass" && overload();
+        msg.classList.toggle("on", ov);
+        if (ov) msg.textContent = "Beban melebihi batas skala (250 g) \u2014 pilih benda lebih ringan atau lingkungan lain.";
+    }
+
+    let raf = 0;
+    function kick() { if (!raf) raf = requestAnimationFrame(tick); }
+    function tick() {
+        raf = 0;
+        let busy = false;
+        const tgt = Math.min(st.pT, 1);
+        st.pv = (st.pv + (tgt - st.p) * 0.14) * 0.8;
+        st.p += st.pv;
+        if (Math.abs(st.pv) > 0.0004 || Math.abs(tgt - st.p) > 0.0004) busy = true; else st.p = tgt;
+
+        st.lvl += (st.lvlT - st.lvl) * 0.1;
+        if (Math.abs(st.lvlT - st.lvl) > 0.02) busy = true; else st.lvl = st.lvlT;
+
+        if (st.dropping) {
+            st.dropV += 1.1; st.dropY += st.dropV;
+            const hh = Math.min(OBJ[st.obj].h * 0.72, 44), restY = BY0 - hh - 1;
+            if (st.dropY >= restY) { st.dropY = restY; st.dropping = false; }
+            busy = true;
+        }
+        render();
+        if (busy) kick();
+    }
+
+    function applyState(drop) {
+        st.pT = st.obj ? Math.min(reading() / MAXG, 1) : 0;
+        if (st.test === "vol" && st.obj) {
+            if (drop) {
+                st.dropping = true; st.dropY = 60; st.dropV = 0;
+                st.lvl = V0; st.lvlT = V0;
+                setTimeout(() => { st.lvlT = V0 + OBJ[st.obj].v; kick(); }, 260);
+            } else st.lvlT = V0 + OBJ[st.obj].v;
+        } else { st.lvlT = V0; st.dropping = false; }
+        kick();
+    }
+
+    /* =============== Kontrol =============== */
+    function buildTray() {
+        const tray = $("tray");
+        tray.innerHTML = "";
+        ORDER.forEach(k => {
+            const b = document.createElement("button");
+            b.className = "slot"; b.id = "slot-" + k; b.title = OBJ[k].name; b.setAttribute("aria-label", OBJ[k].name);
+            const cv = document.createElement("canvas"); cv.width = 128; cv.height = 128; b.appendChild(cv);
+            const g = cv.getContext("2d");
+            const o = OBJ[k], hh = k === "stone" ? 70 : 96;
+            drawObj(g, k, 64, (128 - hh) / 2, hh);
+            b.addEventListener("click", () => selectObj(k));
+            tray.appendChild(b);
+        });
+    }
+
+    function selectObj(k) {
+        st.obj = st.obj === k ? null : k;
+        ORDER.forEach(x => $("slot-" + x).classList.toggle("active", st.obj === x));
+        clearInputsState();
+        applyState(true);
+    }
+
+    function setEnv(v) {
+        st.env = parseFloat(v);
+        $("env").value = v; $("env2").value = v;
+        $("env-tag").textContent = "g = " + st.env + " m/s\u00B2";
+        clearInputsState();
+        applyState(false);
+    }
+
+    function setTest(v) {
+        st.test = v;
+        $("test").value = v; $("test2").value = v;
+        $("in-gm").disabled = v !== "mass";
+        $("in-v").disabled = v !== "vol";
+        $("in-d").disabled = v !== "vol";
+        $("in-m").disabled = false;
+        clearInputsState();
+        applyState(true);
+    }
+
+    function clearInputsState() {
+        ["in-gm", "in-m", "in-v", "in-d"].forEach(id => $(id).classList.remove("ok", "bad"));
+        $("fb").textContent = ""; $("fb").className = "fb";
+    }
+
+    window.setTab = function (t) {
+        $("sim").dataset.tab = t;
+        requestAnimationFrame(() => { render(); });
+    };
+
+    window.resetSim = function () {
+        ["in-gm", "in-m", "in-v", "in-d"].forEach(id => { $(id).value = ""; });
+        st.obj = "cyl"; st.tries = 0;
+        ORDER.forEach(x => $("slot-" + x).classList.toggle("active", st.obj === x));
+        setEnv("9.8");
+        setTest("mass");
+    };
+
+    window.checkAnswer = function () {
+        const fb = $("fb");
+        fb.className = "fb";
+        clearInputsState();
+        if (!st.obj) { fb.classList.add("bad"); fb.textContent = "Pilih benda dulu pada kotak di bawah simulasi."; return; }
+        const o = OBJ[st.obj];
+        const mark = (id, ok) => { $(id).classList.add(ok ? "ok" : "bad"); return ok; };
+        const val = id => num($(id).value);
+
+        if (st.test === "mass") {
+            if (overload()) { fb.classList.add("bad"); fb.textContent = "Beban melebihi skala 250 g. Ganti benda atau lingkungan."; return; }
+            const gm = val("in-gm"), m = val("in-m");
+            if (!isFinite(gm) || !isFinite(m)) { fb.classList.add("bad"); fb.textContent = "Isi Gravitational Mass dan Mass of Object (angka)."; return; }
+            const expGm = reading(), tolG = Math.max(2, expGm * 0.04), tolM = Math.max(3, o.m * 0.04);
+            const a = mark("in-gm", Math.abs(gm - expGm) <= tolG);
+            const b = mark("in-m", Math.abs(m - o.m) <= tolM);
+            if (a && b) { fb.classList.add("ok"); fb.textContent = "\u2705 Benar! Massa benda = " + o.m + " g (m = massa gravitasi \u00D7 9.8 \u00F7 g lingkungan)."; }
+            else { fb.classList.add("bad"); fb.textContent = (!a ? "Gravitational mass: baca ulang skala GRAMS di lensa. " : "") + (!b ? "Mass: m = Gravitational Mass \u00D7 9.8 \u00F7 g lingkungan." : ""); }
+        } else {
+            const m = val("in-m"), v = val("in-v"), d = val("in-d");
+            if (!isFinite(m) || !isFinite(v) || !isFinite(d)) { fb.classList.add("bad"); fb.textContent = "Isi Mass, Volume, dan Density (angka)."; return; }
+            const a = mark("in-m", Math.abs(m - o.m) <= Math.max(3, o.m * 0.04));
+            const b = mark("in-v", Math.abs(v - o.v) <= 1.5);
+            const c2 = mark("in-d", Math.abs(d - o.m / o.v) <= Math.max(0.15, (o.m / o.v) * 0.06));
+            if (a && b && c2) { fb.classList.add("ok"); fb.textContent = "\u2705 Benar! \u03C1 = m \u00F7 V = " + o.m + " \u00F7 " + o.v + " = " + (o.m / o.v).toFixed(2) + " g/cc."; }
+            else { fb.classList.add("bad"); fb.textContent = (!b ? "Volume = level air akhir \u2212 level awal (40 ml). " : "") + (!c2 ? "Density = Mass \u00F7 Volume." : "") + (!a ? " Cek nilai Mass (hasil tes Find Mass)." : ""); }
+        }
+    };
+
+    window.logToLkpd = function () {
+        if (!st.obj) { $("fb").className = "fb bad"; $("fb").textContent = "Pilih benda dulu sebelum dicatat."; return; }
+        const o = OBJ[st.obj];
+        const w = (o.m * st.env / 1000).toFixed(2);
+        const payload = {
+            type: "LOG_SPRING_TO_LKPD",
+            object: o.name, objName: o.name,
+            force: w + " N",
+            gravity: st.env.toFixed(1) + " N/kg", grav: st.env.toFixed(1) + " N/kg",
+            formula: "m = w \u00F7 g = " + w + " \u00F7 " + st.env.toFixed(1),
+            mass: o.m + " g"
+        };
+        if (window.parent && window.parent !== window) {
+            window.parent.postMessage(payload, "*");
+            $("fb").className = "fb ok"; $("fb").textContent = "\uD83D\uDCE5 Data " + o.name + " dicatat ke LKPD.";
+        } else {
+            alert("\u2705 Data Neraca Pegas (" + o.name + ": " + w + " N) dicatat ke LKPD!");
+        }
+    };
+
+    $("env").addEventListener("change", e => setEnv(e.target.value));
+    $("env2").addEventListener("change", e => setEnv(e.target.value));
+    $("test").addEventListener("change", e => setTest(e.target.value));
+    $("test2").addEventListener("change", e => setTest(e.target.value));
+
+    if (window.ResizeObserver) { new ResizeObserver(() => render()).observe($("stage")); }
+    window.addEventListener("resize", render);
+
+    buildTray();
+    window.resetSim();
+    render();
+})();
+</script>
 </body>
 </html>

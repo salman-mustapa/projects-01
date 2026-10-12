@@ -5203,14 +5203,17 @@ body.is-mobile-device .btn-orient-toggle:hover {
 
     /* Frame container */
     .sim-iframe-holder {
-        height: 440px;
-        border-radius: 6px;
+        height: 550px;
+        border-radius: 8px;
         margin-bottom: 6px;
     }
 }
 
 /* Small Phones (width < 480px) */
 @media (max-width: 480px) {
+    .sim-iframe-holder {
+        height: 540px;
+    }
     .nav-left {
         min-width: 0;
         flex-shrink: 1;
@@ -5247,7 +5250,7 @@ body.is-mobile-device .btn-orient-toggle:hover {
 /* Extra Small Phones (iPhone SE / width < 380px) */
 @media (max-width: 380px) {
     .sim-iframe-holder {
-        height: 400px;
+        height: 520px;
     }
     .nav-student-chip {
         display: none !important;
