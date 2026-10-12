@@ -4053,7 +4053,7 @@ body:not(.on-cover) .jungle-ferns-bottom {
 .sim-iframe-holder {
     position: relative;
     width: 100%;
-    height: 520px;
+    height: 640px;
     background: #0f172a;
     border: 2px solid #059669;
     border-radius: var(--radius-md);
@@ -4753,7 +4753,7 @@ body.game-theme.on-cover .app-viewport-wrapper {
    ========================================================================== */
 .sim-iframe-holder {
     width: 100%;
-    height: 520px;
+    height: 640px;
     background: #000000;
     border-radius: var(--radius-md);
     overflow: hidden;
@@ -4978,7 +4978,7 @@ body.is-mobile-device .btn-orient-toggle:hover {
         font-size: 0.78rem;
     }
     .sim-iframe-holder {
-        height: 480px;
+        height: 580px;
     }
 }
 
@@ -5169,7 +5169,7 @@ body.is-mobile-device .btn-orient-toggle:hover {
 
     /* Frame container */
     .sim-iframe-holder {
-        height: 440px;
+        height: 540px;
         border-radius: 6px;
         margin-bottom: 6px;
     }
@@ -5213,7 +5213,7 @@ body.is-mobile-device .btn-orient-toggle:hover {
 /* Extra Small Phones (iPhone SE / width < 380px) */
 @media (max-width: 380px) {
     .sim-iframe-holder {
-        height: 400px;
+        height: 480px;
     }
     .nav-student-chip {
         display: none !important;

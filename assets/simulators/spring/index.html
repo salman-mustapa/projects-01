@@ -370,10 +370,224 @@
             .readout-chips { gap: 6px; }
             .r-val { padding: 1px 4px; }
         }
-    </style>
+    
+        /* ==========================================================================
+           AUTHENTIC OLABS PORTAL PAGE & TABS STYLING
+           ========================================================================== */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+            background: #f8fafc !important;
+            color: #1e293b !important;
+            margin: 0 !important;
+            padding: 12px 14px !important;
+            overflow-x: hidden !important;
+            overflow-y: auto !important;
+            height: auto !important;
+            min-height: 100vh !important;
+            box-sizing: border-box !important;
+            display: block !important;
+        }
+
+        .olabs-portal-wrap {
+            max-width: 980px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .olabs-portal-breadcrumbs {
+            font-size: 0.74rem;
+            color: #64748b;
+            margin-bottom: 4px;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            letter-spacing: 0.2px;
+        }
+
+        .olabs-portal-heading {
+            font-size: 1.65rem;
+            font-weight: 700;
+            color: #ea580c; /* Authentic OLabs Orange */
+            margin: 0 0 10px 0;
+            letter-spacing: 0.2px;
+        }
+
+        /* Tabs Navigation Strip */
+        .olabs-portal-tabs {
+            display: flex;
+            align-items: flex-end;
+            gap: 4px;
+            border-bottom: 2px solid #cbd5e1;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 0;
+            margin-bottom: 12px;
+        }
+
+        .olabs-tab-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            font-size: 0.84rem;
+            font-weight: 600;
+            color: #475569;
+            background: #e2e8f0;
+            border: 1.5px solid #cbd5e1;
+            border-bottom: none;
+            border-radius: 8px 8px 0 0;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.15s ease;
+            user-select: none;
+            font-family: inherit;
+        }
+
+        .olabs-tab-btn:hover {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+
+        .olabs-tab-btn.active {
+            background: #ffffff;
+            color: #0f172a;
+            font-weight: 700;
+            border-color: #94a3b8;
+            border-bottom: 2px solid #ffffff;
+            margin-bottom: -2px;
+            z-index: 2;
+            box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .olabs-tab-btn .t-icon {
+            font-size: 1rem;
+        }
+
+        /* Tab Content Panels */
+        .olabs-portal-panel {
+            display: none;
+            width: 100%;
+        }
+
+        .olabs-portal-panel.active {
+            display: block;
+        }
+
+        /* Generic Card for Theory, Procedure, etc. */
+        .portal-article-card {
+            background: #ffffff;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 22px 24px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            line-height: 1.65;
+            color: #334155;
+            font-size: 0.92rem;
+        }
+
+        .portal-article-card h2 {
+            color: #c2410c;
+            font-size: 1.25rem;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #fdba74;
+            padding-bottom: 4px;
+        }
+
+        .portal-article-card h3 {
+            color: #1e293b;
+            font-size: 1.05rem;
+            margin: 16px 0 8px;
+        }
+
+        .portal-article-card ol, .portal-article-card ul {
+            padding-left: 20px;
+            margin-bottom: 12px;
+        }
+
+        .portal-article-card li {
+            margin-bottom: 6px;
+        }
+
+        .formula-card {
+            background: #eff6ff;
+            border-left: 4px solid #3b82f6;
+            padding: 10px 14px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.95rem;
+            margin: 12px 0;
+            color: #1e3a8a;
+        }
+
+        .quiz-option-btn {
+            display: block;
+            width: 100%;
+            text-align: left;
+            background: #f8fafc;
+            border: 1.5px solid #cbd5e1;
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.88rem;
+            transition: all 0.15s;
+        }
+        .quiz-option-btn:hover {
+            background: #f1f5f9;
+            border-color: #94a3b8;
+        }
+        .quiz-option-btn.correct {
+            background: #dcfce7 !important;
+            border-color: #22c55e !important;
+            color: #15803d !important;
+            font-weight: 700 !important;
+        }
+        .quiz-option-btn.wrong {
+            background: #fee2e2 !important;
+            border-color: #ef4444 !important;
+            color: #b91c1c !important;
+        }
+</style>
 </head>
 <body>
+    <div class="olabs-portal-wrap">
+        <!-- Breadcrumb navigation (Authentic OLabs) -->
+        <div class="olabs-portal-breadcrumbs">
+            you are here-&gt; home-&gt; physics-&gt; class 9-&gt; determination of density of solid
+        </div>
 
+        <!-- Section Heading -->
+        <h1 class="olabs-portal-heading">Determination of Density of Solid</h1>
+
+        <!-- Authentic OLabs Tab Bar -->
+        <nav class="olabs-portal-tabs" role="tablist">
+            <button class="olabs-tab-btn" id="btn-tab-theory" onclick="switchPortalTab('theory')">
+                <span class="t-icon">📖</span> Theory
+            </button>
+            <button class="olabs-tab-btn" id="btn-tab-procedure" onclick="switchPortalTab('procedure')">
+                <span class="t-icon">🔄</span> Procedure
+            </button>
+            <button class="olabs-tab-btn" id="btn-tab-animation" onclick="switchPortalTab('animation')">
+                <span class="t-icon">📈</span> Animation
+            </button>
+            <button class="olabs-tab-btn" id="btn-tab-video" onclick="switchPortalTab('video')">
+                <span class="t-icon">📹</span> Video
+            </button>
+            <button class="olabs-tab-btn active" id="btn-tab-simulator" onclick="switchPortalTab('simulator')">
+                <span class="t-icon">⚛️</span> Simulator
+            </button>
+            <button class="olabs-tab-btn" id="btn-tab-evaluation" onclick="switchPortalTab('evaluation')">
+                <span class="t-icon">❓</span> Self Evaluation
+            </button>
+            <button class="olabs-tab-btn" id="btn-tab-resources" onclick="switchPortalTab('resources')">
+                <span class="t-icon">📚</span> Resources
+            </button>
+            <button class="olabs-tab-btn" id="btn-tab-feedback" onclick="switchPortalTab('feedback')">
+                <span class="t-icon">💬</span> Feedback
+            </button>
+        </nav>
+
+        <!-- Panel: Simulator (Default Active) -->
+        <div class="olabs-portal-panel active" id="panel-tab-simulator">
     <div class="olabs-sim-container">
         <!-- Top OLabs Mahogany Header -->
         <header class="olabs-top-header">
@@ -463,7 +677,175 @@
         </footer>
     </div>
 
+    
+        </div>
+        <!-- End of Panel Simulator -->
+
+        <!-- Panel 2: Theory -->
+        <div class="olabs-portal-panel" id="panel-tab-theory">
+            <div class="portal-article-card">
+                <h2>📖 Teori Dasar Neraca Pegas &amp; Hukum Hooke (Determination of Density of Solid)</h2>
+                <h3>1. Tujuan Praktikum:</h3>
+                <ul>
+                    <li>Mengukur gaya berat (w) dan massa benda (m) menggunakan neraca pegas.</li>
+                    <li>Mempelajari penerapan Hukum Hooke pada pertambahan panjang pegas terhadap gaya tarik.</li>
+                    <li>Memahami perbedaan mendasar antara massa (besaran pokok, skalar) dan berat (besaran turunan, gaya vektor).</li>
+                    <li>Mengamati pengaruh percepatan gravitasi planet (Bumi, Bulan, Mars, Jupiter) terhadap gaya berat benda.</li>
+                </ul>
+
+                <h3>2. Prinsip Hukum Hooke:</h3>
+                <p>Ketika beban digantungkan pada neraca pegas, pegas akan meregang sebanding dengan gaya tarik beban yang bekerja padanya:</p>
+                <div class="formula-card">
+                    F = k &times; &Delta;x  (F = gaya tarik [N], k = konstanta pegas [N/m], &Delta;x = pertambahan panjang pegas [m])
+                </div>
+
+                <h3>3. Hubungan Gaya Berat &amp; Massa:</h3>
+                <div class="formula-card">
+                    w = m &times; g   &hArr;   m = w &divide; g
+                    <br><small style="color:#64748b;">(w = Gaya berat [Newton], m = Massa [kg], g = Percepatan gravitasi [N/kg atau m/s&sup2;])</small>
+                </div>
+
+                <h3>4. Variasi Nilai Gravitasi di Alam Semesta:</h3>
+                <ul>
+                    <li><strong>🌍 Bumi:</strong> g = 9,8 N/kg (standar laboratorium)</li>
+                    <li><strong>🌕 Bulan:</strong> g = 1,6 N/kg (&plusmn;1/6 gravitasi Bumi)</li>
+                    <li><strong>🔴 Mars:</strong> g = 3,7 N/kg (&plusmn;38% gravitasi Bumi)</li>
+                    <li><strong>🪐 Jupiter:</strong> g = 24,8 N/kg (&plusmn;2,53 kali gravitasi Bumi)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Panel 3: Procedure -->
+        <div class="olabs-portal-panel" id="panel-tab-procedure">
+            <div class="portal-article-card">
+                <h2>🔄 Prosedur Kerja Praktikum Neraca Pegas</h2>
+                <ol>
+                    <li><strong>Kalibrasi Titik Nol:</strong> Pastikan jarum penunjuk neraca pegas berada tepat di garis angka 0 saat belum diberi beban.</li>
+                    <li><strong>Pemilihan Lingkungan Gravitasi:</strong> Pada menu <em>Solution Controls</em>, pilih lingkungan pengujian (Earth 9.8 m/s&sup2;).</li>
+                    <li><strong>Menggantungkan Benda Uji:</strong> Pilih salah satu benda uji (Silinder Logam, Balok, Kayu, Batu, atau Beban Gantung) untuk digantungkan pada kait bawah.</li>
+                    <li><strong>Mengamati Keseimbangan Pegas:</strong> Perhatikan pegas yang merenggang hingga mencapai posisi seimbang (osilasi teredam).</li>
+                    <li><strong>Membaca Skala Ganda pada Kotak Zoom:</strong>
+                        <ul>
+                            <li>Kolom Kiri: Membaca massa terukur dalam satuan <strong>gram (g)</strong>.</li>
+                            <li>Kolom Kanan: Membaca gaya berat dalam satuan <strong>Newton (N)</strong>.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Mencatat ke Lembar LKPD:</strong> Klik tombol <strong>"Catat ke LKPD"</strong> untuk merekam data percobaan ke tabel praktikum digital secara otomatis.</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Panel 4 & 5: Video & Animation -->
+        <div class="olabs-portal-panel" id="panel-tab-animation">
+            <div class="portal-article-card">
+                <h2>📈 Animasi &amp; Panduan Praktikum Neraca Pegas</h2>
+                <p>Simak rekaman video eksperimen neraca pegas berikut untuk memahami demonstrasi nyata di laboratorium:</p>
+                <div style="margin-top: 14px; text-align: center;">
+                    <video controls playsinline preload="metadata" style="width: 100%; max-width: 720px; border-radius: 8px; background: #000; box-shadow: 0 4px 15px rgba(0,0,0,0.3);" src="../../../Video%20Panduan%20Praktikum%20Pengukuran%20Massa.mp4">
+                        Peramban Anda tidak mendukung pemutar video.
+                    </video>
+                </div>
+            </div>
+        </div>
+
+        <div class="olabs-portal-panel" id="panel-tab-video">
+            <div class="portal-article-card">
+                <h2>📹 Video Eksperimen Pengukuran Massa &amp; Gaya Berat</h2>
+                <p>Video panduan resmi praktikum neraca pegas (format MP4 in-app):</p>
+                <div style="margin-top: 14px; text-align: center;">
+                    <video controls playsinline preload="metadata" style="width: 100%; max-width: 720px; border-radius: 8px; background: #000; box-shadow: 0 4px 15px rgba(0,0,0,0.3);" src="../../../Video%20Panduan%20Praktikum%20Pengukuran%20Massa.mp4">
+                        Peramban Anda tidak mendukung pemutar video.
+                    </video>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel 6: Self Evaluation -->
+        <div class="olabs-portal-panel" id="panel-tab-evaluation">
+            <div class="portal-article-card">
+                <h2>❓ Evaluasi Pemahaman Mandiri (Self Evaluation)</h2>
+                <p>Uji penalaran sainsmu mengenai pengukuran massa dan gaya berat:</p>
+
+                <div style="margin-top: 14px;">
+                    <p><strong>Soal 1: Satuan Sistem Internasional (SI) untuk mengukur gaya berat adalah...</strong></p>
+                    <button class="quiz-option-btn" onclick="checkOlabsQuiz(this, false)">A. Kilogram (kg)</button>
+                    <button class="quiz-option-btn" onclick="checkOlabsQuiz(this, true)">B. Newton (N) ✅</button>
+                    <button class="quiz-option-btn" onclick="checkOlabsQuiz(this, false)">C. Gram (g)</button>
+                    <button class="quiz-option-btn" onclick="checkOlabsQuiz(this, false)">D. Dyne</button>
+                </div>
+
+                <div style="margin-top: 18px;">
+                    <p><strong>Soal 2: Apa yang terjadi pada massa dan gaya berat suatu benda jika dibawa dari Bumi ke Bulan?</strong></p>
+                    <button class="quiz-option-btn" onclick="checkOlabsQuiz(this, false)">A. Massa dan gaya berat keduanya berkurang</button>
+                    <button class="quiz-option-btn" onclick="checkOlabsQuiz(this, true)">B. Massa tetap, namun gaya berat berkurang karena gravitasi Bulan lebih kecil ✅</button>
+                    <button class="quiz-option-btn" onclick="checkOlabsQuiz(this, false)">C. Massa berkurang, namun gaya berat tetap</button>
+                    <button class="quiz-option-btn" onclick="checkOlabsQuiz(this, false)">D. Massa dan gaya berat bertambah</button>
+                </div>
+
+                <div style="margin-top: 18px;">
+                    <p><strong>Soal 3: Sebuah silinder memiliki massa 250 gram (0,25 kg). Berapakah gaya beratnya di Bumi (g = 9,8 N/kg)?</strong></p>
+                    <button class="quiz-option-btn" onclick="checkOlabsQuiz(this, false)">A. 25 N</button>
+                    <button class="quiz-option-btn" onclick="checkOlabsQuiz(this, true)">B. 2,45 N (karena w = 0,25 &times; 9,8) ✅</button>
+                    <button class="quiz-option-btn" onclick="checkOlabsQuiz(this, false)">C. 24,5 N</button>
+                    <button class="quiz-option-btn" onclick="checkOlabsQuiz(this, false)">D. 0,245 N</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel 7: Resources -->
+        <div class="olabs-portal-panel" id="panel-tab-resources">
+            <div class="portal-article-card">
+                <h2>📚 Sumber Belajar &amp; Dokumen Praktikum</h2>
+                <ul>
+                    <li>📘 <strong>Buku Panduan Praktikum Neraca Pegas:</strong> <a href="../../../User%20Guide%20Praktikum%20Virtual%20Neraca%20Pegas.pdf" download style="color:#0284c7; font-weight:700;">Unduh Panduan PDF ⬇</a></li>
+                    <li>📙 <strong>Modul Ajar Pengukuran Kelas VII SMP:</strong> <a href="../../../Modul%20Ajar%20Pengukuran.pdf" download style="color:#0284c7; font-weight:700;">Unduh Modul PDF ⬇</a></li>
+                    <li>🌐 <strong>Portal Resmi Amrita OLabs:</strong> <a href="https://www.olabs.edu.in/?sub=1&brch=1&sim=2&cnt=4" target="_blank" rel="noopener" style="color:#ea580c; font-weight:700;">Buka Portal Resmi OLabs Spring Balance ↗</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Panel 8: Feedback -->
+        <div class="olabs-portal-panel" id="panel-tab-feedback">
+            <div class="portal-article-card">
+                <h2>💬 Umpan Balik Pengalaman Belajar (Feedback)</h2>
+                <p>Bagikan kesan dan saranmu setelah bereksperimen dengan neraca pegas:</p>
+                <div style="margin-top: 12px;">
+                    <textarea style="width: 100%; height: 80px; padding: 10px; border-radius: 6px; border: 1.5px solid #cbd5e1; font-family: inherit;" placeholder="Tuliskan masukan atau pengalaman belajarmu di sini..."></textarea>
+                    <button style="margin-top: 8px; padding: 8px 18px; background: #ea580c; color: white; border: none; border-radius: 6px; font-weight: 700; cursor: pointer;" onclick="alert('Terima kasih! Umpan balikmu berhasil dikirimkan.')">Kirim Umpan Balik</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End of olabs-portal-wrap -->
     <script>
+
+        // Tab switcher function
+        function switchPortalTab(tabKey) {
+            const tabs = ['theory', 'procedure', 'animation', 'simulator', 'video', 'evaluation', 'resources', 'feedback'];
+            tabs.forEach(t => {
+                const btn = document.getElementById('btn-tab-' + t);
+                const panel = document.getElementById('panel-tab-' + t);
+                if (btn) btn.classList.toggle('active', t === tabKey);
+                if (panel) panel.classList.toggle('active', t === tabKey);
+            });
+            if (tabKey !== 'video' && tabKey !== 'animation') {
+                document.querySelectorAll('video').forEach(v => v.pause());
+            }
+        }
+
+        function checkOlabsQuiz(btn, isCorrect) {
+            const parent = btn.parentElement;
+            parent.querySelectorAll('.quiz-option-btn').forEach(b => {
+                b.classList.remove('correct', 'wrong');
+            });
+            if (isCorrect) {
+                btn.classList.add('correct');
+            } else {
+                btn.classList.add('wrong');
+            }
+        }
+    
+
         const OBJECTS = {
             none:     { name: "Tanpa Beban", massKg: 0.00,  massG: 0,   color: "transparent", shape: "none" },
             cylinder: { name: "Silinder Logam", massKg: 0.25,  massG: 250, color: "#94a3b8", shape: "cylinder" },
