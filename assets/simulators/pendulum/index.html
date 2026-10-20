@@ -66011,51 +66011,7 @@ define( 'SCENERY/display/Display',['require','PHET_CORE/inherit','AXON/Emitter',
       var htmlContent = '<!DOCTYPE html>' +
                         '<html lang="en">' +
                         '<head><title>Scenery Debug Snapshot</title></head>' +
-                        '<body style="font-size: 12px;">' + this.getDebugHTML() + '
-<style>
-  .phet-lkpd-bridge-btn {
-    position: fixed;
-    bottom: 50px;
-    right: 16px;
-    z-index: 2147483647;
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-    color: #ffffff;
-    border: 2px solid #ffffff;
-    border-radius: 30px;
-    padding: 9px 18px;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    font-size: 13px;
-    font-weight: 800;
-    cursor: pointer;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.35);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    transition: transform 0.15s, background 0.15s;
-    user-select: none;
-  }
-  .phet-lkpd-bridge-btn:hover {
-    transform: translateY(-2px) scale(1.03);
-    background: linear-gradient(135deg, #059669 0%, #047857 100%);
-  }
-  .phet-lkpd-bridge-btn:active {
-    transform: translateY(1px);
-  }
-</style>
-<button type="button" class="phet-lkpd-bridge-btn" onclick="notifyParentLkpd()" title="Catat hasil praktikum bandul ini ke LKPD Digital">
-  📥 Catat ke LKPD
-</button>
-<script>
-  function notifyParentLkpd() {
-    if (window.parent && window.parent !== window) {
-      window.parent.postMessage({ type: 'FOCUS_BANDUL_RECORDER' }, '*');
-    } else {
-      alert('Buka di dalam aplikasi Media Pembelajaran untuk mencatat ke LKPD Digital.');
-    }
-  }
-</script>
-
-</body>' +
+                        '<body style="font-size: 12px;">' + this.getDebugHTML() + '</body>' +
                         '</html>';
       window.open( 'data:text/html;charset=utf-8,' + encodeURIComponent( htmlContent ) );
     },
@@ -87933,49 +87889,5 @@ define( 'pendulum-lab-main',['require','PENDULUM_LAB/energy/EnergyScreen','PENDU
 require(["pendulum-lab-main"]);
 }());</script>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/vce701823e78c4301a35b7e07294d87301792088814092" integrity="sha512-UKNk8GbxkABxKcXYuLkO16EleLGUkcvJWtpSNmExE0Too3ZaFAxTscNWEc1OdAv5/BikHawapSCaiD2XCmp+Bw==" data-cf-beacon='{"version":"2024.11.0","token":"57ed97624d4c401fb934c2dd728ace72","spa":2}' crossorigin="anonymous"></script>
-
-<style>
-  .phet-lkpd-bridge-btn {
-    position: fixed;
-    bottom: 50px;
-    right: 16px;
-    z-index: 2147483647;
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-    color: #ffffff;
-    border: 2px solid #ffffff;
-    border-radius: 30px;
-    padding: 9px 18px;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    font-size: 13px;
-    font-weight: 800;
-    cursor: pointer;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.35);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    transition: transform 0.15s, background 0.15s;
-    user-select: none;
-  }
-  .phet-lkpd-bridge-btn:hover {
-    transform: translateY(-2px) scale(1.03);
-    background: linear-gradient(135deg, #059669 0%, #047857 100%);
-  }
-  .phet-lkpd-bridge-btn:active {
-    transform: translateY(1px);
-  }
-</style>
-<button type="button" class="phet-lkpd-bridge-btn" onclick="notifyParentLkpd()" title="Catat hasil praktikum bandul ini ke LKPD Digital">
-  📥 Catat ke LKPD
-</button>
-<script>
-  function notifyParentLkpd() {
-    if (window.parent && window.parent !== window) {
-      window.parent.postMessage({ type: 'FOCUS_BANDUL_RECORDER' }, '*');
-    } else {
-      alert('Buka di dalam aplikasi Media Pembelajaran untuk mencatat ke LKPD Digital.');
-    }
-  }
-</script>
-
 </body>
 </html>

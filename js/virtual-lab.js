@@ -1515,9 +1515,9 @@ class PhetCompanionManager {
             if (timeInput) timeInput.value = "14.20";
         }
 
-        const chips = document.querySelectorAll(".phet-quick-presets .chip-btn");
+        const chips = document.querySelectorAll(".station-presets-row .preset-pill, .phet-quick-presets .chip-btn");
         chips.forEach(c => c.classList.remove("active"));
-        if (window.event && window.event.target && window.event.target.classList.contains("chip-btn")) {
+        if (window.event && window.event.target && (window.event.target.classList.contains("preset-pill") || window.event.target.classList.contains("chip-btn"))) {
             window.event.target.classList.add("active");
         }
 

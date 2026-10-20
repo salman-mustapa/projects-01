@@ -19,7 +19,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- CSS Stylesheet -->
-    <link rel="stylesheet" href="css/style.css?v=3.2">
+    <link rel="stylesheet" href="css/style.css?v=3.3">
 </head>
 <body class="game-theme">
 
@@ -535,99 +535,104 @@
                                 </div>
 
                                 <!-- Pencatat Praktikum Bandul PhET ke LKPD Digital -->
-                                <div class="phet-recorder-card mt-3" id="phet-recorder-box">
-                                    <div class="phet-recorder-header">
-                                        <div class="phet-rec-badge">⏱️ PENCATAT PRAKTIKUM BANDUL PhET</div>
-                                        <h4 class="phet-rec-title">Catat Hasil Pengamatan PhET ke LKPD Digital</h4>
-                                        <p class="phet-rec-desc">
-                                            Amati besaran pada simulasi PhET di atas (panjang tali, massa, & waktu 10 ayunan pada stopwatch). Gunakan variasi cepat di bawah atau isi langsung data pengamatanmu lalu klik tombol catat:
-                                        </p>
-                                    </div>
-
-                                    <!-- Quick Presets -->
-                                    <div class="phet-quick-presets">
-                                        <span class="preset-lbl">🎯 Variasi Cepat:</span>
-                                        <button type="button" class="chip-btn active" onclick="phetCompanion.applyPreset('l-05')">📏 Tali 0,50 m (Standar)</button>
-                                        <button type="button" class="chip-btn" onclick="phetCompanion.applyPreset('l-03')">📏 Tali 0,30 m (Pendek)</button>
-                                        <button type="button" class="chip-btn" onclick="phetCompanion.applyPreset('l-07')">📏 Tali 0,70 m (Sedang)</button>
-                                        <button type="button" class="chip-btn" onclick="phetCompanion.applyPreset('l-10')">📏 Tali 1,00 m (Panjang)</button>
-                                        <button type="button" class="chip-btn" onclick="phetCompanion.applyPreset('m-05')">⚖️ Massa 0,50 kg</button>
-                                        <button type="button" class="chip-btn" onclick="phetCompanion.applyPreset('m-15')">⚖️ Massa 1,50 kg</button>
-                                    </div>
-
-                                    <!-- Form Input Grid -->
-                                    <div class="phet-form-grid">
-                                        <div class="phet-form-group col-span-2">
-                                            <label for="phet-input-exp-name">Nama / Variasi Percobaan:</label>
-                                            <input type="text" id="phet-input-exp-name" class="phet-input" value="Uji Panjang Tali L = 0,50 m (Standar)">
+                                <div class="bandul-recorder-station phet-recorder-card mt-3" id="phet-recorder-box">
+                                    <!-- Header -->
+                                    <div class="station-header">
+                                        <div class="station-title-wrap">
+                                            <span class="station-badge">⏱️ PENCATAT PRAKTIKUM BANDUL PhET</span>
+                                            <h4 class="station-title">Pencatat Hasil Pengamatan PhET ke LKPD Digital</h4>
+                                            <p class="station-subtitle">Amati besaran pada simulasi PhET di atas (panjang tali, massa, & waktu 10 ayunan pada stopwatch), gunakan variasi cepat atau sesuaikan data lalu catat ke LKPD.</p>
                                         </div>
-
-                                        <div class="phet-form-group">
-                                            <label for="phet-input-len">Panjang Tali (L):</label>
-                                            <div class="input-with-unit">
-                                                <input type="number" id="phet-input-len" class="phet-input" step="0.05" min="0.1" max="2.0" value="0.50" oninput="phetCompanion.updateCalculations()">
-                                                <span class="unit-tag">meter</span>
-                                            </div>
-                                        </div>
-
-                                        <div class="phet-form-group">
-                                            <label for="phet-input-mass">Massa Bandul (m):</label>
-                                            <div class="input-with-unit">
-                                                <input type="number" id="phet-input-mass" class="phet-input" step="0.05" min="0.1" max="5.0" value="1.00" oninput="phetCompanion.updateCalculations()">
-                                                <span class="unit-tag">kg</span>
-                                            </div>
-                                        </div>
-
-                                        <div class="phet-form-group">
-                                            <label for="phet-input-time">Waktu 10 Ayunan (t):</label>
-                                            <div class="input-with-unit">
-                                                <input type="number" id="phet-input-time" class="phet-input" step="0.01" min="0.5" max="100.0" value="14.20" oninput="phetCompanion.updateCalculations()">
-                                                <span class="unit-tag">sekon</span>
-                                            </div>
-                                        </div>
-
-                                        <div class="phet-form-group">
-                                            <label for="phet-input-swings">Jumlah Ayunan (n):</label>
-                                            <div class="input-with-unit">
-                                                <input type="number" id="phet-input-swings" class="phet-input" step="1" min="1" max="50" value="10" oninput="phetCompanion.updateCalculations()">
-                                                <span class="unit-tag">kali</span>
+                                        <!-- Quick Presets -->
+                                        <div class="station-presets-row">
+                                            <span class="preset-tag">Variasi Cepat:</span>
+                                            <div class="preset-chip-list phet-quick-presets">
+                                                <button type="button" class="preset-pill chip-btn active" onclick="phetCompanion.applyPreset('l-05')">📏 L = 0,50 m</button>
+                                                <button type="button" class="preset-pill chip-btn" onclick="phetCompanion.applyPreset('l-03')">📏 L = 0,30 m</button>
+                                                <button type="button" class="preset-pill chip-btn" onclick="phetCompanion.applyPreset('l-07')">📏 L = 0,70 m</button>
+                                                <button type="button" class="preset-pill chip-btn" onclick="phetCompanion.applyPreset('l-10')">📏 L = 1,00 m</button>
+                                                <button type="button" class="preset-pill chip-btn" onclick="phetCompanion.applyPreset('m-05')">⚖️ m = 0,50 kg</button>
+                                                <button type="button" class="preset-pill chip-btn" onclick="phetCompanion.applyPreset('m-15')">⚖️ m = 1,50 kg</button>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <!-- Live Calculations & Companion Stopwatch -->
-                                    <div class="phet-calc-strip">
-                                        <div class="phet-calc-card">
-                                            <span class="calc-lbl">📊 Periode Terukur (T = t / n)</span>
-                                            <span class="calc-val highlight-green" id="phet-calc-period-val">1,42 sekon</span>
-                                        </div>
-                                        <div class="phet-calc-card">
-                                            <span class="calc-lbl">📐 Periode Teoretis (2π√(L/g))</span>
-                                            <span class="calc-val" id="phet-calc-theory-val">1,42 sekon</span>
+                                    <!-- Main Body: Responsive Grid -->
+                                    <div class="station-body">
+                                        <!-- Row 1: Experiment Title (Full Width) -->
+                                        <div class="station-field-row full">
+                                            <label for="phet-input-exp-name" class="station-label">Nama / Variasi Percobaan:</label>
+                                            <input type="text" id="phet-input-exp-name" class="station-input" value="Uji Panjang Tali L = 0,50 m (Standar)">
                                         </div>
 
-                                        <!-- Integrated Companion Stopwatch -->
-                                        <div class="phet-mini-timer-card">
-                                            <div class="mini-timer-top">
-                                                <span class="mini-timer-lbl">⏱️ Stopwatch Pendamping:</span>
-                                                <span class="mini-timer-time" id="phet-mini-time">00:00.00</span>
+                                        <!-- Row 2: 4-Column Grid for Parameters -->
+                                        <div class="station-params-grid">
+                                            <div class="station-field">
+                                                <label for="phet-input-len" class="station-label">Panjang Tali (L):</label>
+                                                <div class="input-unit-wrap">
+                                                    <input type="number" id="phet-input-len" class="station-input" step="0.05" min="0.1" max="2.0" value="0.50" oninput="phetCompanion.updateCalculations()">
+                                                    <span class="unit-badge">meter</span>
+                                                </div>
                                             </div>
-                                            <div class="mini-timer-btns">
-                                                <button type="button" class="btn-timer-action" id="phet-timer-toggle-btn" onclick="phetCompanion.toggleStopwatch()">▶ Mulai</button>
-                                                <button type="button" class="btn-timer-action sec" onclick="phetCompanion.resetStopwatch()">🔄 Reset</button>
-                                                <button type="button" class="btn-timer-action accent" onclick="phetCompanion.applyStopwatchToInput()" title="Salin waktu terukur ke kolom Waktu 10 Ayunan">📋 Salin ke t</button>
+
+                                            <div class="station-field">
+                                                <label for="phet-input-mass" class="station-label">Massa Bandul (m):</label>
+                                                <div class="input-unit-wrap">
+                                                    <input type="number" id="phet-input-mass" class="station-input" step="0.05" min="0.1" max="5.0" value="1.00" oninput="phetCompanion.updateCalculations()">
+                                                    <span class="unit-badge">kg</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="station-field">
+                                                <label for="phet-input-time" class="station-label">Waktu 10 Ayunan (t):</label>
+                                                <div class="input-unit-wrap">
+                                                    <input type="number" id="phet-input-time" class="station-input" step="0.01" min="0.5" max="100.0" value="14.20" oninput="phetCompanion.updateCalculations()">
+                                                    <span class="unit-badge">sekon</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="station-field">
+                                                <label for="phet-input-swings" class="station-label">Jumlah Ayunan (n):</label>
+                                                <div class="input-unit-wrap">
+                                                    <input type="number" id="phet-input-swings" class="station-input" step="1" min="1" max="50" value="10" oninput="phetCompanion.updateCalculations()">
+                                                    <span class="unit-badge">kali</span>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
 
-                                    <!-- Action Buttons -->
-                                    <div class="phet-recorder-actions">
-                                        <button type="button" class="btn-game-primary phet-log-btn" onclick="phetCompanion.logToLkpd()">
-                                            📥 Catat Hasil ke LKPD Digital
-                                        </button>
-                                        <button type="button" class="btn-game-sm sec" onclick="appState.switchLab('lkpd')">
-                                            📋 Buka Lembar LKPD ➔
-                                        </button>
+                                        <!-- Row 3: Live Calculations & Companion Stopwatch Card -->
+                                        <div class="station-results-bar">
+                                            <div class="calc-metric-card">
+                                                <span class="metric-label">📊 Periode Terukur (T = t / n)</span>
+                                                <span class="metric-val text-emerald" id="phet-calc-period-val">1,42 sekon</span>
+                                            </div>
+                                            <div class="calc-metric-card">
+                                                <span class="metric-label">📐 Periode Teoretis (2π√(L/g))</span>
+                                                <span class="metric-val text-teal" id="phet-calc-theory-val">1,42 sekon</span>
+                                            </div>
+                                            <!-- Integrated Companion Stopwatch -->
+                                            <div class="companion-timer-box">
+                                                <div class="timer-display-wrap">
+                                                    <span class="timer-tag">⏱️ Stopwatch Pendamping</span>
+                                                    <span class="timer-digital" id="phet-mini-time">00:00.00</span>
+                                                </div>
+                                                <div class="timer-actions-row">
+                                                    <button type="button" class="btn-timer-sm play" id="phet-timer-toggle-btn" onclick="phetCompanion.toggleStopwatch()">▶ Mulai</button>
+                                                    <button type="button" class="btn-timer-sm reset" onclick="phetCompanion.resetStopwatch()">🔄 Reset</button>
+                                                    <button type="button" class="btn-timer-sm copy" onclick="phetCompanion.applyStopwatchToInput()" title="Salin waktu terukur ke kolom Waktu 10 Ayunan">📋 Salin ke t</button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Row 4: Action Buttons -->
+                                        <div class="station-footer-actions">
+                                            <button type="button" class="btn-station-record" onclick="phetCompanion.logToLkpd()">
+                                                📥 Catat Hasil ke LKPD Digital
+                                            </button>
+                                            <button type="button" class="btn-station-secondary" onclick="appState.switchLab('lkpd')">
+                                                📋 Buka Lembar LKPD ➔
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -680,14 +685,19 @@
                     <div class="lab-panel" id="panel-lab-lkpd">
                         <div class="lab-content-box">
                             <div class="lkpd-title-row">
-                                <div>
+                                <div class="lkpd-header-titles">
                                     <h3>📋 Lembar Kerja Praktikum (LKPD) Digital</h3>
-                                    <p class="text-muted" style="font-size:0.85rem; margin:0;">Tercatat otomatis dari hasil percobaan Jangka Sorong (OLabs), Neraca Pegas (OLabs), & Bandul (PhET) atau dapat diisi & ditambah manual.</p>
+                                    <p class="text-muted">Tercatat otomatis dari hasil percobaan Jangka Sorong (OLabs), Neraca Pegas (OLabs), & Bandul (PhET) atau dapat diisi & ditambah manual.</p>
                                 </div>
-                                <div class="d-flex gap-2">
+                                <div class="lkpd-header-buttons">
                                     <button class="btn-tool-pill" onclick="window.print()">🖨️ Cetak / Simpan PDF</button>
                                     <button class="btn-tool-pill" onclick="lkpdManager.resetAll()">🔄 Reset Tabel</button>
                                 </div>
+                            </div>
+
+                            <!-- Mobile Scroll Helper Notice -->
+                            <div class="mobile-table-hint">
+                                <span>👉 Geser tabel ke kanan untuk melihat & mengisi kolom selengkapnya</span>
                             </div>
 
                             <!-- Table 1: Jangka Sorong -->
@@ -699,16 +709,16 @@
                                     </button>
                                 </div>
                                 <div class="table-wrap">
-                                    <table class="lkpd-table">
+                                    <table class="lkpd-table" id="lkpd-caliper-table">
                                         <thead>
                                             <tr>
-                                                <th style="width:40px;" class="text-center">No</th>
-                                                <th>Objek Uji</th>
-                                                <th>Dimensi</th>
-                                                <th>Skala Utama (SU)</th>
-                                                <th>Skala Nonius (SN)</th>
-                                                <th>Hasil Akhir (SU + SN×0,01)</th>
-                                                <th style="width:50px;" class="text-center">Aksi</th>
+                                                <th style="width:44px;" class="text-center">No</th>
+                                                <th style="min-width:140px;">Objek Uji</th>
+                                                <th style="min-width:130px;">Dimensi</th>
+                                                <th style="min-width:110px;">Skala Utama (SU)</th>
+                                                <th style="min-width:100px;">Skala Nonius (SN)</th>
+                                                <th style="min-width:160px;">Hasil Akhir (SU + SN×0,01)</th>
+                                                <th style="width:55px;" class="text-center">Aksi</th>
                                             </tr>
                                         </thead>
                                         <tbody id="lkpd-caliper-tbody">
@@ -727,16 +737,16 @@
                                     </button>
                                 </div>
                                 <div class="table-wrap">
-                                    <table class="lkpd-table">
+                                    <table class="lkpd-table" id="lkpd-spring-table">
                                         <thead>
                                             <tr>
-                                                <th style="width:40px;" class="text-center">No</th>
-                                                <th>Objek Uji</th>
-                                                <th>Gaya Berat w (N)</th>
-                                                <th>Gravitasi g (N/kg)</th>
-                                                <th>Rumus Hitung</th>
-                                                <th>Massa Terhitung (g)</th>
-                                                <th style="width:50px;" class="text-center">Aksi</th>
+                                                <th style="width:44px;" class="text-center">No</th>
+                                                <th style="min-width:140px;">Objek Uji</th>
+                                                <th style="min-width:110px;">Gaya Berat w (N)</th>
+                                                <th style="min-width:110px;">Gravitasi g (N/kg)</th>
+                                                <th style="min-width:160px;">Rumus Hitung</th>
+                                                <th style="min-width:130px;">Massa Terhitung (g)</th>
+                                                <th style="width:55px;" class="text-center">Aksi</th>
                                             </tr>
                                         </thead>
                                         <tbody id="lkpd-spring-tbody">
@@ -755,17 +765,17 @@
                                     </button>
                                 </div>
                                 <div class="table-wrap">
-                                    <table class="lkpd-table">
+                                    <table class="lkpd-table" id="lkpd-pendulum-table">
                                         <thead>
                                             <tr>
-                                                <th style="width:40px;" class="text-center">No</th>
-                                                <th>Nama Percobaan</th>
-                                                <th>Panjang Tali (L)</th>
-                                                <th>Massa (m)</th>
-                                                <th>Waktu 10 Ayunan (t)</th>
-                                                <th>Periode Percobaan (T=t/n)</th>
-                                                <th>Periode Teoretis</th>
-                                                <th style="width:50px;" class="text-center">Aksi</th>
+                                                <th style="width:44px;" class="text-center">No</th>
+                                                <th style="min-width:150px;">Nama Percobaan</th>
+                                                <th style="min-width:110px;">Panjang Tali (L)</th>
+                                                <th style="min-width:100px;">Massa (m)</th>
+                                                <th style="min-width:120px;">Waktu 10 Ayunan (t)</th>
+                                                <th style="min-width:130px;">Periode Percobaan (T=t/n)</th>
+                                                <th style="min-width:120px;">Periode Teoretis</th>
+                                                <th style="width:55px;" class="text-center">Aksi</th>
                                             </tr>
                                         </thead>
                                         <tbody id="lkpd-pendulum-tbody">
