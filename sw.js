@@ -3,7 +3,7 @@
  * Progressive Web App Offline Cache
  */
 
-const CACHE_NAME = 'lab-pengukuran-v5';
+const CACHE_NAME = 'lab-pengukuran-v6';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',

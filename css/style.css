@@ -2810,11 +2810,21 @@ h1, h2, h3, h4, .nav-app-name, .btn-game-primary, .adv-title, .score-num, .sign-
     .guide-frame-arrow,
     .mobile-landscape-overlay,
     .jungle-canopy-top,
-    .jungle-ferns-bottom,
-    .floating-nature-particles,
+    .btn-add-row,
+    .btn-del-row,
+    .phet-recorder-card,
     #confetti-canvas {
         display: none !important;
         visibility: hidden !important;
+    }
+
+    .lkpd-table input.lkpd-in {
+        border: none !important;
+        background: transparent !important;
+        padding: 2px 0 !important;
+        box-shadow: none !important;
+        font-weight: 700 !important;
+        color: #0f172a !important;
     }
 
     /* IF PRINTING CERTIFICATE:
@@ -4634,11 +4644,48 @@ body:not(.on-cover) .jungle-ferns-bottom {
     margin-bottom: 16px;
 }
 
+.lkpd-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+}
+
 .lkpd-section-title {
     font-size: 0.95rem;
     font-weight: 800;
     color: #0f172a;
-    margin-bottom: 10px;
+    margin: 0;
+}
+
+.btn-add-row {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    color: #ffffff !important;
+    border: 1.5px solid #047857 !important;
+    padding: 6px 14px !important;
+    border-radius: var(--radius-pill) !important;
+    font-weight: 800 !important;
+    font-size: 0.82rem !important;
+    cursor: pointer !important;
+    box-shadow: 0 3px 0 #064e3b !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    transition: transform 0.15s, box-shadow 0.15s, background 0.15s !important;
+    user-select: none !important;
+}
+
+.btn-add-row:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 0 #064e3b !important;
+    background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+}
+
+.btn-add-row:active {
+    transform: translateY(1px) !important;
+    box-shadow: 0 1px 0 #064e3b !important;
 }
 
 .lkpd-in {
@@ -4686,6 +4733,244 @@ body:not(.on-cover) .jungle-ferns-bottom {
 .btn-del-row:hover {
     background: #ef4444;
     color: white;
+}
+
+/* ==========================================================================
+   PHET BANDUL RECORDER COMPANION CARD
+   ========================================================================== */
+.phet-recorder-card {
+    background: linear-gradient(180deg, #ffffff 0%, #f0fdf4 100%);
+    border: 2px solid #10b981;
+    border-radius: var(--radius-md);
+    box-shadow: 0 6px 18px rgba(16, 185, 129, 0.12);
+    padding: 18px 22px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.phet-recorder-card.highlight-pulse {
+    transform: scale(1.02);
+    box-shadow: 0 0 0 4px #10b981, 0 10px 24px rgba(16, 185, 129, 0.25) !important;
+}
+
+.phet-rec-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    background: #059669;
+    color: #ffffff;
+    font-weight: 800;
+    font-size: 0.72rem;
+    border-radius: var(--radius-pill);
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+}
+
+.phet-rec-title {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #064e3b;
+    margin: 0 0 4px 0;
+}
+
+.phet-rec-desc {
+    font-size: 0.84rem;
+    color: #334155;
+    margin: 0 0 12px 0;
+    line-height: 1.45;
+}
+
+.phet-quick-presets {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px dashed #cbd5e1;
+}
+
+.preset-lbl {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #475569;
+    margin-right: 4px;
+}
+
+.phet-form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.phet-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.phet-form-group.col-span-2 {
+    grid-column: 1 / -1;
+}
+
+.phet-form-group label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.input-with-unit {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.phet-input {
+    width: 100%;
+    padding: 8px 10px;
+    padding-right: 48px;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    background: #ffffff;
+    color: #0f172a;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.phet-form-group.col-span-2 .phet-input {
+    padding-right: 10px;
+}
+
+.phet-input:focus {
+    outline: none;
+    border-color: #059669;
+    box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.2);
+}
+
+.unit-tag {
+    position: absolute;
+    right: 10px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #64748b;
+    pointer-events: none;
+}
+
+.phet-calc-strip {
+    display: grid;
+    grid-template-columns: 1fr 1fr minmax(240px, 1.2fr);
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+@media (max-width: 768px) {
+    .phet-calc-strip {
+        grid-template-columns: 1fr;
+    }
+}
+
+.phet-calc-card {
+    background: #ffffff;
+    border: 1.5px solid #99f6e4;
+    border-radius: 8px;
+    padding: 10px 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+}
+
+.calc-lbl {
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: #0f766e;
+    margin-bottom: 4px;
+}
+
+.calc-val {
+    font-size: 1.15rem;
+    font-weight: 900;
+    color: #0f172a;
+}
+
+.phet-mini-timer-card {
+    background: #0f172a;
+    border: 1.5px solid #334155;
+    border-radius: 8px;
+    padding: 10px 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.mini-timer-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.mini-timer-lbl {
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: #94a3b8;
+}
+
+.mini-timer-time {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #38bdf8;
+    letter-spacing: 1px;
+}
+
+.mini-timer-btns {
+    display: flex;
+    gap: 5px;
+    margin-top: 8px;
+}
+
+.btn-timer-action {
+    flex: 1;
+    padding: 5px 6px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    border-radius: 4px;
+    border: 1px solid #475569;
+    background: #1e293b;
+    color: #f8fafc;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.btn-timer-action:hover {
+    background: #334155;
+}
+
+.btn-timer-action.sec {
+    background: #334155;
+}
+
+.btn-timer-action.accent {
+    background: #0284c7;
+    border-color: #0369a1;
+}
+
+.btn-timer-action.accent:hover {
+    background: #0369a1;
+}
+
+.phet-recorder-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.phet-log-btn {
+    flex: 1;
+    min-width: 220px;
+    padding: 10px 18px !important;
+    font-size: 0.95rem !important;
 }
 
 /* Dimension & Gravity chip buttons */

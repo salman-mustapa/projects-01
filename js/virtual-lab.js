@@ -1103,18 +1103,26 @@ class LkpdManager {
         ];
 
         this.springData = JSON.parse(localStorage.getItem("lab_lkpd_spring") || "null") || [
-            { id: 1, object: "Silinder Logam", force: "2,45 N", gravity: "9,8 N/kg", formula: "M = w / g", mass: "250 g" },
-            { id: 2, object: "Balok Kayu", force: "1,18 N", gravity: "9,8 N/kg", formula: "M = w / g", mass: "120 g" }
+            { id: 1, object: "Silinder Logam", force: "2,45 N", gravity: "9,8 N/kg", formula: "m = w / g = (2,45 / 9,8) kg", mass: "250 g" },
+            { id: 2, object: "Balok Kayu", force: "1,18 N", gravity: "9,8 N/kg", formula: "m = w / g = (1,18 / 9,8) kg", mass: "120 g" }
         ];
 
         this.pendulumData = JSON.parse(localStorage.getItem("lab_lkpd_pendulum") || "null") || [
-            { id: 1, expName: "Uji Panjang 0,5 m", length: "0,50 m", mass: "1,00 kg", time: "14,20 s", period: "1,42 s", theory: "1,42 s" },
-            { id: 2, expName: "Uji Panjang 1,0 m", length: "1,00 m", mass: "1,00 kg", time: "20,10 s", period: "2,01 s", theory: "2,01 s" }
+            { id: 1, expName: "Uji Panjang Tali L = 0,50 m", length: "0,50 m", mass: "1,00 kg", time: "14,20 s", period: "1,42 s", theory: "1,42 s" },
+            { id: 2, expName: "Uji Panjang Tali L = 1,00 m", length: "1,00 m", mass: "1,00 kg", time: "20,10 s", period: "2,01 s", theory: "2,01 s" }
         ];
     }
 
     init() {
         this.renderAll();
+    }
+
+    parseNum(val, fallback = 0) {
+        if (val === null || val === undefined) return fallback;
+        if (typeof val === 'number') return isNaN(val) ? fallback : val;
+        const cleaned = String(val).replace(/[^0-9.,-]/g, '').replace(',', '.');
+        const n = parseFloat(cleaned);
+        return isNaN(n) ? fallback : n;
     }
 
     save() {
@@ -1129,20 +1137,38 @@ class LkpdManager {
         this.renderPendulumTable();
     }
 
+    // --- TABEL 1: JANGKA SORONG ---
+    addCaliperManualRow() {
+        const nextId = Date.now();
+        const row = {
+            id: nextId,
+            object: "Objek Pengukuran",
+            dimension: "Diameter Luar",
+            su: "2,0 cm",
+            sn: 0,
+            total: "2,00 cm"
+        };
+        this.caliperData.push(row);
+        this.save();
+        this.renderCaliperTable();
+        window.sound?.playPop();
+        window.appState?.showToast("➕ Baris baru ditambahkan ke Tabel Jangka Sorong. Silakan isi datanya.", "info");
+    }
+
     addCaliperRow(data) {
         const row = {
             id: Date.now(),
-            object: data.object,
-            dimension: data.dimension,
-            su: data.su,
-            sn: data.sn,
-            total: data.total
+            object: data.object || "Jangka Sorong",
+            dimension: data.dimension || "Diameter Luar",
+            su: data.su || "0,0 cm",
+            sn: data.sn !== undefined ? data.sn : 0,
+            total: data.total || "0,00 cm"
         };
         this.caliperData.push(row);
         this.save();
         this.renderCaliperTable();
         window.sound?.playSuccess();
-        window.appState?.showToast(`✅ Data Jangka Sorong (${data.object}) dicatat ke LKPD!`);
+        window.appState?.showToast(`✅ Data Jangka Sorong (${row.object}) dicatat ke LKPD!`, "success");
     }
 
     deleteCaliperRow(id) {
@@ -1150,6 +1176,7 @@ class LkpdManager {
         this.save();
         this.renderCaliperTable();
         window.sound?.playPop();
+        window.appState?.showToast("🗑️ Baris berhasil dihapus", "info");
     }
 
     renderCaliperTable() {
@@ -1158,20 +1185,20 @@ class LkpdManager {
         tbody.innerHTML = "";
 
         if (this.caliperData.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted py-3">Belum ada data praktikum jangka sorong. Lakukan pengukuran lalu klik tombol "Catat ke LKPD".</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted py-3">Belum ada data praktikum jangka sorong. Klik tombol "➕ Tambah Baris Pengukuran" atau lakukan pengukuran di Lab Virtual.</td></tr>`;
             return;
         }
 
         this.caliperData.forEach((row, idx) => {
             const tr = document.createElement("tr");
             tr.innerHTML = `
-                <td><strong>${idx + 1}</strong></td>
-                <td><input type="text" class="lkpd-in" value="${row.object}" onchange="lkpdManager.updateCaliperField(${row.id}, 'object', this.value)"></td>
-                <td><input type="text" class="lkpd-in" value="${row.dimension}" onchange="lkpdManager.updateCaliperField(${row.id}, 'dimension', this.value)"></td>
-                <td><input type="text" class="lkpd-in" value="${row.su}" onchange="lkpdManager.updateCaliperField(${row.id}, 'su', this.value)"></td>
-                <td><input type="text" class="lkpd-in" value="${row.sn}" onchange="lkpdManager.updateCaliperField(${row.id}, 'sn', this.value)"></td>
-                <td><strong>${row.total}</strong></td>
-                <td><button class="btn-del-row" onclick="lkpdManager.deleteCaliperRow(${row.id})" title="Hapus baris">✕</button></td>
+                <td class="text-center"><strong>${idx + 1}</strong></td>
+                <td><input type="text" class="lkpd-in" value="${row.object || ''}" placeholder="Nama Objek" oninput="lkpdManager.updateCaliperField(${row.id}, 'object', this.value)"></td>
+                <td><input type="text" class="lkpd-in" value="${row.dimension || 'Diameter Luar'}" placeholder="Dimensi" oninput="lkpdManager.updateCaliperField(${row.id}, 'dimension', this.value)"></td>
+                <td><input type="text" class="lkpd-in" value="${row.su || ''}" placeholder="SU (cm)" oninput="lkpdManager.updateCaliperField(${row.id}, 'su', this.value)"></td>
+                <td><input type="text" class="lkpd-in" value="${row.sn !== undefined ? row.sn : ''}" placeholder="SN" oninput="lkpdManager.updateCaliperField(${row.id}, 'sn', this.value)"></td>
+                <td><strong class="highlight-green" id="caliper-total-${row.id}">${row.total || '-'}</strong></td>
+                <td class="text-center"><button class="btn-del-row" onclick="lkpdManager.deleteCaliperRow(${row.id})" title="Hapus baris">✕</button></td>
             `;
             tbody.appendChild(tr);
         });
@@ -1179,20 +1206,45 @@ class LkpdManager {
 
     updateCaliperField(id, field, val) {
         const row = this.caliperData.find(r => r.id === id);
-        if (row) {
-            row[field] = val;
-            this.save();
+        if (!row) return;
+        row[field] = val;
+
+        if (field === 'su' || field === 'sn') {
+            const suNum = this.parseNum(row.su);
+            const snNum = this.parseNum(row.sn);
+            const totalNum = suNum + (snNum * 0.01);
+            row.total = totalNum.toFixed(2).replace('.', ',') + " cm";
+            const totEl = document.getElementById(`caliper-total-${id}`);
+            if (totEl) totEl.textContent = row.total;
         }
+        this.save();
+    }
+
+    // --- TABEL 2: NERACA PEGAS ---
+    addSpringManualRow() {
+        const nextId = Date.now();
+        const row = {
+            id: nextId,
+            object: "Beban Uji",
+            force: "1,96 N",
+            gravity: "9,8 N/kg",
+            formula: "m = w / g = (1,96 / 9,8) kg",
+            mass: "200 g"
+        };
+        this.springData.push(row);
+        this.save();
+        this.renderSpringTable();
+        window.sound?.playPop();
+        window.appState?.showToast("➕ Baris baru ditambahkan ke Tabel Neraca Pegas. Silakan isi datanya.", "info");
     }
 
     addSpringRow(data) {
         const objName = data.object || data.objName || "Silinder Logam";
-        const forceStr = data.force || "2.45 N";
-        const gravStr = data.gravity || data.grav || "9.8 N/kg";
-        const formulaStr = data.formula || "M = w / g";
+        const forceStr = data.force || "2,45 N";
+        const gravStr = data.gravity || data.grav || "9,8 N/kg";
+        const formulaStr = data.formula || "m = w / g";
         const massStr = data.mass || "250 g";
 
-        // Anti-duplicate protection: ignore identical row if submitted within 1200ms
         const now = Date.now();
         if (this._lastSpringLog && 
             (now - this._lastSpringLog.time < 1200) &&
@@ -1205,9 +1257,9 @@ class LkpdManager {
         const row = {
             id: Date.now(),
             object: (objName === "undefined" || !objName) ? "Silinder Logam" : objName,
-            force: (forceStr === "undefined" || !forceStr) ? "2.45 N" : forceStr,
-            gravity: (gravStr === "undefined" || !gravStr) ? "9.8 N/kg" : gravStr,
-            formula: (formulaStr === "undefined" || !formulaStr) ? "M = w / g" : formulaStr,
+            force: (forceStr === "undefined" || !forceStr) ? "2,45 N" : forceStr,
+            gravity: (gravStr === "undefined" || !gravStr) ? "9,8 N/kg" : gravStr,
+            formula: (formulaStr === "undefined" || !formulaStr) ? "m = w / g" : formulaStr,
             mass: (massStr === "undefined" || !massStr) ? "250 g" : massStr
         };
         this.springData.push(row);
@@ -1222,6 +1274,7 @@ class LkpdManager {
         this.save();
         this.renderSpringTable();
         window.sound?.playPop();
+        window.appState?.showToast("🗑️ Baris berhasil dihapus", "info");
     }
 
     renderSpringTable() {
@@ -1230,27 +1283,26 @@ class LkpdManager {
         tbody.innerHTML = "";
 
         if (this.springData.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted py-3">Belum ada data praktikum neraca pegas. Gantung beban pada simulasi lalu klik "Catat ke LKPD".</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted py-3">Belum ada data praktikum neraca pegas. Klik tombol "➕ Tambah Baris Pengukuran" atau gantung beban di Lab Virtual.</td></tr>`;
             return;
         }
 
         this.springData.forEach((row, idx) => {
-            // Cleanse any corrupted existing values
             const cleanObj = (row.object === "undefined" || !row.object) ? "Silinder Logam" : row.object;
-            const cleanForce = (row.force === "undefined" || !row.force) ? "2.45 N" : row.force;
-            const cleanGrav = (row.gravity === "undefined" || !row.gravity) ? "9.8 N/kg" : row.gravity;
-            const cleanFormula = (row.formula === "undefined" || !row.formula) ? "M = w / g" : row.formula;
+            const cleanForce = (row.force === "undefined" || !row.force) ? "2,45 N" : row.force;
+            const cleanGrav = (row.gravity === "undefined" || !row.gravity) ? "9,8 N/kg" : row.gravity;
+            const cleanFormula = (row.formula === "undefined" || !row.formula) ? "m = w / g" : row.formula;
             const cleanMass = (row.mass === "undefined" || !row.mass) ? "250 g" : row.mass;
 
             const tr = document.createElement("tr");
             tr.innerHTML = `
-                <td><strong>${idx + 1}</strong></td>
-                <td><input type="text" class="lkpd-in" value="${cleanObj}" onchange="lkpdManager.updateSpringField(${row.id}, 'object', this.value)"></td>
-                <td><input type="text" class="lkpd-in" value="${cleanForce}" onchange="lkpdManager.updateSpringField(${row.id}, 'force', this.value)"></td>
-                <td><input type="text" class="lkpd-in" value="${cleanGrav}" onchange="lkpdManager.updateSpringField(${row.id}, 'gravity', this.value)"></td>
-                <td><span class="formula-chip">${cleanFormula}</span></td>
-                <td><strong class="highlight-green">${cleanMass}</strong></td>
-                <td><button class="btn-del-row" onclick="lkpdManager.deleteSpringRow(${row.id})" title="Hapus baris">✕</button></td>
+                <td class="text-center"><strong>${idx + 1}</strong></td>
+                <td><input type="text" class="lkpd-in" value="${cleanObj}" placeholder="Nama Beban" oninput="lkpdManager.updateSpringField(${row.id}, 'object', this.value)"></td>
+                <td><input type="text" class="lkpd-in" value="${cleanForce}" placeholder="Gaya w (N)" oninput="lkpdManager.updateSpringField(${row.id}, 'force', this.value)"></td>
+                <td><input type="text" class="lkpd-in" value="${cleanGrav}" placeholder="Gravitasi g" oninput="lkpdManager.updateSpringField(${row.id}, 'gravity', this.value)"></td>
+                <td><span class="formula-chip" id="spring-formula-${row.id}">${cleanFormula}</span></td>
+                <td><strong class="highlight-green" id="spring-mass-${row.id}">${cleanMass}</strong></td>
+                <td class="text-center"><button class="btn-del-row" onclick="lkpdManager.deleteSpringRow(${row.id})" title="Hapus baris">✕</button></td>
             `;
             tbody.appendChild(tr);
         });
@@ -1258,27 +1310,68 @@ class LkpdManager {
 
     updateSpringField(id, field, val) {
         const row = this.springData.find(r => r.id === id);
-        if (row) {
-            row[field] = val;
-            this.save();
+        if (!row) return;
+        row[field] = val;
+
+        if (field === 'force' || field === 'gravity') {
+            const w = this.parseNum(row.force);
+            const g = this.parseNum(row.gravity);
+            if (g > 0) {
+                const massGram = Math.round((w / g) * 1000);
+                row.mass = massGram + " g";
+                row.formula = `m = w / g = (${w.toFixed(2).replace('.', ',')} / ${g.toFixed(1).replace('.', ',')}) kg`;
+                const massEl = document.getElementById(`spring-mass-${id}`);
+                if (massEl) massEl.textContent = row.mass;
+                const formulaEl = document.getElementById(`spring-formula-${id}`);
+                if (formulaEl) formulaEl.textContent = row.formula;
+            }
         }
+        this.save();
+    }
+
+    // --- TABEL 3: BANDUL PhET ---
+    addPendulumManualRow() {
+        const nextId = Date.now();
+        const row = {
+            id: nextId,
+            expName: "Uji Panjang Tali L = 0,50 m",
+            length: "0,50 m",
+            mass: "1,00 kg",
+            time: "14,20 s",
+            period: "1,42 s",
+            theory: "1,42 s"
+        };
+        this.pendulumData.push(row);
+        this.save();
+        this.renderPendulumTable();
+        window.sound?.playPop();
+        window.appState?.showToast("➕ Baris baru ditambahkan ke Tabel Bandul PhET. Silakan isi datanya.", "info");
     }
 
     addPendulumRow(data) {
+        const now = Date.now();
+        if (this._lastPendulumLog && 
+            (now - this._lastPendulumLog.time < 1200) &&
+            this._lastPendulumLog.expName === data.expName &&
+            this._lastPendulumLog.timeVal === data.time) {
+            return;
+        }
+        this._lastPendulumLog = { time: now, expName: data.expName, timeVal: data.time };
+
         const row = {
             id: Date.now(),
-            expName: data.expName,
-            length: data.length,
-            mass: data.mass,
-            time: data.time,
-            period: data.period,
-            theory: data.theory
+            expName: data.expName || "Percobaan Bandul PhET",
+            length: data.length || "0,50 m",
+            mass: data.mass || "1,00 kg",
+            time: data.time || "14,20 s",
+            period: data.period || "1,42 s",
+            theory: data.theory || "1,42 s"
         };
         this.pendulumData.push(row);
         this.save();
         this.renderPendulumTable();
         window.sound?.playSuccess();
-        window.appState?.showToast(`✅ Data Bandul Waktu (${data.expName}) dicatat ke LKPD!`);
+        window.appState?.showToast(`✅ Data Bandul PhET (${row.expName}) dicatat ke LKPD!`, "success");
     }
 
     deletePendulumRow(id) {
@@ -1286,6 +1379,7 @@ class LkpdManager {
         this.save();
         this.renderPendulumTable();
         window.sound?.playPop();
+        window.appState?.showToast("🗑️ Baris berhasil dihapus", "info");
     }
 
     renderPendulumTable() {
@@ -1294,21 +1388,28 @@ class LkpdManager {
         tbody.innerHTML = "";
 
         if (this.pendulumData.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="8" class="text-center text-muted py-3">Belum ada data pengukuran waktu bandul. Lakukan 10 ayunan lalu klik "Catat ke LKPD".</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="8" class="text-center text-muted py-3">Belum ada data praktikum bandul PhET. Klik tombol "➕ Tambah Baris Pengukuran" atau gunakan Pencatat Praktikum Bandul PhET.</td></tr>`;
             return;
         }
 
         this.pendulumData.forEach((row, idx) => {
+            const cleanExp = row.expName || `Percobaan ${idx + 1}`;
+            const cleanLen = row.length || "0,50 m";
+            const cleanMass = row.mass || "1,00 kg";
+            const cleanTime = row.time || "14,20 s";
+            const cleanPeriod = row.period || "1,42 s";
+            const cleanTheory = row.theory || "1,42 s";
+
             const tr = document.createElement("tr");
             tr.innerHTML = `
-                <td><strong>${idx + 1}</strong></td>
-                <td><input type="text" class="lkpd-in" value="${row.expName}" onchange="lkpdManager.updatePendulumField(${row.id}, 'expName', this.value)"></td>
-                <td><input type="text" class="lkpd-in" value="${row.length}" onchange="lkpdManager.updatePendulumField(${row.id}, 'length', this.value)"></td>
-                <td><input type="text" class="lkpd-in" value="${row.mass}" onchange="lkpdManager.updatePendulumField(${row.id}, 'mass', this.value)"></td>
-                <td><input type="text" class="lkpd-in" value="${row.time}" onchange="lkpdManager.updatePendulumField(${row.id}, 'time', this.value)"></td>
-                <td><strong class="highlight-green">${row.period}</strong></td>
-                <td><span>${row.theory}</span></td>
-                <td><button class="btn-del-row" onclick="lkpdManager.deletePendulumRow(${row.id})" title="Hapus baris">✕</button></td>
+                <td class="text-center"><strong>${idx + 1}</strong></td>
+                <td><input type="text" class="lkpd-in" value="${cleanExp}" placeholder="Variasi Percobaan" oninput="lkpdManager.updatePendulumField(${row.id}, 'expName', this.value)"></td>
+                <td><input type="text" class="lkpd-in" value="${cleanLen}" placeholder="Panjang L" oninput="lkpdManager.updatePendulumField(${row.id}, 'length', this.value)"></td>
+                <td><input type="text" class="lkpd-in" value="${cleanMass}" placeholder="Massa m" oninput="lkpdManager.updatePendulumField(${row.id}, 'mass', this.value)"></td>
+                <td><input type="text" class="lkpd-in" value="${cleanTime}" placeholder="Waktu t (s)" oninput="lkpdManager.updatePendulumField(${row.id}, 'time', this.value)"></td>
+                <td><strong class="highlight-green" id="pendulum-period-${row.id}">${cleanPeriod}</strong></td>
+                <td><span id="pendulum-theory-${row.id}">${cleanTheory}</span></td>
+                <td class="text-center"><button class="btn-del-row" onclick="lkpdManager.deletePendulumRow(${row.id})" title="Hapus baris">✕</button></td>
             `;
             tbody.appendChild(tr);
         });
@@ -1316,21 +1417,200 @@ class LkpdManager {
 
     updatePendulumField(id, field, val) {
         const row = this.pendulumData.find(r => r.id === id);
-        if (row) {
-            row[field] = val;
-            this.save();
+        if (!row) return;
+        row[field] = val;
+
+        if (field === 'time' || field === 'length') {
+            const t = this.parseNum(row.time);
+            const L = this.parseNum(row.length);
+            if (t > 0) {
+                row.period = (t / 10).toFixed(2).replace('.', ',') + " s";
+                const periodEl = document.getElementById(`pendulum-period-${id}`);
+                if (periodEl) periodEl.textContent = row.period;
+            }
+            if (L > 0) {
+                row.theory = (2 * Math.PI * Math.sqrt(L / 9.8)).toFixed(2).replace('.', ',') + " s";
+                const theoryEl = document.getElementById(`pendulum-theory-${id}`);
+                if (theoryEl) theoryEl.textContent = row.theory;
+            }
         }
+        this.save();
     }
 
     resetAll() {
-        if (!confirm("Apakah kamu yakin ingin mereset seluruh data LKPD ke format awal?")) return;
-        this.caliperData = [];
-        this.springData = [];
-        this.pendulumData = [];
+        if (!confirm("Apakah kamu yakin ingin mereset seluruh data LKPD ke format awal? Data saat ini akan dikembalikan ke data percontohan standar.")) return;
+        this.caliperData = [
+            { id: 1, object: "Koin Logam Rp1.000", dimension: "Diameter Luar", su: "2,4 cm", sn: 5, total: "2,45 cm" },
+            { id: 2, object: "Silinder Logam", dimension: "Tinggi", su: "3,1 cm", sn: 2, total: "3,12 cm" }
+        ];
+        this.springData = [
+            { id: 1, object: "Silinder Logam", force: "2,45 N", gravity: "9,8 N/kg", formula: "m = w / g = (2,45 / 9,8) kg", mass: "250 g" },
+            { id: 2, object: "Balok Kayu", force: "1,18 N", gravity: "9,8 N/kg", formula: "m = w / g = (1,18 / 9,8) kg", mass: "120 g" }
+        ];
+        this.pendulumData = [
+            { id: 1, expName: "Uji Panjang Tali L = 0,50 m", length: "0,50 m", mass: "1,00 kg", time: "14,20 s", period: "1,42 s", theory: "1,42 s" },
+            { id: 2, expName: "Uji Panjang Tali L = 1,00 m", length: "1,00 m", mass: "1,00 kg", time: "20,10 s", period: "2,01 s", theory: "2,01 s" }
+        ];
         this.save();
         this.renderAll();
         window.sound?.playPop();
-        window.appState?.showToast("🔄 Data LKPD berhasil direset.");
+        window.appState?.showToast("🔄 Data LKPD berhasil dikembalikan ke format awal.", "info");
+    }
+}
+
+// =============================================================================
+// 5. PHET BANDUL COMPANION MANAGER (Pencatat Hasil Praktikum Bandul PhET)
+// =============================================================================
+class PhetCompanionManager {
+    constructor() {
+        this.swRunning = false;
+        this.swStartTime = 0;
+        this.swElapsed = 0;
+        this.swTimer = null;
+    }
+
+    init() {
+        this.updateCalculations();
+    }
+
+    applyPreset(type) {
+        window.sound?.playClick();
+        const expInput = document.getElementById("phet-input-exp-name");
+        const lenInput = document.getElementById("phet-input-len");
+        const massInput = document.getElementById("phet-input-mass");
+        const timeInput = document.getElementById("phet-input-time");
+        const nInput = document.getElementById("phet-input-swings");
+
+        if (nInput) nInput.value = "10";
+
+        if (type === 'l-03') {
+            if (expInput) expInput.value = "Uji Variasi Panjang Tali L = 0,30 m";
+            if (lenInput) lenInput.value = "0.30";
+            if (massInput) massInput.value = "1.00";
+            if (timeInput) timeInput.value = "11.00";
+        } else if (type === 'l-05') {
+            if (expInput) expInput.value = "Uji Panjang Tali L = 0,50 m (Standar)";
+            if (lenInput) lenInput.value = "0.50";
+            if (massInput) massInput.value = "1.00";
+            if (timeInput) timeInput.value = "14.20";
+        } else if (type === 'l-07') {
+            if (expInput) expInput.value = "Uji Variasi Panjang Tali L = 0,70 m";
+            if (lenInput) lenInput.value = "0.70";
+            if (massInput) massInput.value = "1.00";
+            if (timeInput) timeInput.value = "16.80";
+        } else if (type === 'l-10') {
+            if (expInput) expInput.value = "Uji Variasi Panjang Tali L = 1,00 m";
+            if (lenInput) lenInput.value = "1.00";
+            if (massInput) massInput.value = "1.00";
+            if (timeInput) timeInput.value = "20.10";
+        } else if (type === 'm-05') {
+            if (expInput) expInput.value = "Uji Variasi Massa Beban m = 0,50 kg";
+            if (lenInput) lenInput.value = "0.50";
+            if (massInput) massInput.value = "0.50";
+            if (timeInput) timeInput.value = "14.20";
+        } else if (type === 'm-15') {
+            if (expInput) expInput.value = "Uji Variasi Massa Beban m = 1,50 kg";
+            if (lenInput) lenInput.value = "0.50";
+            if (massInput) massInput.value = "1.50";
+            if (timeInput) timeInput.value = "14.20";
+        }
+
+        const chips = document.querySelectorAll(".phet-quick-presets .chip-btn");
+        chips.forEach(c => c.classList.remove("active"));
+        if (window.event && window.event.target && window.event.target.classList.contains("chip-btn")) {
+            window.event.target.classList.add("active");
+        }
+
+        this.updateCalculations();
+    }
+
+    updateCalculations() {
+        const lenVal = parseFloat(document.getElementById("phet-input-len")?.value || "0.50") || 0.5;
+        const timeVal = parseFloat(document.getElementById("phet-input-time")?.value || "14.20") || 14.2;
+        const swingsVal = parseInt(document.getElementById("phet-input-swings")?.value || "10", 10) || 10;
+
+        const periodExp = (timeVal / swingsVal).toFixed(2).replace('.', ',') + " sekon";
+        const theoryVal = (2 * Math.PI * Math.sqrt(lenVal / 9.8)).toFixed(2).replace('.', ',') + " sekon";
+
+        const pEl = document.getElementById("phet-calc-period-val");
+        const tEl = document.getElementById("phet-calc-theory-val");
+        if (pEl) pEl.textContent = periodExp;
+        if (tEl) tEl.textContent = theoryVal;
+    }
+
+    toggleStopwatch() {
+        window.sound?.playClick();
+        const btn = document.getElementById("phet-timer-toggle-btn");
+        if (this.swRunning) {
+            this.swRunning = false;
+            clearInterval(this.swTimer);
+            if (btn) btn.innerHTML = "▶ Lanjut";
+        } else {
+            this.swRunning = true;
+            this.swStartTime = Date.now() - this.swElapsed;
+            if (btn) btn.innerHTML = "⏸ Jeda";
+            this.swTimer = setInterval(() => {
+                this.swElapsed = Date.now() - this.swStartTime;
+                this.updateStopwatchDisplay();
+            }, 30);
+        }
+    }
+
+    resetStopwatch() {
+        window.sound?.playPop();
+        this.swRunning = false;
+        clearInterval(this.swTimer);
+        this.swElapsed = 0;
+        const btn = document.getElementById("phet-timer-toggle-btn");
+        if (btn) btn.innerHTML = "▶ Mulai";
+        this.updateStopwatchDisplay();
+    }
+
+    updateStopwatchDisplay() {
+        const el = document.getElementById("phet-mini-time");
+        if (!el) return;
+        const totalSec = this.swElapsed / 1000;
+        const m = Math.floor(totalSec / 60).toString().padStart(2, "0");
+        const s = Math.floor(totalSec % 60).toString().padStart(2, "0");
+        const ms = Math.floor((this.swElapsed % 1000) / 10).toString().padStart(2, "0");
+        el.textContent = `${m}:${s}.${ms}`;
+    }
+
+    applyStopwatchToInput() {
+        if (this.swElapsed <= 0) {
+            window.appState?.showToast("Jalankan stopwatch pendamping terlebih dahulu!", "warning");
+            return;
+        }
+        window.sound?.playPop();
+        const sec = (this.swElapsed / 1000).toFixed(2);
+        const timeInput = document.getElementById("phet-input-time");
+        if (timeInput) {
+            timeInput.value = sec;
+            this.updateCalculations();
+            window.appState?.showToast(`⏱️ Waktu ${sec} s disalin ke kolom Waktu 10 Ayunan (t)!`, "info");
+        }
+    }
+
+    logToLkpd() {
+        const expName = document.getElementById("phet-input-exp-name")?.value.trim() || "Uji Variasi Bandul PhET";
+        const lenVal = parseFloat(document.getElementById("phet-input-len")?.value || "0.50") || 0.5;
+        const massVal = parseFloat(document.getElementById("phet-input-mass")?.value || "1.00") || 1.0;
+        const timeVal = parseFloat(document.getElementById("phet-input-time")?.value || "14.20") || 14.2;
+        const swingsVal = parseInt(document.getElementById("phet-input-swings")?.value || "10", 10) || 10;
+
+        const periodExp = (timeVal / swingsVal).toFixed(2).replace('.', ',') + " s";
+        const theoryVal = (2 * Math.PI * Math.sqrt(lenVal / 9.8)).toFixed(2).replace('.', ',') + " s";
+
+        const row = {
+            expName: expName,
+            length: lenVal.toFixed(2).replace('.', ',') + " m",
+            mass: massVal.toFixed(2).replace('.', ',') + " kg",
+            time: timeVal.toFixed(2).replace('.', ',') + " s",
+            period: periodExp,
+            theory: theoryVal
+        };
+
+        window.lkpdManager?.addPendulumRow(row);
     }
 }
 
@@ -1339,3 +1619,13 @@ window.vernierSim = new VernierCaliperSim();
 window.springSim = new SpringBalanceSim();
 window.pendulumSim = new PendulumLabSim();
 window.lkpdManager = new LkpdManager();
+window.phetCompanion = new PhetCompanionManager();
+
+// Initialize on DOM load
+if (typeof document !== "undefined" && document.addEventListener) {
+    document.addEventListener("DOMContentLoaded", () => {
+        window.lkpdManager?.init();
+        window.phetCompanion?.init();
+    });
+}
+

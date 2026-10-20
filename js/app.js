@@ -410,6 +410,32 @@ class AppState {
                     this.showToast(`✅ Data Neraca Pegas (${objName}) dicatat ke LKPD!`, "success");
                 }
             }
+
+            if (e.data.type === "LOG_PENDULUM_TO_LKPD") {
+                if (window.phetCompanion) {
+                    window.phetCompanion.logToLkpd();
+                } else if (window.lkpdManager && window.lkpdManager.addPendulumRow) {
+                    window.lkpdManager.addPendulumRow({
+                        expName: e.data.expName || "Praktikum Bandul PhET",
+                        length: e.data.length || "0,50 m",
+                        mass: e.data.mass || "1,00 kg",
+                        time: e.data.time || "14,20 s",
+                        period: e.data.period || "1,42 s",
+                        theory: e.data.theory || "1,42 s"
+                    });
+                    this.showToast("✅ Data Bandul PhET dicatat ke LKPD!", "success");
+                }
+            }
+
+            if (e.data.type === "FOCUS_BANDUL_RECORDER") {
+                const el = document.getElementById("phet-recorder-box");
+                if (el) {
+                    el.scrollIntoView({ behavior: "smooth", block: "center" });
+                    el.classList.add("highlight-pulse");
+                    setTimeout(() => el.classList.remove("highlight-pulse"), 1600);
+                }
+                this.showToast("⏱️ Silakan periksa & catat data pengamatan bandul di panel ini", "info");
+            }
         });
 
         // Fullscreen change synchronization for Bahan Ajar
